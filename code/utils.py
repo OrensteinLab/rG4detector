@@ -5,6 +5,7 @@ import pandas as pd
 from scipy.stats import pearsonr
 import numpy as np
 from tensorflow.keras.utils import to_categorical
+from PARAMETERS import *
 
 
 def set_data_size(data_size, data_sets):
@@ -23,41 +24,23 @@ def set_data_size(data_size, data_sets):
 #         self.y = y
 #         self.auc = auc
 #
-# def get_weights(W, method='linear'):
-#     if method == 'log':
-#         W = np.log(W)
-#     W = W.reshape(len(W))
-#     if method is None:
-#         W = None
-#     return W
-#
-#
-# def weighted_pearson_correlation(X, Y, W):
-#     def m(x, w):
-#         """Weighted Mean"""
-#         return np.sum(x * w) / np.sum(w)
-#
-#     def cov(x, y, w):
-#         """Weighted Covariance"""
-#         return np.sum(w * (x - m(x, w)) * (y - m(y, w))) / np.sum(w)
-#
-#     """Weighted Correlation"""
-#     return cov(X, Y, W) / np.sqrt(cov(X, X, W) * cov(Y, Y, W))
-#
-#
-def get_data(path, weight_method=None, scale_label=True, min_read=2000):
+
+
+def get_data(path, min_read=2000):
     # train
-    X_train = np.load(path + '/seq_mat/train-seq-mat.npy', allow_pickle=True)
+    with open(DATA_PATH + f'/seq/train-seq') as source:
+        X_train = np.array(list(map(one_hot_enc, source)))
     y_train = pd.read_csv(path + '/csv_data/train_data.csv', usecols=['rsr']).to_numpy()
-    w_train = pd.read_csv(path + '/csv_data/train_data.csv', usecols=['c_read']).to_numpy() + \
-              pd.read_csv(path + '/csv_data/train_data.csv', usecols=['t_read']).to_numpy()
+
     # validation
-    X_val = np.load(path + '/seq_mat/val-seq-mat.npy', allow_pickle=True)
+    with open(DATA_PATH + f'/seq/val-seq') as source:
+        X_val = np.array(list(map(one_hot_enc, source)))
     y_val = pd.read_csv(path + '/csv_data/val_data.csv', usecols=['rsr']).to_numpy()
     w_val = pd.read_csv(path + '/csv_data/val_data.csv', usecols=['c_read']).to_numpy() +\
             pd.read_csv(path + '/csv_data/val_data.csv', usecols=['t_read']).to_numpy()
     # test
-    X_test = np.load(path + '/seq_mat/test-seq-mat.npy', allow_pickle=True)
+    with open(DATA_PATH + f'/seq/test-seq') as source:
+        X_test = np.array(list(map(one_hot_enc, source)))
     y_test = pd.read_csv(path + '/csv_data/test_data.csv', usecols=['rsr']).to_numpy()
     w_test = pd.read_csv(path + '/csv_data/test_data.csv', usecols=['c_read']).to_numpy() + \
              pd.read_csv(path + '/csv_data/test_data.csv', usecols=['t_read']).to_numpy()
@@ -66,18 +49,15 @@ def get_data(path, weight_method=None, scale_label=True, min_read=2000):
     ids = np.argwhere(w_test > min_read)[:, 0]
     X_test = X_test[ids]
     y_test = y_test[ids]
-    w_test = w_test[ids]
     ids = np.argwhere(w_val > min_read)[:, 0]
     X_val = X_val[ids]
     y_val = y_val[ids]
-    w_val = w_val[ids]
 
     # scale_labels
-    if scale_label:
-        y_train = np.log(y_train)
-        y_test = np.log(y_test)
-        y_val = np.log(y_val)
-    return [X_train, y_train, w_train], [X_test, y_test, w_test], [X_val, y_val, w_val]
+    y_train = np.log(y_train)
+    y_test = np.log(y_test)
+    y_val = np.log(y_val)
+    return [X_train, y_train], [X_test, y_test], [X_val, y_val]
 #
 #
 # def print_results(corr_list, start_time):
@@ -93,7 +73,8 @@ def get_data(path, weight_method=None, scale_label=True, min_read=2000):
 #     plt.title(f'fsr score distribution - min read = {level}')
 #     plt.savefig(f'/home/maor/rG4/rg4detector/fsr_data/k/data_distribution/{level}.png')
 #     plt.show()
-#
+
+
 def get_input_size(model):
     bagging = True if isinstance(model, list) else False
 
@@ -167,7 +148,10 @@ def get_input_size(model):
 #         scores[col] = round(pr, 3)
 #     return scores
 
-def one_hot_enc(s):
+
+def one_hot_enc(s, remove_last=True):
+    if remove_last:
+        s = s[:-1]
     s = s + "ACGT"
     if 'N' not in s and 'Z' not in s and 'H' not in s:
         trans = s.maketrans('ACGT', '0123')

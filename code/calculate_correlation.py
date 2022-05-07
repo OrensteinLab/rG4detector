@@ -4,10 +4,11 @@ from utils import get_data, get_input_size
 import numpy as np
 from utils import set_data_size
 import pandas as pd
+from PARAMETERS import *
 
 
 def get_rG4detector_corr(model, path):
-    _, [xTest, yTest, _], [_, _, _] = get_data(path, min_read=2000)
+    _, [xTest, yTest], [_, _] = get_data(path, min_read=2000)
     data_size = get_input_size(model)
     [xTest] = set_data_size(data_size, [xTest])
     preds = np.zeros((len(xTest), 1))
@@ -31,27 +32,24 @@ def get_screener_preds(file_path, y):
         preds = preds + const
         preds = np.log(preds)
         pr, p = pearsonr(preds, labels)
-        print(f'\n{col}:')
-        print(f"corr = {round(pr, 3)}, p_value = {round(p, 3)}")
         screener_scores[col] = round(pr, 3)
     return screener_scores
 
 
 if __name__ == "__main__":
-    model_path = "../model/"
-    data_path = "../data/1000/"
+    model_path = MODEL_PATH
+    data_path = DATA_PATH
     rG4detector = []
-    ensemble_size = 5
 
     # get screener scores
-    _,  [_, y_test, _], _ = get_data(data_path, min_read=2000)
-    scores = get_screener_preds(file_path="../screener/rg4_seq_preds.csv", y=y_test)
+    _,  [_, y_test], _ = get_data(data_path, min_read=2000)
+    scores = get_screener_preds(file_path=SCREENER_PATH + "rg4_seq_preds.csv", y=y_test)
 
-    for i in range(ensemble_size):
+    for i in range(ENSEMBLE_SIZE):
         rG4detector.append(load_model(f"{model_path}/model_{i}.h5"))
     scores["rG4detector"] = get_rG4detector_corr(rG4detector, data_path)
 
     for m in scores.keys():
-        print(f"{m} Pearson correlation = {scores[m]}")
+        print(f"{m} Pearson correlation = {round(scores[m],3)}")
 
 

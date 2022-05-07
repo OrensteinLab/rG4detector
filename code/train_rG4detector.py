@@ -7,11 +7,11 @@ from utils import get_data, set_data_size
 import numpy as np
 import random
 import tensorflow as tf
-from os import makedirs, path
 from scipy.stats import pearsonr
 from get_cnn_model import get_model
 from tensorflow.keras.models import load_model
 import matplotlib.pyplot as plt
+from PARAMETERS import *
 
 
 tf.random.set_seed(1)
@@ -70,7 +70,7 @@ def find_ensemble_size(x, y, dest, models_num, debug):
 
 def main(hyper_params, model_num):
     start_time = time.time()
-    [x_train, y_train, _], _, [x_val, y_val, _] = get_data(f'{data_path}/1000/', min_read=2000)
+    [x_train, y_train], _, [x_val, y_val] = get_data(DATA_PATH, min_read=2000)
     if DEBUG:
         x_train = x_train[:1000]
         y_train = y_train[:1000]
@@ -96,7 +96,7 @@ def main(hyper_params, model_num):
         hyper_params.seed = seed_list[loc]
         _, model = evaluate_model(x_train, y_train, x_val, y_val, hyper_params)
         model.save(f"{output}/model_{idx}.h5")
-        print("Finished Level - execution time = %ss ---\n\n" % (round(time.time() - it_time)))
+        print("Finished training - execution time = %ss ---\n\n" % (round(time.time() - it_time)))
 
     find_ensemble_size(x_val, y_val, output, num_of_models, DEBUG)
     print("Code execution time = %sm ---" % (round(time.time() - start_time) // 60))
@@ -108,13 +108,12 @@ if __name__ == "__main__":
     np.random.seed(1)
 
     verb = 0
-    num_of_iterations = 50
-    num_of_models = 15
+    num_of_iterations = NUM_OF_ENSEMBLE_ITERATIONS
+    num_of_models = ENSEMBLE_SIZE
     DEBUG = False
-    data_path = '../data/'
-    output = "model/"
+    output = MODEL_PATH
 
-    opts, args = getopt.getopt(sys.argv[1:], 'o:p:d')
+    opts, args = getopt.getopt(sys.argv[1:], 'o:d')
     for op, val in opts:
         if op == "-d":
             verb = 1
@@ -122,17 +121,13 @@ if __name__ == "__main__":
             DEBUG = True
             num_of_models = 3
             num_of_iterations = num_of_models*2
-        if op == "-p":
-            data_path = val
         if op == "-o":
             output = val
 
-
     print(f"DEBUG is {DEBUG}")
     print(f"num_of_models is {num_of_models}")
-    print(f"output is {output}")
-    print(f"data path = {data_path}")
     print(f"num_of_iterations = {num_of_iterations}")
+    print(f"output is {output}")
 
     hyperParams = get_hyper_params(best=True)
     main(hyperParams, num_of_models)
