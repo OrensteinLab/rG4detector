@@ -2,8 +2,10 @@ import pandas as pd
 # import time
 # import matplotlib.pyplot as plt
 # from one_hot import one_hot_enc
-# from scipy.stats import pearsonr
+from scipy.stats import pearsonr
 import numpy as np
+from tensorflow.keras.utils import to_categorical
+
 
 def set_data_size(data_size, data_sets):
     total_data_size = data_sets[0].shape[1]
@@ -92,20 +94,20 @@ def get_data(path, weight_method=None, scale_label=True, min_read=2000):
 #     plt.savefig(f'/home/maor/rG4/rg4detector/fsr_data/k/data_distribution/{level}.png')
 #     plt.show()
 #
-# def get_input_size(model):
-#     bagging = True if isinstance(model, list) else False
-#
-#     if bagging:
-#         if len(model[0].layers[0].input_shape) == 1:
-#             input_size = model[0].layers[0].input_shape[0][1]
-#         else:
-#             input_size = model[0].layers[0].input_shape[1]
-#     else:
-#         if len(model.layers[0].input_shape) == 1:
-#             input_size = model.layers[0].input_shape[0][1]
-#         else:
-#             input_size = model.layers[0].input_shape[1]
-#     return input_size
+def get_input_size(model):
+    bagging = True if isinstance(model, list) else False
+
+    if bagging:
+        if len(model[0].layers[0].input_shape) == 1:
+            input_size = model[0].layers[0].input_shape[0][1]
+        else:
+            input_size = model[0].layers[0].input_shape[1]
+    else:
+        if len(model.layers[0].input_shape) == 1:
+            input_size = model.layers[0].input_shape[0][1]
+        else:
+            input_size = model.layers[0].input_shape[1]
+    return input_size
 #
 #
 # def make_prediction(model, seq=None, one_hot_mat=None):
@@ -164,3 +166,37 @@ def get_data(path, weight_method=None, scale_label=True, min_read=2000):
 #         print(f"corr = {round(pr, 3)}, p_value = {round(p, 3)}")
 #         scores[col] = round(pr, 3)
 #     return scores
+
+def one_hot_enc(s):
+    s = s + "ACGT"
+    if 'N' not in s and 'Z' not in s and 'H' not in s:
+        trans = s.maketrans('ACGT', '0123')
+        numSeq = list(s.translate(trans))
+        return to_categorical(numSeq)[0:-4]
+    else:
+        s = s + "NZH"
+        trans = s.maketrans('ACGTNZH', '0123456')
+        numSeq = list(s.translate(trans))
+        hotVec = to_categorical(numSeq)[0:-7]
+        for i in range(len(hotVec)):
+            if hotVec[i][4] == 1:
+                hotVec[i] = [0.25, 0.25, 0.25, 0.25, 0, 0, 0]
+            if hotVec[i][5] == 1:
+                hotVec[i] = [0, 0, 0, 0, 0, 0, 0]
+            if hotVec[i][6] == 1:
+                hotVec[i] = [1 / 3, 1 / 3, 0, 1 / 3, 0, 0, 0]
+        return np.delete(hotVec, [4, 5, 6], 1)
+
+
+def pred_all_sub_seq(data, model):
+    input_length = get_input_size(model)
+    sub_seq_list = np.array([data[x:x+input_length, :] for x in range(len(data)-input_length+1)])
+
+    if isinstance(model, list):
+        preds = np.zeros((len(sub_seq_list), 1))
+        for i in range(len(model)):
+            preds += model[i](sub_seq_list).numpy()/len(model)
+    else:
+        preds = model(sub_seq_list).numpy()
+    preds = preds.reshape(len(preds))
+    return preds

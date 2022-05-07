@@ -7,9 +7,8 @@ from utils import get_data, set_data_size
 import numpy as np
 import random
 import tensorflow as tf
-from os import makedirs, path, environ
+from os import makedirs, path
 from scipy.stats import pearsonr
-import pandas as pd
 from get_cnn_model import get_model
 from tensorflow.keras.models import load_model
 import matplotlib.pyplot as plt
@@ -18,7 +17,6 @@ import matplotlib.pyplot as plt
 tf.random.set_seed(1)
 random.seed(10)
 np.random.seed(1)
-
 
 
 def evaluate_model(x_train, y_train, x_val, y_val, hyper_params=HyperParams()):
@@ -78,7 +76,6 @@ def main(hyper_params, model_num):
         y_train = y_train[:1000]
     [x_train, x_val] = set_data_size(hyper_params.input_size, [x_train, x_val])
 
-
     corr_list = []
     seed_list = []
     for i in range(num_of_iterations):
@@ -130,10 +127,6 @@ if __name__ == "__main__":
         if op == "-o":
             output = val
 
-
-    output = output + f"/ensemble/"
-    if path.exists(output) is False:
-        makedirs(output)
 
     print(f"DEBUG is {DEBUG}")
     print(f"num_of_models is {num_of_models}")
