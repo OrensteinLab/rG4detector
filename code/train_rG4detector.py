@@ -109,7 +109,7 @@ if __name__ == "__main__":
 
     verb = 0
     num_of_iterations = NUM_OF_ENSEMBLE_ITERATIONS
-    num_of_models = ENSEMBLE_SIZE
+    num_of_models = 15
     DEBUG = False
     output = MODEL_PATH
 
