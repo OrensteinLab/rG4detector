@@ -1,7 +1,6 @@
 import pandas as pd
 # import time
 import matplotlib.pyplot as plt
-# from one_hot import one_hot_enc
 from scipy.stats import pearsonr
 import numpy as np
 from tensorflow.keras.utils import to_categorical
@@ -82,22 +81,22 @@ def get_input_size(model):
         else:
             input_size = model.layers[0].input_shape[1]
     return input_size
-#
-#
-# def make_prediction(model, seq=None, one_hot_mat=None):
-#     if one_hot_mat is None:
-#         if isinstance(seq, list):
-#             one_hot_mat = np.array(list(map(one_hot_enc, seq)))
-#         else:
-#             one_hot_mat = one_hot_enc(seq)
-#             one_hot_mat = one_hot_mat.reshape((1, one_hot_mat.shape[0], one_hot_mat.shape[1]))
-#     if isinstance(model, list):
-#         pred = np.zeros((len(one_hot_mat), 1))
-#         for m in range(len(model)):
-#             pred += model[m](one_hot_mat).numpy() / len(model)
-#     else:
-#         pred = model.predict(one_hot_mat)
-#     return pred
+
+
+def make_prediction(model, seq=None, one_hot_mat=None):
+    if one_hot_mat is None:
+        if isinstance(seq, list):
+            one_hot_mat = np.array(list(map(one_hot_enc, seq, [False]*len(seq))))
+        else:
+            one_hot_mat = one_hot_enc(seq, False)
+            one_hot_mat = one_hot_mat.reshape((1, one_hot_mat.shape[0], one_hot_mat.shape[1]))
+    if isinstance(model, list):
+        pred = np.zeros((len(one_hot_mat), 1))
+        for m in range(len(model)):
+            pred += model[m](one_hot_mat).numpy() / len(model)
+    else:
+        pred = model.predict(one_hot_mat)
+    return pred
 #
 #
 def plot_auc_curve(scores_dict, title=None, dest=None, plot=False, PR=False, y=None):
