@@ -1,18 +1,10 @@
 import pandas as pd
 import time
 import pickle
-import sys
 from PARAMETERS import *
 
-window_length = 29
-step_size = 1
-data_set = "kwok"
-screener_output_file = f"big_files/seeker_detection_score_{window_length}_{step_size}.csv"
-output_dir = f"detection/screener/{data_set}/transcripts_score/{window_length}/"
-if len(sys.argv) > 2:
-    screener_output_file = sys.argv[1]
-    output_dir = sys.argv[2]
-
+screener_output_file = SCREENER_DETECTION_PREDICTION_PATH + "seeker_detection_output.csv"
+output_dir = SCREENER_DETECTION_PREDICTION_PATH
 
 
 t = time.time()
@@ -28,11 +20,11 @@ for transcript in transcripts_names:
     score_dict["cGcC"] = trans_df["cGcC"].to_numpy()
     score_dict["G4H"] = trans_df["G4H"].to_numpy()
     score_dict["G4NN"] = trans_df["G4NN"].to_numpy()
-    with open(output_dir + "/" + transcript, "wb") as fp:  # Pickling
+    with open(output_dir + "/" + transcript, "wb") as fp:
         pickle.dump(score_dict, fp)
     if counter % 100 == 0:
-        print(f"counter = {counter}, time = {time.time()-t1} ")
+        print(f"counter = {counter}, time = {round(time.time()-t1)}s ")
         t1 = time.time()
 
-print(f"time = {(time.time()-t)/60} minutes")
+print(f"time = {round(time.time()-t)/60,2}m minutes")
 
