@@ -6,24 +6,20 @@ import numpy as np
 import time
 import pickle
 from Bio import pairwise2
+from PARAMETERS import *
 
 
 MATCH_THRESHOLD = 0.9
 TEST_SET = False
 PDS = False
 output = "detection/"
-transcripts_file = f"big_files/gencode.v29.transcripts.fa"
-# transcripts_file = "big_files/gencode.v29lift37.transcripts.fa"
+
 seeker_path = "rg4-seq_rts.k.rG4_list.combined.csv"
 # seeker_path = "rG4-seeker-hits.csv"
 if PDS is True:
     seeker_path = "rg4-seq_rts.kpds.rG4_list.combined.csv"
     output = "kpds/" + output
 
-if len(sys.argv) > 1:
-    transcripts_file = sys.argv[1]
-if len(sys.argv) > 2:
-    output = sys.argv[2]
 
 
 def get_seeker_df(data_path):
@@ -258,7 +254,7 @@ def main():
     t = time.time()
     new_dict = True
     rg4_seq_df = get_seeker_df(seeker_path)
-    transcript_dict = get_transcript_dict(transcripts_file)
+    transcript_dict = get_transcript_dict(HUMAN_TRANSCRIPTOME_PATH)
     # rg4_seq_df, transcript_dict = set_trans_names(rg4_seq_df, transcript_dict)
     if new_dict:
         sets_dict = {"test": rg4_seq_df[rg4_seq_df["chromosome"] == "chr1"],
