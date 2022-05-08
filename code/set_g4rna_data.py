@@ -117,7 +117,7 @@ def main():
     seq_dest = "G4RNA/seq"
     raw_seq_dest = "G4RNA/raw_seq"
     bedtools_script_path = "G4RNA/bed2seq.sh"
-    reference_genome = "hg38.fa"
+    reference_genome = "hg19.fa"
 
     # filter overlapping sequences
     filter_data(source, raw_csv_dest)
