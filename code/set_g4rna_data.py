@@ -5,7 +5,7 @@ import os
 from PARAMETERS import *
 
 GAPS = (DATA_SIZE - 30)//2
-MATCH_THRESHOLD = 0.9
+MATCH_THRESHOLD = 0.85
 
 
 def get_chrom_data(chrom_data):
