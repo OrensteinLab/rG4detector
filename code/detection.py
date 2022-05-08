@@ -17,18 +17,21 @@ import numpy as np
 
 
 DEBUG = False
+PLOT = False
 debug_size = 1
 match_dict_path = 'detection/rg4-seeker-transcript-match.pkl'
 screener_path = "detection/screener/"
 
-opts, args = getopt.getopt(sys.argv[1:], 'd')
+opts, args = getopt.getopt(sys.argv[1:], 'dp')
 for op, val in opts:
     if op == "-d":
         DEBUG = True
+    if op == "-p":
+        PLOT = True
+
 
 
 def plot_scores(scores_dict, y):
-    now = datetime.now()
     dest = f"detection/"
     legend_list = []
     for method in scores_dict:
