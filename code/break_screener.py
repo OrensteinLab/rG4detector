@@ -3,7 +3,7 @@ import time
 import pickle
 from PARAMETERS import *
 
-screener_output_file = SCREENER_DETECTION_PREDICTION_PATH + "seeker_detection_output.csv"
+screener_output_file = SCREENER_DETECTION_PREDICTION_PATH + "screener_detection_output.csv"
 output_dir = SCREENER_DETECTION_PREDICTION_PATH
 
 
