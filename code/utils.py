@@ -1,6 +1,6 @@
 import pandas as pd
 # import time
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 # from one_hot import one_hot_enc
 from scipy.stats import pearsonr
 import numpy as np
@@ -17,13 +17,6 @@ def set_data_size(data_size, data_sets):
         return_list.append(data_set[:, start:end, :])
     return return_list
 
-# class AUC_Score:
-#     def __init__(self, method, x, y, auc):
-#         self.method = method
-#         self.x = x
-#         self.y = y
-#         self.auc = auc
-#
 
 
 def get_data(path, min_read=2000):
@@ -107,28 +100,28 @@ def get_input_size(model):
 #     return pred
 #
 #
-# def plot_auc_curve(scores_dict, title=None, dest=None, plot=False, PR=False, y=None):
-#     legend_list = []
-#     for method in scores_dict:
-#         plt.plot(scores_dict[method].x, scores_dict[method].y)  # label=scores_dict[method].method)
-#         legend_list.append(f"{method} - AUC = {scores_dict[method].auc}")
-#     if PR:
-#         plt.xlabel("Recall")
-#         plt.ylabel("Precision")
-#         baseline = sum(y) / len(y)
-#         plt.plot([0, 1], [baseline, baseline], linestyle='--', label='Baseline')
-#     else:
-#         plt.xlabel("False-Positive Rate")
-#         plt.ylabel("True-Positive Rate")
-#         plt.plot([0, 1], [0, 1], linestyle="--")
-#         legend_list.append("Random Guess")
-#     plt.legend(legend_list)
-#     if title:
-#         plt.title(title)
-#     if dest:
-#         plt.savefig(dest)
-#     if plot:
-#         plt.show()
+def plot_auc_curve(scores_dict, title=None, dest=None, plot=False, PR=False, y=None):
+    legend_list = []
+    for method in scores_dict:
+        plt.plot(scores_dict[method].x, scores_dict[method].y)
+        legend_list.append(f"{method} - AUC = {scores_dict[method].auc}")
+    if PR:
+        plt.xlabel("Recall")
+        plt.ylabel("Precision")
+        baseline = sum(y) / len(y)
+        plt.plot([0, 1], [baseline, baseline], linestyle='--', label='Baseline')
+    else:
+        plt.xlabel("False-Positive Rate")
+        plt.ylabel("True-Positive Rate")
+        plt.plot([0, 1], [0, 1], linestyle="--")
+        legend_list.append("Random Guess")
+    plt.legend(legend_list)
+    if title:
+        plt.title(title)
+    if dest:
+        plt.savefig(dest)
+    if plot:
+        plt.show()
 #
 #
 # def get_screener_scores(file_path, y):
@@ -210,6 +203,13 @@ class PRScore:
         self.recall = recall
         self.threshold = threshold
         self.auc = aucpr
+
+class AUC_Score:
+    def __init__(self, method, x, y, auc):
+        self.method = method
+        self.x = x
+        self.y = y
+        self.auc = auc
 
 
 def set_screener_positions_scores(screener_scores):

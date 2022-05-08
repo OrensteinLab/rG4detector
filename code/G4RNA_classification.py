@@ -1,15 +1,12 @@
 import sys
 import time
 from tensorflow.keras.models import load_model
-import os.path
 import getopt
-from datetime import datetime
-from utils import AUC_Score, one_hot_enc, plot_auc_curve, get_input_size, pred_all_sub_seq
-import matplotlib.pyplot as plt
+from utils import AUC_Score, one_hot_enc, plot_auc_curve, pred_all_sub_seq
 import pandas as pd
 import numpy as np
-from os import path
 from sklearn.metrics import roc_curve, auc
+from PARAMETERS import *
 
 def get_g4rna_data():
     # get x
@@ -21,29 +18,6 @@ def get_g4rna_data():
     return x, y
 
 
-def plot_scores(scores_dict, y, plot=False):
-    now = datetime.now()
-    dt_string = now.strftime("%y%m%d_%H%M")
-    dest = output + f"/plots/"
-    if path.exists(dest) is False:
-        os.makedirs(dest)
-    # legend_list = []
-    for method in scores_dict:
-        plt.plot(scores_dict[method].recall[1:], scores_dict[method].precision[1:],
-                 label=f"{method} - {round(scores_dict[method].auc, 3)}")
-    # plot baseline
-    baseline = sum(y)/len(y)
-    plt.plot([0, 1], [baseline, baseline], linestyle='--', label='Baseline')
-
-    plt.legend()
-    plt.title(f"G4RNA AUC-PR")
-    plt.xlabel("Recall")
-    # plt.ylim([0.6, 1.05])
-    plt.ylabel("Precision")
-    plt.savefig(dest + f"G4RNA_AUCPR_{dt_string}")
-    if PLOT:
-        plt.show()
-
 
 def main(model):
     t1 = time.time()
@@ -52,7 +26,7 @@ def main(model):
 
     # get data
     x, y = get_g4rna_data()
-    pad_size = get_input_size(model)//2 - 15
+    pad_size = DATA_SIZE//2 - 15
 
     # pred rg4detector
     for one_hot_mat in x:
@@ -60,7 +34,7 @@ def main(model):
         prediction["rG4detector"].append(max(pred_all_sub_seq(one_hot_mat, model)))
 
     # pred screener
-    screener_df = pd.read_csv(screener_path, delimiter="\t")
+    screener_df = pd.read_csv(G4RNA_SCREENER, delimiter="\t")
     seqs_ids = screener_df["description"].unique()
     for seq_id in seqs_ids:
         seq_preds = screener_df[screener_df["description"] == seq_id]
@@ -73,49 +47,25 @@ def main(model):
         print(f"{method} roc_auc = {roc_auc}")
         scores[method] = AUC_Score(method=method, y=tpr, x=fpr, auc=round(roc_auc, 3))
 
-    plot_auc_curve(scores, title="G4RNA prediction", dest=model_path + "g4rna_roc_plot", plot=True)
+    if PLOT:
+        plot_auc_curve(scores, title="G4RNA prediction", dest="G4RNA/" + "g4rna_roc_plot", plot=True)
     print(f"exe time = {round((time.time()-t1))} seconds")
-
-    # save data
-    for method in scores.keys():
-        roc_df = pd.DataFrame()
-        roc_df["True positive rate"] = scores[method].y
-        roc_df["False positive rate"] = scores[method].x
-        roc_df.to_csv(model_path + f"/G4RNA/{method}_g4rna_roc.csv")
 
 
 if __name__ == "__main__":
     DEBUG = False
-    PLOT = True
-    ensemble_size = 5
-    KPDS = False
-    model_path = "models/best_model/ensemble/"
-    screener_path = "G4RNA/screener_preds.csv"
-    if KPDS:
-        model_path = "kpds/" + model_path
+    PLOT = False
 
-    opts, args = getopt.getopt(sys.argv[1:], 'dpgcsi:m:')
+    opts, args = getopt.getopt(sys.argv[1:], 'dp')
     for op, val in opts:
         if op == "-d":
             DEBUG = True
         if op == "-p":
             PLOT = True
-        if op == "-i":
-            dir_path = val
-
-    output = model_path + "/G4RNA/"
-    if path.exists(output) is False:
-        os.makedirs(output)
-
-    print(f"DEBUG is {DEBUG}")
-    print(f"PLOT is {PLOT}")
-    print(f"output = {output}")
-    print(f"model_path = {model_path}")
 
     models = []
-    for i in range(ensemble_size):
-        models.append(load_model(f"{model_path}/model_{i}.h5"))
-
+    for i in range(ENSEMBLE_SIZE):
+        models.append(load_model(MODEL_PATH + f"model_{i}.h5"))
     main(models)
 
 
