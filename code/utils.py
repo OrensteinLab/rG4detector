@@ -184,3 +184,30 @@ def pred_all_sub_seq(data, model):
         preds = model(sub_seq_list).numpy()
     preds = preds.reshape(len(preds))
     return preds
+
+def get_score_per_position(preds, input_length, sigma):
+    positions_scores = np.zeros((len(preds)-input_length+1))  # number of sigmas X transcript size
+    gaussian_filter = get_gaussian_filter(input_length, sigma=sigma)
+    positions_scores[:] = np.convolve(preds, gaussian_filter, "valid")
+    return positions_scores
+
+def get_gaussian_filter(input_size, sigma=20):
+    gaussian_filter = np.zeros(input_size)
+    counter = 0
+    for x in range(-input_size // 2, input_size // 2 + 1):
+        if x == 0:
+            continue
+        gaussian_filter[counter] = np.exp(-(x ** 2) / (2 * sigma ** 2)) / (2 * np.pi * (sigma ** 2))
+        counter += 1
+    gaussian_filter = gaussian_filter / sum(gaussian_filter)
+    return gaussian_filter
+
+
+class PRScore:
+    def __init__(self, method, precision, recall, threshold, aucpr):
+        self.method = method
+        self.precision = precision
+        self.recall = recall
+        self.threshold = threshold
+        self.auc = aucpr
+
