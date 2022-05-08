@@ -19,16 +19,6 @@ import numpy as np
 DEBUG = False
 PLOT = False
 debug_size = 1
-match_dict_path = 'detection/rg4-seeker-transcript-match.pkl'
-screener_path = "detection/screener/"
-
-opts, args = getopt.getopt(sys.argv[1:], 'dp')
-for op, val in opts:
-    if op == "-d":
-        DEBUG = True
-    if op == "-p":
-        PLOT = True
-
 
 
 def plot_scores(scores_dict, y):
@@ -47,12 +37,12 @@ def plot_scores(scores_dict, y):
     plt.savefig(dest + f"Human_AUCPR")
 
 
-def main(model):
+def detect_rg4(model):
     t1 = time.time()
     # get input dim
     input_length = get_input_size(model)
     # get ground truth
-    with open(match_dict_path, 'rb') as fp:
+    with open(DETECTION_RG4_SEEKER_HITS, 'rb') as fp:
         exp_rg4 = pickle.load(fp)
     # get transcripts for rg4detector
     all_transcripts_dict = get_transcript_dict(HUMAN_TRANSCRIPTOME_PATH)
@@ -85,7 +75,7 @@ def main(model):
 
         with open(SCREENER_DETECTION_PREDICTION_PATH + transcript, 'rb') as fp:
             screener_scores = pickle.load(fp)
-            screener_positions_score = set_screener_positions_scores(screener_scores)
+        screener_positions_score = set_screener_positions_scores(screener_scores)
         if screener_all_preds is None:
             screener_all_preds = screener_positions_score
         else:
@@ -133,10 +123,18 @@ def main(model):
 
 if __name__ == "__main__":
     print(f"Starting detection")
+    opts, args = getopt.getopt(sys.argv[1:], 'dp')
+    for op, val in opts:
+        if op == "-d":
+            DEBUG = True
+        if op == "-p":
+            PLOT = True
+
     MODEL = []
     for i in range(ENSEMBLE_SIZE):
         MODEL.append(load_model(MODEL_PATH + f"/model_{i}.h5"))
-    main(MODEL)
+
+    detect_rg4(MODEL)
 
 
 

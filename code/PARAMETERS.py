@@ -1,6 +1,8 @@
 DATA_PATH = "data/"
 MODEL_PATH = "model/"
 SCREENER_PATH = "screener/"
+SCREENER_DETECTION_PATH = SCREENER_PATH + "detection/"
+SCREENER_DETECTION_PREDICTION_PATH = SCREENER_DETECTION_PATH + "transcripts_predictions/"
 ENSEMBLE_SIZE = 5
 NUM_OF_ENSEMBLE_ITERATIONS = 50
 MOUSE_PATH = "independent_datasets/mouse/"
@@ -13,6 +15,9 @@ MOUSE_SCREENER_LENGTH = 60
 DATA_SIZE = 130
 DETECTION_SIGMA = 17
 METHODS_LIST = ['cGcC', 'G4H', 'G4NN']
-SCREENER_DETECTION_PREDICTION_PATH = "screener/detection/transcripts_predictions/"
+# DETECTION_SCREENER_LENGTH =
+
+DETECTION_RG4_SEEKER_HITS = "detection/rg4-seeker-transcript-match.pkl"
+RG4_SEEKER_PATH = "data/rg4-seq_rts.k.rG4_list.combined.csv"
 
 
