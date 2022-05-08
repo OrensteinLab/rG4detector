@@ -24,7 +24,6 @@ def get_chrom_data(chrom_data):
         i += 1
         while i < len(chrom_data) and chrom_data.iloc[i]['Start'] <= start + length:
             if label != chrom_data.iloc[i]["G4"]:
-                print(f"{chrom} - {start} - Not -valid")
                 valid = False
             # choose contained seq
             if chrom_data.iloc[i]['Start'] + chrom_data.iloc[i]['Length'] <= start + length:
@@ -91,16 +90,13 @@ def find_g4rna_seq(raw_csv_path, seq_dest, csv_dest):
         if seq_match is None:
             alignments = pairwise2.align.localms(g4rna_seq, seq, 1, -.8, -.8, -.8)
             if len(alignments) > 0 and alignments[0].score / len(g4rna_seq) > MATCH_THRESHOLD:
-                print(f"{idx}: HIT-alli")
                 hit_counter += 1
             else:
                 # print(g4rna_df.iloc[idx]["sequence"])
                 no_hit_counter += 1
                 ignore_list.append(idx)
                 # print(g4rna_seq)
-                print(f"{idx}: NO-HIT")
         else:
-            print(f"{idx}: HIT")
             hit_counter += 1
     print(f"HIT = {hit_counter}")
     print(f"NO-HIT = {no_hit_counter}")
