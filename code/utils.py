@@ -211,3 +211,17 @@ class PRScore:
         self.threshold = threshold
         self.auc = aucpr
 
+
+def set_screener_positions_scores(screener_scores):
+    SCREENER_WINDOW_LENGTH = 29
+    screener_positions_score = {}
+    for method in screener_scores:
+        positions_scores = np.zeros((len(screener_scores[method]) + SCREENER_WINDOW_LENGTH - 1, 1))
+        for i in range(len(screener_scores[method]) + SCREENER_WINDOW_LENGTH - 1):
+            start = max(0, i - SCREENER_WINDOW_LENGTH + 1)
+            end = min(len(screener_scores[method]), i + SCREENER_WINDOW_LENGTH)
+            positions_scores[i] = max(screener_scores[method][start:end])
+        # positions_scores = positions_scores.reshape(len(positions_scores), 1)
+        screener_positions_score[method] = positions_scores
+    return screener_positions_score
+
