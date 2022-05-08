@@ -117,19 +117,18 @@ def main():
     seq_dest = "G4RNA/seq"
     raw_seq_dest = "G4RNA/raw_seq"
     bedtools_script_path = "G4RNA/bed2seq.sh"
-    reference_genome = "hg19.fa"
 
     # filter overlapping sequences
     filter_data(source, raw_csv_dest)
     csv2bed(raw_csv_dest, raw_bed_dest)
     # crete raw sequences files
-    os.system(f"bash {bedtools_script_path} {reference_genome}  {raw_bed_dest} {raw_seq_dest}")
+    os.system(f"bash {bedtools_script_path} {GENOMES_FILE}  {raw_bed_dest} {raw_seq_dest}")
     # take only sequences that match the genome coordinate
     find_g4rna_seq(raw_csv_dest, raw_seq_dest, csv_dest)
     # crate update bed file
     csv2bed(csv_dest, bed_dest)
     # crete sequences files
-    os.system(f"bash {bedtools_script_path} {reference_genome} {bed_dest} {seq_dest}")
+    os.system(f"bash {bedtools_script_path} {GENOMES_FILE} {bed_dest} {seq_dest}")
 
 
 if __name__ == "__main__":
