@@ -12,8 +12,8 @@ MATCH_THRESHOLD = 0.9
 TEST_SET = False
 PDS = False
 output = "detection/"
-# transcripts_file = f"big_files/gencode.v29.transcripts.fa"
-transcripts_file = "big_files/gencode.v29lift37.transcripts.fa"
+transcripts_file = f"big_files/gencode.v29.transcripts.fa"
+# transcripts_file = "big_files/gencode.v29lift37.transcripts.fa"
 seeker_path = "rg4-seq_rts.k.rG4_list.combined.csv"
 # seeker_path = "rG4-seeker-hits.csv"
 if PDS is True:

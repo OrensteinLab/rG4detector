@@ -13,5 +13,6 @@ MOUSE_SCREENER_LENGTH = 60
 DATA_SIZE = 130
 DETECTION_SIGMA = 17
 METHODS_LIST = ['cGcC', 'G4H', 'G4NN']
+SCREENER_DETECTION_PREDICTION_PATH = "screener/detection/transcripts_predictions/"
 
 
