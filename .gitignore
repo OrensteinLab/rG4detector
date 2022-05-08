@@ -1,3 +1,5 @@
 .*
 !/.gitignore
 big_files
+screener/detection/transcripts_predictions
+*__pycache__*
