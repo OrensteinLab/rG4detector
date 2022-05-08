@@ -21,5 +21,5 @@ METHODS_LIST = ['cGcC', 'G4H', 'G4NN']
 # DETECTION_SCREENER_LENGTH =
 DETECTION_RG4_SEEKER_HITS = "detection/rg4-seeker-transcript-match.pkl"
 RG4_SEEKER_PATH = "data/rg4-seq_rts.k.rG4_list.combined.csv"
-G4RNA_SCREENER = "G4RNA/screener_preds.csv"
+G4RNA_SCREENER = "G4RNA/screener_preds_60.csv"
 
