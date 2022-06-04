@@ -164,8 +164,10 @@ def one_hot_enc(s, remove_last=True):
         return np.delete(hotVec, [4, 5, 6], 1)
 
 
-def pred_all_sub_seq(data, model):
+def pred_all_sub_seq(data, model, pad=False):
     input_length = get_input_size(model)
+    if pad:
+        data = np.concatenate([np.zeros((input_length-1, 4)), data, np.zeros((input_length-1, 4))])
     sub_seq_list = np.array([data[x:x+input_length, :] for x in range(len(data)-input_length+1)])
 
     if isinstance(model, list):
