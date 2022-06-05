@@ -89,7 +89,7 @@ def main(hyper_params, model_num):
 
     # reproduce best models:
     max_args = np.argsort(np.array(corr_list))[-model_num:][::-1]
-    print(f"Reproducing {model_num} crating best models")
+    print(f"Reproducing {model_num} creating best models")
     for idx, loc in enumerate(max_args):
         it_time = time.time()
         print(f"SEED {idx} = {seed_list[loc]}")
