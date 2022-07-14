@@ -53,7 +53,7 @@ def find_ensemble_size(x, y, dest, models_num, debug):
         for j in range(models_num, i, -1):
             ensemble_preds[:, j-1] += pred
 
-    # cal pearson correlation
+    # calc pearson correlation
     pr_list = []
     for i in range(models_num):
         pr_list.append(pearsonr(ensemble_preds[:, i], y)[0])
@@ -68,9 +68,9 @@ def find_ensemble_size(x, y, dest, models_num, debug):
         plt.show()
 
 
-def main(hyper_params, model_num):
+def main(hyper_params, model_num, iterations):
     start_time = time.time()
-    [x_train, y_train], _, [x_val, y_val] = get_data(DATA_PATH, min_read=2000)
+    [x_train, y_train, _], _, [x_val, y_val, _] = get_data(DATA_PATH, min_read=2000)
     if DEBUG:
         x_train = x_train[:1000]
         y_train = y_train[:1000]
@@ -78,9 +78,9 @@ def main(hyper_params, model_num):
 
     corr_list = []
     seed_list = []
-    for i in range(num_of_iterations):
+    for i in range(iterations):
         it_time = time.time()
-        print(f"iteration: {i}/{num_of_iterations}")
+        print(f"iteration: {i}/{NUM_OF_ENSEMBLE_ITERATIONS}")
         hyper_params.seed = random.randint(1, 1000)
         pr_corr, model = evaluate_model(x_train, y_train, x_val, y_val, hyper_params)
         corr_list.append(pr_corr)
@@ -129,7 +129,7 @@ if __name__ == "__main__":
     print(f"num_of_iterations = {num_of_iterations}")
     print(f"output is {output}")
 
-    hyperParams = get_hyper_params(best=True)
-    main(hyperParams, num_of_models)
+    hyperParams = get_hyper_params(df_path="../.temp/scan_performance.csv")
+    main(hyperParams, num_of_models, num_of_iterations)
 
 

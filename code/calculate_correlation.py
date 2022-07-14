@@ -24,8 +24,6 @@ def get_rG4detector_human_corr(model, path):
     return corr
 
 
-
-
 def get_screener_scores(file_path, y):
     screener_scores = {}
     pred = pd.read_csv(file_path, usecols=METHODS_LIST, sep="\t")

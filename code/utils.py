@@ -17,39 +17,38 @@ def set_data_size(data_size, data_sets):
     return return_list
 
 
+def get_data_from_file(file_path, dataset):
+    data_file = open(file_path + f"/seq/{dataset}-seq", "r")
+    seqs = data_file.read().splitlines()
+    X = np.array(list(map(one_hot_enc, seqs)))
+    y = pd.read_csv(file_path + f'/csv_data/{dataset}_tr_data.csv', usecols=['rsr']).to_numpy()
+    w = pd.read_csv(file_path + f'/csv_data/{dataset}_tr_data.csv', usecols=['total_reads']).to_numpy()
+    return X, y, w
+
 
 def get_data(path, min_read=2000):
     # train
-    with open(DATA_PATH + f'/seq/train-seq') as source:
-        X_train = np.array(list(map(one_hot_enc, source)))
-    y_train = pd.read_csv(path + '/csv_data/train_data.csv', usecols=['rsr']).to_numpy()
-
+    X_train, y_train, w_train = get_data_from_file(file_path=path, dataset="train")
     # validation
-    with open(DATA_PATH + f'/seq/val-seq') as source:
-        X_val = np.array(list(map(one_hot_enc, source)))
-    y_val = pd.read_csv(path + '/csv_data/val_data.csv', usecols=['rsr']).to_numpy()
-    w_val = pd.read_csv(path + '/csv_data/val_data.csv', usecols=['c_read']).to_numpy() +\
-            pd.read_csv(path + '/csv_data/val_data.csv', usecols=['t_read']).to_numpy()
+    X_val, y_val, w_val = get_data_from_file(file_path=path, dataset="val")
     # test
-    with open(DATA_PATH + f'/seq/test-seq') as source:
-        X_test = np.array(list(map(one_hot_enc, source)))
-    y_test = pd.read_csv(path + '/csv_data/test_data.csv', usecols=['rsr']).to_numpy()
-    w_test = pd.read_csv(path + '/csv_data/test_data.csv', usecols=['c_read']).to_numpy() + \
-             pd.read_csv(path + '/csv_data/test_data.csv', usecols=['t_read']).to_numpy()
+    X_test, y_test, w_test = get_data_from_file(file_path=path, dataset="test")
 
     # set test and val min read
-    ids = np.argwhere(w_test > min_read)[:, 0]
-    X_test = X_test[ids]
-    y_test = y_test[ids]
     ids = np.argwhere(w_val > min_read)[:, 0]
     X_val = X_val[ids]
     y_val = y_val[ids]
+    w_val = w_val[ids]
+    ids = np.argwhere(w_test > min_read)[:, 0]
+    X_test = X_test[ids]
+    y_test = y_test[ids]
+    w_test = w_test[ids]
 
     # scale_labels
     y_train = np.log(y_train)
-    y_test = np.log(y_test)
     y_val = np.log(y_val)
-    return [X_train, y_train], [X_test, y_test], [X_val, y_val]
+    y_test = np.log(y_test)
+    return [X_train, y_train, w_train], [X_test, y_test, w_test], [X_val, y_val, w_val]
 #
 #
 # def print_results(corr_list, start_time):
