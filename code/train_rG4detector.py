@@ -129,7 +129,7 @@ if __name__ == "__main__":
     print(f"num_of_iterations = {num_of_iterations}")
     print(f"output is {output}")
 
-    hyperParams = get_hyper_params(df_path="../.temp/scan_performance.csv")
+    hyperParams = get_hyper_params(df_path=PARAMS_SCAN_PATH)
     main(hyperParams, num_of_models, num_of_iterations)
 
 
