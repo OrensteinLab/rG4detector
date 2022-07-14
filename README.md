@@ -10,8 +10,7 @@ rG4detector can operate in two different modes:
 ### Prediction mode
 In order to predict the propensity of each sequence in a fasta file to form an rG4 structure, run:
 ```
-cd path/to/rG4detector/directory
-python code/predict_fasta.py -f path/to/fasta/file -p path/to/output/directory
+python code/predict_fasta.py -f <fasta_file> -o <output_directory>
 ```
 If the rG4detector models aren't under ```models/```, pass the model directory using -m flag.
 The program will output the results to the output directory under ```rG4detector_prediction.csv```.
@@ -19,8 +18,7 @@ The program will output the results to the output directory under ```rG4detector
 ### Detection mode
 In order to utilize rG4detector predictions in a detection task use the -d/--detect flags, as follow:
 ```
-cd path/to/rG4detector/directory
-python code/predict_fasta.py -d -f path/to/fasta/file -p path/to/output/directory
+python code/predict_fasta.py -d -f <fasta_file> -o <output_directory>
 ```
 The program will output the results to the output directory under ```rG4detector_detection.csv```.
 For plotting each sequence scores, use the -p/--plot flags (recommended for fasta files with limited number of sequences).
@@ -34,7 +32,6 @@ The model is implemented with Keras python library with Tensorflow backend (vers
 ### Model training
 
 ```
-cd path/to/rG4detector/directory
 python code/train_rG4detector.py 
 ```
 The model will be saved under ```model/``` .
