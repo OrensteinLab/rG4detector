@@ -25,7 +25,7 @@ def set_seq(seq, data_size, return_pad_size=False, extra=0):
             return "N" * leading_padding + seq + "N" * trailing_padding
 
 
-def loop_length_test(model, data_size, output, save_data=True):
+def loop_length_test(model, data_size, output):
     max_loop_size = 12
     loop_predictions = {}
     data = {"loop_size": range(1, max_loop_size + 1)}
@@ -57,7 +57,7 @@ def loop_length_test(model, data_size, output, save_data=True):
 
 
 def loop_length_test2(model, data_size, output=None, save_data=True):
-    data = pd.read_csv("interpretation/amy_data.csv", index_col="loop")
+    data = pd.read_csv("../interpretation/amy_data.csv", index_col="loop")
     data["Delta Gvh"] = -data["Delta Gvh"]
 
     for idx in data.index:
@@ -137,8 +137,8 @@ def mutation_effect(model, data_size, output):
 
 
 def mutation_map_test(model, data_size, output):
-    seq = "CTGCTGCCGCTACTGCGGAGTAGCTGCTTCCCTTCCTCCTCTCCCGGCGGCGGCGGCGGCAGCGGCGGAGGAGGAGGAGGAGGGGACCCGGGCGCAGAGAGCCG" \
-          "GCCGGCGGCGCAGTTGCAGCGCGGAG"
+    seq = "TCCACCGAAGCTCTCACAGCCCAGCCTTTCACTGTGTGGCCGGGGGAAGGGTGCTCCGGGTGGGGGACGGGAATGGTGGGACTGGGGATGCCACGGGACAAGGCTGCT" \
+          "GGCCTGGAAGGTAGTCACGTGGAGAACCGCAGGAGATGAGAT"
     hot_mat = np.array(one_hot_enc(seq, False)).reshape((1, len(seq), 4))
     hot_mat = set_data_size(data_size, [hot_mat])[0]
     pred = make_prediction(model, one_hot_mat=hot_mat)
@@ -196,8 +196,25 @@ def mutation_map_test(model, data_size, output):
     if PLOT:
         plt.show()
 
+# def loc_check(model):
+#     for j in range(1, 6):
+#         print(j)
+#         seq = "GGG" + "N"*j + "GGG" + "N"*j + "GGG" + "N"*j + "GGG"
+#         seqs = []
+#         for k in range(150-len(seq)):
+#             s = "N"*(150-len(seq)-k) + seq + "N"*k
+#             seqs.append(s)
+#         p = make_prediction(model, seqs)
+#         print(np.argmax(p, axis=0))
+#         print(p[60])
+#         plt.plot(range(150-len(seq)), p)
+#         plt.show()
+
+
 
 def main(model, output):
+    # loc_check(model)
+    # exit(0)
     data_size = get_input_size(model)
     loop_length_test(model, data_size, output)
     loop_length_test2(model, data_size, output)
@@ -215,6 +232,6 @@ if __name__ == "__main__":
     MODEL = []
     for i in range(ENSEMBLE_SIZE):
         MODEL.append(load_model(MODEL_PATH + f"/model_{i}.h5"))
-    main(MODEL, "interpretation/")
+    main(MODEL, "../interpretation/")
 
 
