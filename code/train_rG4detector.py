@@ -22,15 +22,12 @@ np.random.seed(1)
 def evaluate_model(x_train, y_train, x_val, y_val, hyper_params=HyperParams()):
     print("Starting to evaluate model!")
     print(f"SEED = {hyper_params.seed}")
-
-    # set early stopping
-    es_callback = EarlyStopping(monitor='val_loss', patience=8, verbose=1)
     # get model
     model = get_model(hyper_params)
     # fit model
 
     model.fit(x_train, y_train, verbose=verb, epochs=hyper_params.epochs, validation_data=(x_val, y_val),
-              callbacks=[es_callback], batch_size=hyper_params.batch_size)
+              batch_size=hyper_params.batch_size)
     # make a prediction on the val set
     y_hat = model(x_val).numpy()
     y_hat = y_hat.reshape(len(y_hat))
@@ -107,7 +104,7 @@ if __name__ == "__main__":
     random.seed(10)
     np.random.seed(1)
 
-    verb = 0
+    verb = 1
     num_of_iterations = NUM_OF_ENSEMBLE_ITERATIONS
     num_of_models = 15
     DEBUG = False
