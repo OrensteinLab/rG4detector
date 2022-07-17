@@ -1,5 +1,5 @@
 .*
 !/.gitignore
 big_files
-*__pycache__*
 screener/detection/screener_detection_output.csv
+code/__pycache__/

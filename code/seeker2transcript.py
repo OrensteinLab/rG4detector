@@ -6,28 +6,37 @@ import time
 import pickle
 from Bio import pairwise2
 from PARAMETERS import *
+from math import isnan
 
 MATCH_THRESHOLD = 0.9
 
 def get_seeker_df(data_path):
-    rg4_seq_df = pd.read_csv(data_path, usecols=["sequence_diagram", "'GENCODE_V29'_coding_regions", "rG4_intervals",
-                                                 "chromosome", "rG4_structural_class", "splicing"])
-    rg4_seq_df.rename(columns={"'GENCODE_V29'_coding_regions": "transcripts", "sequence_diagram": "sequence",
-                               "rG4_structural_class": "type"},
-                      inplace=True)
-    rg4_seq_df = rg4_seq_df[rg4_seq_df["splicing"] == 0].drop("splicing", axis=1).reset_index(drop=True)
+    diagram_col = "Sequence diagram (RTS sites are indicated by asterisks)"
+    gene_col = "Overlapping Gencode \ngene names"
+    interval_col = "Genomic intervals of rG4"
+
+    rg4_seq_df = pd.read_csv(data_path)
     for idx, row in rg4_seq_df.iterrows():
-        rG4_intervals = row['rG4_intervals'].split(':')
-        seq = re.findall("5'- ([GTCA]+)", row["sequence"])
+        if not isinstance(row[gene_col], str):  # ignore NaNs
+            continue
+        start = []
+        end = []
+        rG4_intervals = row[interval_col].split(',')
+        for interval in rG4_intervals:
+            rng = interval.split(':')[1]
+            start.append(int(rng.split('-')[0]))
+            end.append(int(rng.split('-')[1]))
+        length = 0
+        for s, e in zip(start, end):
+            length += e - s
+        seq = re.findall("5'- ([GTCA]+)", row[diagram_col])
         if len(seq) != 1:
             print(f"ERROR in row {idx}, seq = {seq}")
             exit()
-        transcripts = row["transcripts"].split(";")
-        for t in range(len(transcripts)):
-            transcripts[t] = re.findall("ENST\d*\.\d+", transcripts[t])[0]
-        rg4_seq_df.at[idx, "sequence"] = seq[0]
-        rg4_seq_df.at[idx, "transcripts"] = transcripts
-    return rg4_seq_df.drop("rG4_intervals", axis=1)
+        gene = re.findall("ENSG\d*\.\d+", row[gene_col])[0]
+        rg4_seq_df.at[idx, "sequence"] = seq[0][:length]
+        rg4_seq_df.at[idx, "gene"] = gene
+    return rg4_seq_df.loc[:, ["gene", "sequence"]]
 
 
 def get_transcript_dict(fasta_path):
@@ -101,7 +110,7 @@ def print_seeker_fasta(transcript_match_dict, transcript_dict):
 def main():
     t = time.time()
     rg4_seq_df = get_seeker_df(RG4_SEEKER_PATH)
-    transcript_dict = get_transcript_dict(HUMAN_TRANSCRIPTOME_PATH)
+    # transcript_dict = get_transcript_dict(HUMAN_TRANSCRIPTOME_PATH)
     test_df = rg4_seq_df[rg4_seq_df["chromosome"] == "chr1"]
     output_file = DETECTION_RG4_SEEKER_HITS
     transcript_match_dict = set_transcript_match_dict(test_df, transcript_dict)
