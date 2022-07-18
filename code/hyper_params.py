@@ -48,20 +48,18 @@ def get_hyper_params(df_path=None):
         print(f"getting best hyper-parameters")
         pref_df = pd.read_csv(df_path)
         pref_df = pref_df.sort_values(by=["val_corr"], ascending=False)
-        best_params = get_hyper_params()
-        class_methods = vars(best_params)
+        class_methods = vars(hyper_params)
         best_row = pref_df.iloc[0]
         for m in class_methods:
             if "range" not in m:
                 if isinstance(class_methods[m], list):
                     if "l2" in m or "dropout" in m:
-                        setattr(best_params, m, list(map(float, best_row[m][1:-1].split(","))))
+                        setattr(hyper_params, m, list(map(float, best_row[m][1:-1].split(","))))
                     else:
-                        setattr(best_params, m, list(map(int, best_row[m][1:-1].split(","))))
+                        setattr(hyper_params, m, list(map(int, best_row[m][1:-1].split(","))))
                 else:
-                    setattr(best_params, m, best_row[m])
+                    setattr(hyper_params, m, best_row[m])
                 print(f"{m} = {best_row[m]}")
-        return best_params
     return hyper_params
 
 
