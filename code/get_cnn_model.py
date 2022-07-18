@@ -22,7 +22,7 @@ def get_model(hyper_params=HyperParams()):
     for i in range(hyper_params.kernel_num):
         conv_block_list.append(conv_block(layer_input=input_layer, conv_idx=i, hyper_params=hyper_params))
     # concat conv blocks output
-    x = concatenate(conv_block_list)
+    x = concatenate(conv_block_list) if len(conv_block_list) > 1 else conv_block_list[0]
     # add fc layers
     for i in range(hyper_params.dense_num):
         x = Dense(hyper_params.dense_size[0], activation='relu')(x)
@@ -32,5 +32,5 @@ def get_model(hyper_params=HyperParams()):
 
     model = Model(input_layer, output_layer)
     opt = tf.keras.optimizers.Adam(learning_rate=hyper_params.lr)
-    model.compile(loss='mean_squared_error', optimizer="Adam")
+    model.compile(loss='mean_squared_error', optimizer=opt)
     return model

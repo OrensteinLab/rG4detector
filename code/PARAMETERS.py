@@ -1,10 +1,10 @@
 DATA_PATH = "../data/"
 MODEL_PATH = "../model/"
 SCREENER_PATH = "../screener/"
-GENOMES_FILE = "../rg4detector/big_files/"
+GENOMES_FILE = "../../rg4detector/big_files/"
 PARAMS_SCAN_PATH = "../docs/scan_performance.csv"
 MOUSE_TRANSCRIPTOME_PATH = GENOMES_FILE + "GCF_000001635_new.26_GRCm38.p6_rna.fna"
-HUMAN_TRANSCRIPTOME_PATH = GENOMES_FILE + "gencode.v29lift37.transcripts.fa"
+HUMAN_TRANSCRIPTOME_PATH = GENOMES_FILE + "gencode.v29.transcripts.fa"
 REFERANCE_GENOME = GENOMES_FILE + "hg38.fa"
 
 # GENOMES_FILE = "big_files/"
@@ -20,7 +20,7 @@ DATA_SIZE = 130
 DETECTION_SIGMA = 17
 METHODS_LIST = ['cGcC', 'G4H', 'G4NN']
 # DETECTION_SCREENER_LENGTH =
-DETECTION_RG4_SEEKER_HITS = "detection/rg4-seeker-transcript-match.pkl"
+DETECTION_RG4_SEEKER_HITS = "../detection/rg4-seeker-transcript-match-test.pkl"
 RG4_SEEKER_PATH = "../data/rG4-seeker-hits.csv"
 G4RNA_SCREENER = "G4RNA/screener_preds.csv"
 

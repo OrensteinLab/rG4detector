@@ -16,7 +16,7 @@ from PARAMETERS import *
 import numpy as np
 
 
-DEBUG = False
+DEBUG = True
 PLOT = False
 debug_size = 1
 
