@@ -13,7 +13,7 @@ def set_data_size(data_size, data_sets):
     end = start + data_size
     return_list = []
     for data_set in data_sets:
-        return_list.append(data_set[:, start:end, :])
+        return_list.append(data_set[:, int(start):int(end), :])
     return return_list
 
 
