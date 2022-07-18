@@ -58,7 +58,11 @@ def get_hyper_params(df_path=None):
                     else:
                         setattr(hyper_params, m, list(map(int, best_row[m][1:-1].split(","))))
                 else:
-                    setattr(hyper_params, m, best_row[m])
+                    if "lr" in m:
+                        setattr(hyper_params, m, float(best_row[m]))
+                    else:
+                        setattr(hyper_params, m, int(best_row[m]))
+
                 print(f"{m} = {best_row[m]}")
     return hyper_params
 
