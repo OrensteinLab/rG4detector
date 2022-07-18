@@ -116,8 +116,8 @@ if __name__ == "__main__":
             verb = 1
             epochs = 1
             DEBUG = True
-            num_of_models = 3
-            num_of_iterations = num_of_models*2
+            num_of_models = 1
+            num_of_iterations = 1
         if op == "-o":
             output = val
 
