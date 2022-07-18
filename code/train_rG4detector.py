@@ -104,7 +104,7 @@ if __name__ == "__main__":
     random.seed(10)
     np.random.seed(1)
 
-    verb = 1
+    verb = 0
     num_of_iterations = NUM_OF_ENSEMBLE_ITERATIONS
     num_of_models = 15
     DEBUG = False
