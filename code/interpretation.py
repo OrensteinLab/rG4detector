@@ -25,11 +25,6 @@ def set_seq(seq, data_size, return_pad_size=False, extra=0):
             return "N" * leading_padding + seq + "N" * trailing_padding
 
 
-
-def predict_seq(seq, data_size, model):
-    all_seq_locations = ["Z"*k + seq + "Z"*(data_size-len(seq)-k) for k in range(data_size-len(seq)+1)]
-    return np.amax(make_prediction(model, all_seq_locations))
-
 def loop_length_test(model, data_size, output):
     max_loop_size = 12
     loop_predictions = {}
@@ -38,13 +33,14 @@ def loop_length_test(model, data_size, output):
     loops_idx = ["First", "Second", "Third"]
     for loop in range(3):
         loop_size_dict = {0: 1, 1: 1, 2: 1}
-        seq_predictions = []
+        seq_list = []
         for loop_size in range(1, max_loop_size + 1):
             loop_size_dict[loop] = loop_size
             seq = "GGG" + "N" * loop_size_dict[0] + "GGG" + "N" * loop_size_dict[1] + "GGG" + "N" * loop_size_dict[2] \
                   + "GGG"
-            seq_predictions.append(predict_seq(seq, data_size, model))
-        loop_predictions[loop] = seq_predictions
+            seq_list.append(set_seq(seq, data_size))
+        loop_predictions[loop] = make_prediction(model, seq_list)
+        data[f"loop_{loop+1}"] = loop_predictions[loop].reshape(max_loop_size,)
         ax.plot(range(1, max_loop_size + 1), loop_predictions[loop], 'o--', label=f"{loops_idx[loop]} loop")
     ax.set_xticks(range(1, max_loop_size+1))
     plt.xlabel("Loop length")
@@ -62,7 +58,7 @@ def loop_length_test(model, data_size, output):
 
 def loop_length_test2(model, data_size, output=None, save_data=True):
     data = pd.read_csv("../interpretation/amy_data.csv", index_col="loop")
-    data["Delta Gvh"] = data["Delta Gvh"]
+    data["Delta Gvh"] = -data["Delta Gvh"]
 
     for idx in data.index:
         loop_length_l = list(idx)
@@ -73,8 +69,7 @@ def loop_length_test2(model, data_size, output=None, save_data=True):
             else:
                 loops.append("H" + "N" * (int(loop_len)-2) + "H")
         seq = "HGGG" + loops[0] + "GGG" + loops[1] + "GGG" + loops[2] + "GGGH"
-
-        data.loc[idx, "rG4detector"] = predict_seq(seq, data_size, model)
+        data.loc[idx, "rG4detector"] = make_prediction(model, set_seq(seq, data_size, extra=1))[0][0]
 
     sp_coef, sp_p = spearmanr(data["Delta Gvh"], data["rG4detector"])
 
@@ -215,17 +210,14 @@ def loc_check(model, data_size):
         print(np.argmax(p, axis=0))
         plt.plot(range(data_size-len(seq)), p)
         plt.show()
-seq = "TCCGGAACTTGCAACAGCTGTGTGTGGCTTGAAGGGAGATGAAGTGGTGAAGGCCTGGTTTCCACCGAAGCTCTCACAGCCCAGCCTTTCACTGTGTGGCCGGGGGAA" \
-      "GGGTGCTCCGGGTGGGGGACGGGAATGGTGGGACTGGGGATGCCACGGGACAAGGCTGCTGGCCTGGAAGGTAGTCACGTGGAGAACCGCAGGAGATGAGATTGGAAAG" \
-      "TAGTAATAAGCCATGTGGATAAGAACAGAGGAG"
-seq = seq[len(seq)//2-data_size//2:len(seq)//2+data_size//2]
+
 
 
 
 def main(model, output):
     data_size = get_input_size(model)
-    loc_check(model, data_size)
-    exit(0)
+    # loc_check(model, data_size)
+    # exit(0)
     loop_length_test(model, data_size, output)
     loop_length_test2(model, data_size, output)
     mutation_effect(model, data_size, output)
