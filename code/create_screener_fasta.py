@@ -13,7 +13,7 @@ if len(sys.argv) == 4:
     input_size = int(sys.argv[3])
 
 # Read test sequences
-_, [x_test, y_test, _], _ = get_data(DATA_PATH)
+_, [x_test, y_test, _], _ = get_data(data_dir_path)
 nuc_idx = np.argmax(x_test, axis=2)
 x_arr_str = np.char.mod('%d', nuc_idx)
 x_str_list = ["".join(x) for x in x_arr_str]
