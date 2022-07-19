@@ -45,8 +45,8 @@ def get_screener_scores(screener_preds, y):
 def calculate_human_correlation(model):
     print("Evaluating human correlation:")
     # get screener scores
-    _,  [_, y_test], _ = get_data(DATA_PATH, min_read=2000)
-    scores = get_screener_scores(screener_preds=SCREENER_PATH + "screener_human_preds.csv", y=y_test)
+    _,  [_, y_test, _], _ = get_data(DATA_PATH, min_read=2000)
+    scores = get_screener_scores(screener_preds=SCREENER_PATH + "/output_data/human_test_predictions.csv", y=y_test)
     scores["rG4detector"] = get_rG4detector_human_corr(model, DATA_PATH)
     for m in scores.keys():
         print(f"{m} Pearson correlation = {round(scores[m],3)}")

@@ -1,6 +1,6 @@
 DATA_PATH = "../data/"
 MODEL_PATH = "../model/"
-SCREENER_PATH = "../screener/"
+SCREENER_PATH = "../g4rna_screener/"
 GENOMES_FILE = "../../rg4detector/big_files/"
 PARAMS_SCAN_PATH = "../docs/scan_performance.csv"
 MOUSE_TRANSCRIPTOME_PATH = GENOMES_FILE + "GCF_000001635_new.26_GRCm38.p6_rna.fna"
