@@ -84,7 +84,7 @@ def loop_length_test2(model, data_size, output=None, save_data=True):
              '--', c="0.5")
 
     plt.xlabel(r'-$\Delta$G$_V$$_H$')
-    plt.xticks(x_range)
+    # plt.xticks(x_range)
     plt.legend([f"Spearman coefficient = {round(sp_coef, 3)}"])
     plt.grid(alpha=0.3)
     ax.spines['top'].set_visible(False)
@@ -137,8 +137,10 @@ def mutation_effect(model, data_size, output):
 
 
 def mutation_map_test(model, data_size, output):
-    seq = "TCCACCGAAGCTCTCACAGCCCAGCCTTTCACTGTGTGGCCGGGGGAAGGGTGCTCCGGGTGGGGGACGGGAATGGTGGGACTGGGGATGCCACGGGACAAGGCTGCT" \
-          "GGCCTGGAAGGTAGTCACGTGGAGAACCGCAGGAGATGAGAT"
+    seq = "TCCGGAACTTGCAACAGCTGTGTGTGGCTTGAAGGGAGATGAAGTGGTGAAGGCCTGGTTTCCACCGAAGCTCTCACAGCCCAGCCTTTCACTGTGTGGCCGGGGGAA" \
+          "GGGTGCTCCGGGTGGGGGACGGGAATGGTGGGACTGGGGATGCCACGGGACAAGGCTGCTGGCCTGGAAGGTAGTCACGTGGAGAACCGCAGGAGATGAGATTGGAAAG" \
+          "TAGTAATAAGCCATGTGGATAAGAACAGAGGAG"
+    seq = seq[len(seq)//2-data_size//2:len(seq)//2+data_size//2]
     hot_mat = np.array(one_hot_enc(seq, False)).reshape((1, len(seq), 4))
     hot_mat = set_data_size(data_size, [hot_mat])[0]
     pred = make_prediction(model, one_hot_mat=hot_mat)
@@ -196,26 +198,26 @@ def mutation_map_test(model, data_size, output):
     if PLOT:
         plt.show()
 
-# def loc_check(model):
-#     for j in range(1, 6):
-#         print(j)
-#         seq = "GGG" + "N"*j + "GGG" + "N"*j + "GGG" + "N"*j + "GGG"
-#         seqs = []
-#         for k in range(150-len(seq)):
-#             s = "N"*(150-len(seq)-k) + seq + "N"*k
-#             seqs.append(s)
-#         p = make_prediction(model, seqs)
-#         print(np.argmax(p, axis=0))
-#         print(p[60])
-#         plt.plot(range(150-len(seq)), p)
-#         plt.show()
+def loc_check(model, data_size):
+    for j in range(1, 6):
+        print(j)
+        seq = "GGG" + "N"*j + "GGG" + "N"*j + "GGG" + "N"*j + "GGG"
+        seqs = []
+        for k in range(data_size-len(seq)):
+            s = "N"*(data_size-len(seq)-k) + seq + "N"*k
+            seqs.append(s)
+        p = make_prediction(model, seqs)
+        print(np.argmax(p, axis=0))
+        plt.plot(range(data_size-len(seq)), p)
+        plt.show()
+
 
 
 
 def main(model, output):
-    # loc_check(model)
-    # exit(0)
     data_size = get_input_size(model)
+    # loc_check(model, data_size)
+    # exit(0)
     loop_length_test(model, data_size, output)
     loop_length_test2(model, data_size, output)
     mutation_effect(model, data_size, output)

@@ -77,7 +77,7 @@ def main(hyper_params, model_num, iterations):
     seed_list = []
     for i in range(iterations):
         it_time = time.time()
-        print(f"iteration: {i}/{NUM_OF_ENSEMBLE_ITERATIONS}")
+        print(f"iteration: {i}/{iterations}")
         hyper_params.seed = random.randint(1, 1000)
         pr_corr, model = evaluate_model(x_train, y_train, x_val, y_val, hyper_params)
         corr_list.append(pr_corr)
@@ -105,7 +105,7 @@ if __name__ == "__main__":
     np.random.seed(1)
 
     verb = 0
-    num_of_iterations = 15 #NUM_OF_ENSEMBLE_ITERATIONS
+    num_of_iterations = NUM_OF_ENSEMBLE_ITERATIONS
     num_of_models = 15
     DEBUG = False
     output = MODEL_PATH
