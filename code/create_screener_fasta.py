@@ -14,6 +14,9 @@ if len(sys.argv) == 4:
 
 # Read test sequences
 _, [x_test, y_test, _], _ = get_data(data_dir_path)
+print(len(x_test))
+print(len(y_test))
+
 nuc_idx = np.argmax(x_test, axis=2)
 x_arr_str = np.char.mod('%d', nuc_idx)
 x_str_list = ["".join(x) for x in x_arr_str]
