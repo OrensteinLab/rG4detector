@@ -24,9 +24,9 @@ def get_rG4detector_human_corr(model, path):
     return corr
 
 
-def get_screener_scores(file_path, y):
+def get_screener_scores(screener_preds, y):
     screener_scores = {}
-    pred = pd.read_csv(file_path, usecols=METHODS_LIST, sep="\t")
+    pred = pd.read_csv(screener_preds, usecols=METHODS_LIST, sep="\t")
 
     labels = y.reshape(len(y))
     for col in pred.columns:
@@ -46,7 +46,7 @@ def calculate_human_correlation(model):
     print("Evaluating human correlation:")
     # get screener scores
     _,  [_, y_test], _ = get_data(DATA_PATH, min_read=2000)
-    scores = get_screener_scores(file_path=SCREENER_PATH + "screener_human_preds.csv", y=y_test)
+    scores = get_screener_scores(screener_preds=SCREENER_PATH + "screener_human_preds.csv", y=y_test)
     scores["rG4detector"] = get_rG4detector_human_corr(model, DATA_PATH)
     for m in scores.keys():
         print(f"{m} Pearson correlation = {round(scores[m],3)}")

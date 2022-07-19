@@ -1,0 +1,2 @@
+screen.py: error: An option is missing, incorrect or not authorized
+usage: screen.py [-h] FASTA [-a ANN] [-w INT] [-s INT] [-b] [-c  [...]] [-v] [-e]
