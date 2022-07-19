@@ -142,8 +142,10 @@ def mutation_effect(model, data_size, output):
 
 
 def mutation_map_test(model, data_size, output):
-    seq = "CTCTCACAGCCCAGCCTTTCACTGTGTGGCCGGGGGAAGGGTGCTCCGGGTGGGGGACGGGAA" \
-          "TGGTGGGACTGGGGATGCCACGGGACAAGGCTGCTGGCCTGGAAGGTAGTCACGTGGAGAACCGCAG"
+    seq = "TCCGGAACTTGCAACAGCTGTGTGTGGCTTGAAGGGAGATGAAGTGGTGAAGGCCTGGTTTCCACCGAAGCTCTCACAGCCCAGCCTTTCACTGTGTGGCCGGGGGAA" \
+          "GGGTGCTCCGGGTGGGGGACGGGAATGGTGGGACTGGGGATGCCACGGGACAAGGCTGCTGGCCTGGAAGGTAGTCACGTGGAGAACCGCAGGAGATGAGATTGGAAAG" \
+          "TAGTAATAAGCCATGTGGATAAGAACAGAGGAG"
+    seq = seq[len(seq)//2-data_size//2:len(seq)//2+data_size//2]
     hot_mat = np.array(one_hot_enc(seq, False)).reshape((1, len(seq), 4))
     hot_mat = set_data_size(data_size, [hot_mat])[0]
     pred = make_prediction(model, one_hot_mat=hot_mat)
