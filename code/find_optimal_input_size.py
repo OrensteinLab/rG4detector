@@ -58,6 +58,7 @@ def main(hyper_params, iterations, debug):
     scores = []
     rng = range(70, 240, 10) if not debug else range(70, 90, 10)
     for s in rng:
+        print(f"size = {s}")
         hyper_params.input_size = s
         [x_train_i, x_val_i] = set_data_size(s, [x_train, x_val])
         corr_list = []
@@ -67,6 +68,7 @@ def main(hyper_params, iterations, debug):
             hyper_params.seed = random.randint(1, 1000)
             pr_corr, model = evaluate_model(x_train_i, y_train, x_val_i, y_val, hyper_params)
             corr_list.append(pr_corr)
+        print(f"correlation = {sum(corr_list)/len(corr_list)} +-{np.std(corr_list)}")
         scores.append(sum(corr_list)/len(corr_list))
         print(f"Finished {s}- execution time = %ss ---\n\n" % (round(time.time() - it_time)))
 
