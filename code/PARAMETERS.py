@@ -1,4 +1,4 @@
-DATA_PATH = "../data/"
+DATA_PATH = "../data/human"
 MODEL_PATH = "../model/"
 SCREENER_PATH = "../g4rna_screener/"
 GENOMES_FILE = "../../rg4detector/big_files/"
