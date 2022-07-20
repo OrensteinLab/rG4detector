@@ -24,10 +24,11 @@ def evaluate_model(x_train, y_train, x_val, y_val, hyper_params=HyperParams()):
     print(f"SEED = {hyper_params.seed}")
     # get model
     model = get_model(hyper_params)
-    # fit model
 
+    # fit model
+    es_callback = EarlyStopping(monitor='val_loss', patience=8, verbose=1)
     model.fit(x_train, y_train, verbose=verb, epochs=hyper_params.epochs, validation_data=(x_val, y_val),
-              batch_size=hyper_params.batch_size)
+              batch_size=hyper_params.batch_size, callbacks=[es_callback])
     # make a prediction on the val set
     y_hat = model(x_val).numpy()
     y_hat = y_hat.reshape(len(y_hat))
