@@ -56,7 +56,7 @@ def loop_length_test(model, data_size, output):
         plt.show()
 
 
-def loop_length_test2(model, data_size, output=None, save_data=True):
+def loop_length_test2(model, data_size, output=None, plot=True):
     data = pd.read_csv("../interpretation/amy_data.csv", index_col="loop")
     data["Delta Gvh"] = -data["Delta Gvh"]
 
@@ -95,9 +95,13 @@ def loop_length_test2(model, data_size, output=None, save_data=True):
             plt.annotate(loop[1:], (location["Delta Gvh"]-1.5, location["rG4detector"]+0.02))
         else:
             plt.annotate(loop[1:], location)
-    plt.savefig(output + f"/Loop test 2")
-    if PLOT:
+    if output:
+        plt.savefig(output + f"/Loop test 2")
+    if plot:
         plt.show()
+    return sp_coef
+
+
 
 
 def mutation_effect(model, data_size, output):
