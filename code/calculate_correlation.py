@@ -12,7 +12,7 @@ import pickle
 
 
 def get_rG4detector_human_corr(model, path):
-    _, [xTest, yTest], [_, _] = get_data(path, min_read=2000)
+    _, [xTest, yTest, _], _ = get_data(path, min_read=2000)
     data_size = get_input_size(model)
     [xTest] = set_data_size(data_size, [xTest])
     preds = np.zeros((len(xTest), 1))
@@ -42,26 +42,32 @@ def get_screener_scores(screener_preds, y):
     return screener_scores
 
 
-def calculate_human_correlation(model):
+def calculate_human_correlation(model, data_path):
     print("Evaluating human correlation:")
     # get screener scores
-    _,  [_, y_test, _], _ = get_data(DATA_PATH, min_read=2000)
+    _,  [_, y_test, _], _ = get_data(data_path, min_read=2000)
     scores = get_screener_scores(screener_preds=SCREENER_PATH + "/output_data/human_test_predictions.csv", y=y_test)
-    scores["rG4detector"] = get_rG4detector_human_corr(model, DATA_PATH)
+    scores["rG4detector"] = get_rG4detector_human_corr(model, data_path)
     for m in scores.keys():
         print(f"{m} Pearson correlation = {round(scores[m],3)}")
 
 
 if __name__ == "__main__":
-    model_path = MODEL_PATH
+    if len(sys.argv) < 3:
+        print("Usage: calculate_correlation <model_dir_path> <data_dir_path>")
+        exit(0)
+    model_path = sys.argv[1]
+    data_dir_path = sys.argv[2]
+    ens_size = ENSEMBLE_SIZE
+    if len(sys.argv) == 4:
+        ens_size = sys.argv[3]
+
+
     rG4detector = []
-    for i in range(ENSEMBLE_SIZE):
+    for i in range(ens_size):
         rG4detector.append(load_model(f"{model_path}/model_{i}.h5"))
 
-    # opts, args = getopt.getopt(sys.argv[1:], 'hma')
-    # for op, val in opts:
-    #     if op == "-h":
-    calculate_human_correlation(rG4detector)
+    calculate_human_correlation(rG4detector, data_dir_path)
 
 
 
