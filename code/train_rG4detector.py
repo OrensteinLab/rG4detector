@@ -26,7 +26,7 @@ def evaluate_model(x_train, y_train, x_val, y_val, hyper_params=HyperParams()):
     model = get_model(hyper_params)
 
     # fit model
-    es_callback = EarlyStopping(monitor='val_loss', patience=8, verbose=1)
+    es_callback = EarlyStopping(monitor='val_loss', patience=4, verbose=1)
     model.fit(x_train, y_train, verbose=verb, validation_data=(x_val, y_val),
               batch_size=hyper_params.batch_size, callbacks=[es_callback])
     # make a prediction on the val set
