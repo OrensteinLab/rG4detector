@@ -1,29 +1,251 @@
+2022-07-21 09:06:36.002151: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
 getting best hyper-parameters
 iteration: 0/7
 Starting to evaluate model!
 SEED = 95
 Multiple kernel CNN model
-val corr = 0.766255806847464
-Finished Level - execution time = 37s ---
+2022-07-21 09:06:54.884814: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcuda.so.1
+2022-07-21 09:06:55.793449: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1716] Found device 0 with properties: 
+pciBusID: 0000:65:00.0 name: TITAN V computeCapability: 7.0
+coreClock: 1.455GHz coreCount: 80 deviceMemorySize: 11.78GiB deviceMemoryBandwidth: 607.97GiB/s
+2022-07-21 09:06:55.793527: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
+2022-07-21 09:06:55.795848: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcublas.so.10
+2022-07-21 09:06:55.797526: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Sucval corr = 0.7664143442374696
+Finished Level - execution time = 31s ---
+
+
+Human correlation = 0.803
+Computing mouse correlation
+ader.cc:48] Successfully opened dynamic library libcurand.so.10
+2022-07-21 09:06:55.800366: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcusolver.so.10
+2022-07-21 09:06:55.802110: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcusparse.so.10
+2022-07-21 09:06:55.806538: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudnn.so.7
+2022-07-21 09:06:55.812902: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1858] Adding visible gpu devices: 0
+2022-07-21 09:06:55.813291: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN)to use the following CPU instructions in performance-critical operations:  AVX2 AVX512F FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2022-07-21 09:06:55.822593: I tensorflow/core/platform/profile_utils/cpu_utils.cc:104] CPU Frequency: 2100000000 Hz
+2022-07-21 09:06:55.824362: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x5d7f0b0 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
+2022-07-21 09:06:55.824423: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version
+2022-07-21 09:06:56.001356: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x5969ef0 initialized for platform CUDA (this does not guarantee that XLA will be used). Devices:
+2022-07-21 09:06:56.001456: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): TITAN V, Compute Capability 7.0
+2022-07-21 09:06:56.003816: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1716] Found device 0 with properties: 
+pciBusID: 0000:65:00.0 name: TITAN V computeCapability: 7.0
+coreClock: 1.455GHz coreCount: 80 deviceMemorySize: 11.78GiB deviceMemoryBandwidth: 607.97GiB/s
+2022-07-21 09:06:56.003915: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
+2022-07-21 09:06:56.003983: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcublas.so.10
+2022-07-21 09:06:56.004033: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcufft.so.10
+2022-07-21 09:06:56.004081: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcurand.so.10
+2022-07-21 09:06:56.004129: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcusolver.so.10
+2022-07-21 09:06:56.004176: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcusparse.so.10
+2022-07-21 09:06:56.004226: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudnn.so.7
+2022-07-21 09:06:56.007807: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1858] Adding visible gpu devices: 0
+2022-07-21 09:06:56.007916: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
+2022-07-21 09:06:56.459341: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1257] Device interconnect StreamExecutor with strength 1 edge matrix:
+2022-07-21 09:06:56.459398: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1263]      0 
+2022-07-21 09:06:56.459408: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1276] 0:   N 
+2022-07-21 09:06:56.460872: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1402] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 10912 MB memory) -> physical GPU (device: 0, name: TITAN V, pci bus id: 0000:65:00.0, compute capability: 7.0)
+2022-07-21 09:06:57.255107: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcublas.so.10
+2022-07-21 09:06:57.489310: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudnn.so.7
+val corr = 0.7682751588729595
+Finished Level - execution time = 25s ---
 
 
 iteration: 1/7
 Starting to evaluate model!
 SEED = 124
 Multiple kernel CNN model
-val corr = 0.7627430102551039
-Finished Level - execution time = 33s ---
+val corr = 0.7530613822138963
+Finished Level - execution time = 21s ---
 
 
 iteration: 2/7
 Starting to evaluate model!
 SEED = 474
 Multiple kernel CNN model
-val corr = 0.7575488692197959
-Finished Level - execution time = 32s ---
+val corr = 0.7529731342838902
+Finished Level - execution time = 21s ---
 
 
 iteration: 3/7
 Starting to evaluate model!
 SEED = 166
+Multiple kernel CNN model
+val corr = 0.7681658858069099
+Finished Level - execution time = 21s ---
+
+
+iteration: 4/7
+Starting to evaluate model!
+SEED = 899
+Multiple kernel CNN model
+val corr = 0.773761608476416
+Finished Level - execution time = 21s ---
+
+
+iteration: 5/7
+Starting to evaluate model!
+SEED = 812
+Multiple kernel CNN model
+val corr = 0.7607081219882994
+Finished Level - execution time = 21s ---
+
+
+iteration: 6/7
+Starting to evaluate model!
+SEED = 76
+Multiple kernel CNN model
+val corr = 0.7675227642233503
+Finished Level - execution time = 21s ---
+
+
+Human correlation = 0.803
+Computing mouse correlation
+Mouse correlation = 0.632
+sp_coef correlation = 0.834
+Number of transcripts = 369
+counter = 100, time = 6s
+counter = 200, time = 6s
+counter = 300, time = 6s
+Detection aupr = 0.206
+iteration: 0/7
+Starting to evaluate model!
+SEED = 840
+Multiple kernel CNN model
+val corr = 0.7665671044091293
+Finished Level - execution time = 28s ---
+
+
+iteration: 1/7
+Starting to evaluate model!
+SEED = 388
+Multiple kernel CNN model
+val corr = 0.7751082734203675
+Finished Level - execution time = 27s ---
+
+
+iteration: 2/7
+Starting to evaluate model!
+SEED = 545
+Multiple kernel CNN model
+val corr = 0.7587262497805806
+Finished Level - execution time = 28s ---
+
+
+iteration: 3/7
+Starting to evaluate model!
+SEED = 83
+Multiple kernel CNN model
+val corr = 0.7457516037343175
+Finished Level - execution time = 28s ---
+
+
+iteration: 4/7
+Starting to evaluate model!
+SEED = 978
+Multiple kernel CNN model
+val corr = 0.7502821468238351
+Finished Level - execution time = 27s ---
+
+
+iteration: 5/7
+Starting to evaluate model!
+SEED = 8
+Multiple kernel CNN model
+val corr = 0.76710035219206
+Finished Level - execution time = 27s ---
+
+
+iteration: 6/7
+Starting to evaluate model!
+SEED = 533
+Multiple kernel CNN model
+val corr = 0.7618511062695721
+Finished Level - execution time = 27s ---
+
+
+Human correlation = 0.798
+Computing mouse correlation
+Mouse correlation = 0.62
+sp_coef correlation = 0.587
+Number of transcripts = 369
+counter = 100, time = 2s
+counter = 200, time = 3s
+counter = 300, time = 3s
+Detection aupr = 0.214
+iteration: 0/7
+Starting to evaluate model!
+SEED = 847
+Multiple kernel CNN model
+val corr = 0.7657873837837847
+Finished Level - execution time = 13s ---
+
+
+iteration: 1/7
+Starting to evaluate model!
+SEED = 742
+Multiple kernel CNN model
+val corr = 0.7672553880737276
+Finished Level - execution time = 13s ---
+
+
+iteration: 2/7
+Starting to evaluate model!
+SEED = 564
+Multiple kernel CNN model
+val corr = 0.7599729491235676
+Finished Level - execution time = 13s ---
+
+
+iteration: 3/7
+Starting to evaluate model!
+SEED = 267
+Multiple kernel CNN model
+val corr = 0.7677453926296747
+Finished Level - execution time = 13s ---
+
+
+iteration: 4/7
+Starting to evaluate model!
+SEED = 585
+Multiple kernel CNN model
+val corr = 0.768987854427018
+Finished Level - execution time = 13s ---
+
+
+iteration: 5/7
+Starting to evaluate model!
+SEED = 495
+Multiple kernel CNN model
+val corr = 0.7669527936833428
+Finished Level - execution time = 13s ---
+
+
+iteration: 6/7
+Starting to evaluate model!
+SEED = 921
+Multiple kernel CNN model
+val corr = 0.7632649757874447
+Finished Level - execution time = 13s ---
+
+
+Human correlation = 0.789
+Computing mouse correlation
+Mouse correlation = 0.639
+sp_coef correlation = 0.829
+Number of transcripts = 369
+counter = 100, time = 4s
+counter = 200, time = 5s
+counter = 300, time = 4s
+Detection aupr = 0.205
+iteration: 0/7
+Starting to evaluate model!
+SEED = 886
+Multiple kernel CNN model
+val corr = 0.7610383412174286
+Finished Level - execution time = 136s ---
+
+
+iteration: 1/7
+Starting to evaluate model!
+SEED = 88
 Multiple kernel CNN model
