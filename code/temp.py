@@ -89,6 +89,24 @@ def detect_rg4(model, input_length):
             print(f"counter = {counter}, time = {round(time.time() - t2)}s")
             t2 = time.time()
         seq = transcript_dict[transcript].seq
+
+        start = 0
+        while start < len(exp_rg4[transcript]):
+            a = exp_rg4[transcript][start]
+            if not exp_rg4[transcript][start]:
+                start += 1
+                continue
+            end = start
+            while end < len(exp_rg4[transcript]) and exp_rg4[transcript][end]:
+                end += 1
+            print(transcript)
+            print(str(seq[start:end]))
+            start = end
+        continue
+
+
+
+
         one_hot_mat = one_hot_enc(str(seq), remove_last=False)
         # zero padding
         one_hot_mat = np.vstack((np.zeros((input_length-1, 4)), one_hot_mat, np.zeros((input_length-1, 4))))
@@ -100,6 +118,7 @@ def detect_rg4(model, input_length):
         if DEBUG and counter == debug_size:
             del transcript_dict
             break
+    exit(0)
 
     # stack all ground truth data
     counter = 0
@@ -271,24 +290,20 @@ def test_models():
                 f.write(f'{hyper_params.input_size}\t{s[0]}\t{s[1]}\t{s[2]}\t{s[3]}\n')
 
 
-# def detect():
-#         model_path = f"../temp/model_0/"
-#         models = []
-#         for j in range(2):
-#             models.append(load_model(model_path + f"model_{i}.h5"))
-#
-#         detect = detect_rg4(models, hyper_params.input_size)
-#         print(f'Detection aupr = {round(detect, 3)}')
-#         scores.append((human_corr, mouse_corr, detect, sp_coef))
-#
-#
-#         with open(output_path, 'w') as f:
-#             f.write(f'Human\tMouse\tdetect\tsp_coef\n')
-#             for s in scores:
-#                 f.write(f'{s[0]}\t{s[1]}\t{s[2]}\t{s[3]}\n')
-if __name__ == "__main__":
-    test_models()
+def detect():
+    model_path = f"../temp/model_0/"
+    hyper_params = HyperParams()
+    models = []
+    for j in range(1):
+        models.append(load_model(model_path + f"model_{j}.h5"))
 
+    aupr = detect_rg4(models, hyper_params.input_size)
+    print(f'Detection aupr = {round(aupr, 3)}')
+
+
+if __name__ == "__main__":
+    # test_models()
+    detect()
 
 
 
