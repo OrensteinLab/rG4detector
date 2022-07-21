@@ -1,5 +1,4 @@
 from hyper_params import HyperParams
-from interpretation import loop_length_test2
 import os
 import time
 from tensorflow.keras.models import load_model
@@ -12,6 +11,8 @@ from utils import *
 import random
 from train_rG4detector import evaluate_model
 import tensorflow as tf
+from scipy.stats import pearsonr, spearmanr
+from sklearn.linear_model import LinearRegression
 
 
 tf.random.set_seed(1)
@@ -179,6 +180,51 @@ def main(hyper_params, model_num, iterations, dst, debug=False):
 
     return find_ensemble_size(x_val, y_val, dst, model_num, debug)
 
+
+def loop_length_test2(model, data_size, output=None, plot=True):
+    data = pd.read_csv("../interpretation/amy_data.csv", index_col="loop")
+    data["Delta Gvh"] = -data["Delta Gvh"]
+
+    for idx in data.index:
+        loop_length_l = list(idx)
+        loops = []
+        for loop_len in loop_length_l[1:]:
+            if int(loop_len) == 1:
+                loops.append("H")
+            else:
+                loops.append("H" + "N" * (int(loop_len)-2) + "H")
+        seq = "HGGG" + loops[0] + "GGG" + loops[1] + "GGG" + loops[2] + "GGGH"
+        data.loc[idx, "rG4detector"] = make_prediction(model, set_seq(seq, data_size, extra=1))[0][0]
+
+    sp_coef, sp_p = spearmanr(data["Delta Gvh"], data["rG4detector"])
+
+    reg = LinearRegression().fit(data["Delta Gvh"].to_numpy().reshape(-1, 1), data["rG4detector"].to_numpy().reshape(-1, 1))
+    reg_coef = reg.coef_[0][0]
+    ref_intercept = reg.intercept_[0]
+
+    x_range = [x for x in np.arange(3, 35, 3)]
+
+    ax = data.plot.scatter(x="Delta Gvh", y="rG4detector")
+    ax.plot([x_range[0], x_range[-1]], [x_range[0]*reg_coef + ref_intercept, x_range[-1]*reg_coef + ref_intercept],
+             '--', c="0.5")
+
+    plt.xlabel(r'-$\Delta$G$_V$$_H$')
+    # plt.xticks(x_range)
+    plt.legend([f"Spearman coefficient = {round(sp_coef, 3)}"])
+    plt.grid(alpha=0.3)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    for loop, location in data.iterrows():
+        # plt.text(location["Delta Gvh"], location["rG4detector"], loop[1:], c="b")
+        if loop[1:] == "131":
+            plt.annotate(loop[1:], (location["Delta Gvh"]-1.5, location["rG4detector"]+0.02))
+        else:
+            plt.annotate(loop[1:], location)
+    if output:
+        plt.savefig(output + f"/Loop test 2")
+    if plot:
+        plt.show()
+    return sp_coef
 
 def test_models():
     output_path = "../temp/scores.csv"
