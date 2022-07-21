@@ -240,11 +240,13 @@ def loop_length_test2(model, data_size, output=None, plot=True):
         plt.show()
     return sp_coef
 
+
 def test_models():
     output_path = "../temp/scores.csv"
     scores = []
     hyper_params_l = get_hyper_params(PARAMS_SCAN_PATH, 20)
     for i, hyper_params in enumerate(hyper_params_l):
+        print(f"row - {i+1}")
         model_path = f"../temp/model_{i}/"
         if not os.path.exists(model_path):
             os.makedirs(model_path)
