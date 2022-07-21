@@ -220,8 +220,8 @@ def loc_check(model, data_size):
 
 def main(model, output):
     data_size = get_input_size(model)
+    print(data_size)
     loc_check(model, data_size)
-    # exit(0)
     loop_length_test(model, data_size, output)
     loop_length_test2(model, data_size, output)
     mutation_effect(model, data_size, output)

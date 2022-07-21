@@ -5,8 +5,10 @@ from utils import get_input_size, one_hot_enc, pred_all_sub_seq
 from scipy.stats import mannwhitneyu
 from scipy.signal import find_peaks
 import numpy as np
+import sys
+from PARAMETERS import *
 
-input_size = 130
+
 pad5 = input_size//2 + 15
 pad3 = input_size//2 - 15
 
@@ -110,8 +112,8 @@ def get_sub_seq_list(model, seq, input_size, t):
         pos += 1
     return sub_seq_list
 
-
-def find_seq_statistics(stress, ctrl, dst):
+# TODO
+def find_seq_statistics(stress, ctrl, dst, input_size, dir_path):
     statics_df = pd.DataFrame(columns=["Condition", "Mean length", "G", "GG", "GGG"])
     for cond, src in zip(["control", "stress"], [ctrl, stress]):
         seqs_statics_df = pd.DataFrame()
@@ -120,13 +122,12 @@ def find_seq_statistics(stress, ctrl, dst):
         with open(src) as f:
             f_lines = f.read().splitlines()
         seqs = f_lines[1::2]
-        total_length = sum([len(x)-130 for x in seqs])
-        statics["Mean length"] = round(total_length/len(seqs), 1) - 130  # - pad
+        total_length = sum([len(x)-input_size for x in seqs])
+        statics["Mean length"] = round(total_length/len(seqs), 1) - input_size
 
         # G content
         for idx, s in enumerate(seqs):
             trunked_seq = s[80:-50]
-            a = len(trunked_seq)
             seqs_statics_df.loc[idx, "sequence"] = trunked_seq
             seqs_statics_df.loc[idx, "sequence length"] = len(trunked_seq)
             for j, m in enumerate(["G", "GG", "GGG"]):
@@ -137,7 +138,7 @@ def find_seq_statistics(stress, ctrl, dst):
         statics_df.to_csv(dir_path + "statics.csv", index=False)
         seqs_statics_df.to_csv(dst + f"sequences_statics_{cond}.csv", index=False)
 
-
+# TODO
 def find_seq_peaks(model, src, dst, t_hold=1.4):
     with open(src) as f:
         f_lines = f.read().splitlines()
@@ -214,10 +215,8 @@ def screener_norm(unique):
     control_norm.to_csv(screener_path + f"control_screener{addToPath}_norm.csv", index=False)
 
 
-if __name__ == "__main__":
-
+def process_G3BP1_data(dir_path, model_path):
     make_preds = False
-    kpds = False
     GET_SUB_SEQ = False
     GET_STATICS = False
     FIND_PEAKS = False
@@ -225,32 +224,24 @@ if __name__ == "__main__":
     pred_unique = False
     SCREENER = True
     NORM = True
-    ensemble_size = 5
-
-    prefix = "kpds/" if kpds else ""
-    model_path = "kpds/models/multi_kernel_ver4/ensemble/" if kpds else "models/best_model/ensemble/"
-    # data path
-    dir_path = "yehuda_data/"
 
     if UNIQUE:
-        cntrl_src = dir_path + "fasta_files/G3BP1_2021_control_unique.fa"
-        cntrl_dst = dir_path + prefix + "predictions/control_predictions_unique.csv"
-        stress_src = dir_path + "fasta_files/G3BP1_2021_stress_unique.fa"
-        stress_dst = dir_path + prefix + "predictions/stress_predictions_unique.csv"
+        cntrl_src = dir_path + "/control/G3BP1_2021_control_unique.fa"
+        cntrl_dst = dir_path + "/predictions/control_predictions_unique.csv"
+        stress_src = dir_path + "/stress/G3BP1_2021_stress_unique.fa"
+        stress_dst = dir_path + "/stress/stress_predictions_unique.csv"
         potential_rg4_path = dir_path + "potential_G3BP1_rG4_binding_areas_unique/"
-        peak_dest = dir_path + "peaks_data_unique/"
         statics_dst = dir_path + f"statics/unique/"
     else:
-        cntrl_src = dir_path + "fasta_files/G3BP1_2021_cntrl.fa"
-        cntrl_dst = dir_path + prefix + "predictions/cntrl_predictions.csv"
-        stress_src = dir_path + "fasta_files/G3BP1_2021_stress.fa"
-        stress_dst = dir_path + prefix + "predictions/stress_predictions.csv"
+        cntrl_src = dir_path + "control/G3BP1_2021_cntrl.fa"
+        cntrl_dst = dir_path + "control/cntrl_predictions.csv"
+        stress_src = dir_path + "stress/G3BP1_2021_stress.fa"
+        stress_dst = dir_path + "stress/stress_predictions.csv"
         potential_rg4_path = dir_path + "potential_G3BP1_rG4_binding_areas/"
-        peak_dest = dir_path + "peaks_data/"
         statics_dst = dir_path + f"statics/"
 
     MODEL = []
-    for i in range(ensemble_size):
+    for i in range(ENSEMBLE_SIZE):
         MODEL.append(load_model(model_path + f"/model_{i}.h5"))
 
     if make_preds:
@@ -266,7 +257,8 @@ if __name__ == "__main__":
         print("GET_SUB_SEQ control")
         ctrl_sub_seqs = get_best_sub_seq(MODEL, t_hold=threshold, c_src=cntrl_src)
         for data_set, sub_seqs in (["control", ctrl_sub_seqs], ["stress", stress_sub_seqs]):
-            fp = open(potential_rg4_path + f"{data_set}/potential_G3BP1_rG4_binding_area_{data_set}_{threshold}.txt", "w")
+            fp = open(potential_rg4_path + f"{data_set}/potential_G3BP1_rG4_binding_area_{data_set}_{threshold}.txt",
+                      "w")
             for counter, line in enumerate(sub_seqs):
                 fp.write(f">{counter}\n" + line + "\n")
             fp.close()
@@ -298,11 +290,21 @@ if __name__ == "__main__":
         predict_screener(dir_path + f"screener/{add2path[1:]}/control_screener{add2path}.csv",
                          dir_path + f"screener/{add2path[1:]}/control_screener{add2path}_max.csv")
 
-
     if NORM:
         print("Norm screener")
         unique_screener = True
         screener_norm(unique_screener)
+
+
+if __name__ == "__main__":
+
+    directory_path = sys.argv[1]
+    model_dir_path = sys.argv[2]
+
+    process_G3BP1_data(directory_path, model_dir_path)
+
+
+
 
     # common = pd.read_csv(dir_path + "common_preds.csv")
     # stress_unique = pd.read_csv(dir_path + "stress_unique_preds.csv")

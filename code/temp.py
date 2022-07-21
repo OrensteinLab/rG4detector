@@ -13,6 +13,7 @@ from train_rG4detector import evaluate_model
 import tensorflow as tf
 from scipy.stats import pearsonr, spearmanr
 from sklearn.linear_model import LinearRegression
+# from G3BP1_analysis import process_G3BP1_data
 
 
 tf.random.set_seed(1)
@@ -21,6 +22,18 @@ np.random.seed(1)
 
 DEBUG = False
 debug_size = 1
+
+def bar_plot(data_list):
+    for data in data_list:
+        x = [n for n in range(len(data))]
+        plt.figure(figsize=(6, 4))
+        plt.bar(x, data, width=1)
+        plt.ylim([0, 1.2])
+        plt.xlabel("Position")
+        plt.ylabel("Prediction")
+        # plt.title("Positive rG4 location")
+        plt.title("Transcript RSR Ratio Prediction")
+        plt.show()
 
 
 def set_seq(seq, data_size, return_pad_size=False, extra=0):
@@ -35,6 +48,7 @@ def set_seq(seq, data_size, return_pad_size=False, extra=0):
             return "N" * leading_padding + seq + "N" * trailing_padding, leading_padding, trailing_padding
         else:
             return "N" * leading_padding + seq + "N" * trailing_padding
+
 
 def find_ensemble_size(x, y, dest, models_num, debug):
     y = y.reshape(len(y))
@@ -90,35 +104,39 @@ def detect_rg4(model, input_length):
             t2 = time.time()
         seq = transcript_dict[transcript].seq
 
+        rng = []
         start = 0
         while start < len(exp_rg4[transcript]):
-            a = exp_rg4[transcript][start]
             if not exp_rg4[transcript][start]:
                 start += 1
                 continue
             end = start
             while end < len(exp_rg4[transcript]) and exp_rg4[transcript][end]:
                 end += 1
-            print(transcript)
-            print(str(seq[start:end]))
+            rng.append((start, end))
             start = end
-        continue
-
-
-
 
         one_hot_mat = one_hot_enc(str(seq), remove_last=False)
         # zero padding
         one_hot_mat = np.vstack((np.zeros((input_length-1, 4)), one_hot_mat, np.zeros((input_length-1, 4))))
         preds = pred_all_sub_seq(one_hot_mat, model)
         positions_score = get_score_per_position(preds, input_length, DETECTION_SIGMA)
+
+        f = 100
+        for start, end in rng:
+            bar_plot([exp_rg4[transcript][start-f:end+f], positions_score[start-f:end+f]])
+
+        if counter == 10:
+            exit()
+        continue
+
+
         rg4detector_all_preds = positions_score if rg4detector_all_preds is None else \
             np.hstack((rg4detector_all_preds, positions_score))
 
         if DEBUG and counter == debug_size:
             del transcript_dict
             break
-    exit(0)
 
     # stack all ground truth data
     counter = 0
@@ -279,9 +297,9 @@ def test_models():
         print(f'Mouse correlation = {round(mouse_corr, 3)}')
         sp_coef = loop_length_test2(model=models, data_size=hyper_params.input_size, plot=False)
         print(f'sp_coef correlation = {round(sp_coef, 3)}')
-        detect = detect_rg4(models, hyper_params.input_size)
-        print(f'Detection aupr = {round(detect, 3)}')
-        scores.append((human_corr, mouse_corr, detect, sp_coef))
+        aupr = detect_rg4(models, hyper_params.input_size)
+        print(f'Detection aupr = {round(aupr, 3)}')
+        scores.append((human_corr, mouse_corr, aupr, sp_coef))
 
 
         with open(output_path, 'w') as f:
@@ -290,20 +308,29 @@ def test_models():
                 f.write(f'{hyper_params.input_size}\t{s[0]}\t{s[1]}\t{s[2]}\t{s[3]}\n')
 
 
-def detect():
-    model_path = f"../temp/model_0/"
-    hyper_params = HyperParams()
+def test():
+    ens_size = 4
     models = []
-    for j in range(1):
-        models.append(load_model(model_path + f"model_{j}.h5"))
-
-    aupr = detect_rg4(models, hyper_params.input_size)
+    for j in range(ens_size):
+        models.append(load_model(f"../model/model_{j}.h5"))
+    data_size = get_input_size(models)
+    # human_corr = human_correlation(models)
+    # print(f'Human correlation = {round(human_corr, 3)}')
+    # mouse_corr = check_mouse_correlation(models, data_size)
+    # print(f'Mouse correlation = {round(mouse_corr, 3)}')
+    # sp_coef = loop_length_test2(model=models, data_size=data_size , plot=False)
+    # print(f'sp_coef correlation = {round(sp_coef, 3)}')
+    aupr = detect_rg4(models,data_size)
     print(f'Detection aupr = {round(aupr, 3)}')
+
+
+
 
 
 if __name__ == "__main__":
     # test_models()
-    detect()
+    # process_G3BP1_data("../G3BP1/", "../model")
+    test()
 
 
 
