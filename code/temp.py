@@ -22,6 +22,20 @@ np.random.seed(1)
 DEBUG = False
 debug_size = 1
 
+
+def set_seq(seq, data_size, return_pad_size=False, extra=0):
+    if len(seq) > data_size:
+        start = len(seq) // 2 - data_size // 2
+        end = start + data_size
+        return seq[start:end]
+    else:
+        trailing_padding = data_size//2 - 15 - extra
+        leading_padding = data_size - len(seq) - trailing_padding
+        if return_pad_size:
+            return "N" * leading_padding + seq + "N" * trailing_padding, leading_padding, trailing_padding
+        else:
+            return "N" * leading_padding + seq + "N" * trailing_padding
+
 def find_ensemble_size(x, y, dest, models_num, debug):
     y = y.reshape(len(y))
     ensemble_preds = np.zeros((len(y), models_num))
