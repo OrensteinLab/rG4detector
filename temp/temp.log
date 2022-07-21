@@ -1,0 +1,29 @@
+getting best hyper-parameters
+iteration: 0/7
+Starting to evaluate model!
+SEED = 95
+Multiple kernel CNN model
+val corr = 0.766255806847464
+Finished Level - execution time = 37s ---
+
+
+iteration: 1/7
+Starting to evaluate model!
+SEED = 124
+Multiple kernel CNN model
+val corr = 0.7627430102551039
+Finished Level - execution time = 33s ---
+
+
+iteration: 2/7
+Starting to evaluate model!
+SEED = 474
+Multiple kernel CNN model
+val corr = 0.7575488692197959
+Finished Level - execution time = 32s ---
+
+
+iteration: 3/7
+Starting to evaluate model!
+SEED = 166
+Multiple kernel CNN model
