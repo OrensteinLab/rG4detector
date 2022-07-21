@@ -167,27 +167,15 @@ def main(hyper_params, model_num, iterations, dst, debug=False):
         y_train = y_train[:1000]
     [x_train, x_val] = set_data_size(hyper_params.input_size, [x_train, x_val])
 
-    corr_list = []
-    seed_list = []
+
     for i in range(iterations):
         it_time = time.time()
         print(f"iteration: {i}/{iterations}")
         hyper_params.seed = random.randint(1, 1000)
         pr_corr, model = evaluate_model(x_train, y_train, x_val, y_val, hyper_params)
-        corr_list.append(pr_corr)
-        seed_list.append(hyper_params.seed)
+        model.save(f"{dst}/model_{i}.h5")
         print("Finished Level - execution time = %ss ---\n\n" % (round(time.time() - it_time)))
 
-    # reproduce best models:
-    max_args = np.argsort(np.array(corr_list))[-model_num:][::-1]
-    print(f"Reproducing {model_num} creating best models")
-    for idx, loc in enumerate(max_args):
-        it_time = time.time()
-        print(f"SEED {idx} = {seed_list[loc]}")
-        hyper_params.seed = seed_list[loc]
-        _, model = evaluate_model(x_train, y_train, x_val, y_val, hyper_params)
-        model.save(f"{dst}/model_{idx}.h5")
-        print("Finished training - execution time = %ss ---\n\n" % (round(time.time() - it_time)))
 
     return find_ensemble_size(x_val, y_val, dst, model_num, debug)
 
@@ -200,7 +188,7 @@ def test_models():
         model_path = f"../temp/model_{i}/"
         if not os.path.exists(model_path):
             os.makedirs(model_path)
-        ens_size = main(hyper_params, 7, 35, model_path, debug=DEBUG)
+        ens_size = main(hyper_params, 7, 7, model_path, debug=DEBUG)
         models = []
         for j in range(ens_size):
             models.append(load_model(model_path + f"model_{i}.h5"))
