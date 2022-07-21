@@ -18,7 +18,6 @@ from sklearn.linear_model import LinearRegression
 tf.random.set_seed(1)
 random.seed(10)
 np.random.seed(1)
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 DEBUG = False
 debug_size = 1
