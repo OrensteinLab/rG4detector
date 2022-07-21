@@ -251,7 +251,7 @@ def test_models():
         ens_size = main(hyper_params, 7, 7, model_path, debug=DEBUG)
         models = []
         for j in range(ens_size):
-            models.append(load_model(model_path + f"model_{i}.h5"))
+            models.append(load_model(model_path + f"model_{j}.h5"))
         human_corr = human_correlation(models)
         print(f'Human correlation = {round(human_corr, 3)}')
         mouse_corr = check_mouse_correlation(models, hyper_params.input_size)
@@ -264,13 +264,29 @@ def test_models():
 
 
         with open(output_path, 'w') as f:
-            f.write(f'Human\tMouse\tdetect\tsp_coef\n')
+            f.write(f'input size\tHuman\tMouse\tdetect\tsp_coef\n')
             for s in scores:
-                f.write(f'{s[0]}\t{s[1]}\t{s[2]}\t{s[3]}\n')
+                f.write(f'{hyper_params.input_size}\t{s[0]}\t{s[1]}\t{s[2]}\t{s[3]}\n')
 
 
+# def detect():
+#         model_path = f"../temp/model_0/"
+#         models = []
+#         for j in range(2):
+#             models.append(load_model(model_path + f"model_{i}.h5"))
+#
+#         detect = detect_rg4(models, hyper_params.input_size)
+#         print(f'Detection aupr = {round(detect, 3)}')
+#         scores.append((human_corr, mouse_corr, detect, sp_coef))
+#
+#
+#         with open(output_path, 'w') as f:
+#             f.write(f'Human\tMouse\tdetect\tsp_coef\n')
+#             for s in scores:
+#                 f.write(f'{s[0]}\t{s[1]}\t{s[2]}\t{s[3]}\n')
 if __name__ == "__main__":
     test_models()
+
 
 
 
