@@ -1,0 +1,1368 @@
+2022-07-21 09:22:46.227162: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
+getting best hyper-parameters
+row - 1
+iteration: 0/7
+Starting to evaluate model!
+SEED = 95
+Multiple kernel CNN model
+2022-07-21 09:23:05.133139: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcuda.so.1
+2022-07-21 09:23:06.044073: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1716] Found device 0 with properties: 
+pciBusID: 0000:65:00.0 name: TITAN V computeCapability: 7.0
+coreClock: 1.455GHz coreCount: 80 deviceMemorySize: 11.78GiB deviceMemoryBandwidth: 607.97GiB/s
+2022-07-21 09:23:06.044147: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
+2022-07-21 09:23:06.046551: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcublas.so.10
+2022-07-21 09:23:06.048221: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcufft.so.10
+2022-07-21 09:23:06.048703: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcurand.so.10
+2022-07-21 09:23:06.050923: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcusolver.so.10
+2022-07-21 09:23:06.052525: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcusparse.so.10
+2022-07-21 09:23:06.057187: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudnn.so.7
+2022-07-21 09:23:06.062595: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1858] Adding visible gpu devices: 0
+2022-07-21 09:23:06.062982: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN)to use the following CPU instructions in performance-critical operations:  AVX2 AVX512F FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2022-07-21 09:23:06.082058: I tensorflow/core/platform/profile_utils/cpu_utils.cc:104] CPU Frequency: 2100000000 Hz
+2022-07-21 09:23:06.084441: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x486e2d0 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
+2022-07-21 09:23:06.084500: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version
+2022-07-21 09:23:06.252994: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x48da670 initialized for platform CUDA (this does not guarantee that XLA will be used). Devices:
+2022-07-21 09:23:06.253091: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): TITAN V, Compute Capability 7.0
+2022-07-21 09:23:06.255435: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1716] Found device 0 with properties: 
+pciBusID: 0000:65:00.0 name: TITAN V computeCapability: 7.0
+coreClock: 1.455GHz coreCount: 80 deviceMemorySize: 11.78GiB deviceMemoryBandwidth: 607.97GiB/s
+2022-07-21 09:23:06.255541: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
+2022-07-21 09:23:06.255613: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcublas.so.10
+2022-07-21 09:23:06.255663: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcufft.so.10
+2022-07-21 09:23:06.255710: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcurand.so.10
+2022-07-21 09:23:06.255757: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcusolver.so.10
+2022-07-21 09:23:06.255804: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcusparse.so.10
+2022-07-21 09:23:06.255852: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudnn.so.7
+2022-07-21 09:23:06.259440: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1858] Adding visible gpu devices: 0
+2022-07-21 09:23:06.259553: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
+2022-07-21 09:23:06.727274: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1257] Device interconnect StreamExecutor with strength 1 edge matrix:
+2022-07-21 09:23:06.727331: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1263]      0 
+2022-07-21 09:23:06.727342: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1276] 0:   N 
+2022-07-21 09:23:06.728767: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1402] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 10912 MB memory) -> physical GPU (device: 0, name: TITAN V, pci bus id: 0000:65:00.0, compute capability: 7.0)
+2022-07-21 09:23:07.549982: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcublas.so.10
+2022-07-21 09:23:07.766150: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudnn.so.7
+val corr = 0.7631154458094497
+Finished Level - execution time = 24s ---
+
+
+iteration: 1/7
+Starting to evaluate model!
+SEED = 124
+Multiple kernel CNN model
+val corr = 0.7524481658463698
+Finished Level - execution time = 21s ---
+
+
+iteration: 2/7
+Starting to evaluate model!
+SEED = 474
+Multiple kernel CNN model
+val corr = 0.7573857125481439
+Finished Level - execution time = 21s ---
+
+
+iteration: 3/7
+Starting to evaluate model!
+SEED = 166
+Multiple kernel CNN model
+val corr = 0.7690047830525939
+Finished Level - execution time = 21s ---
+
+
+iteration: 4/7
+Starting to evaluate model!
+SEED = 899
+Multiple kernel CNN model
+val corr = 0.7729434195813408
+Finished Level - execution time = 21s ---
+
+
+iteration: 5/7
+Starting to evaluate model!
+SEED = 812
+Multiple kernel CNN model
+val corr = 0.7615332781710497
+Finished Level - execution time = 21s ---
+
+
+iteration: 6/7
+Starting to evaluate model!
+SEED = 76
+Multiple kernel CNN model
+val corr = 0.7639266703215881
+Finished Level - execution time = 21s ---
+
+
+Human correlation = 0.808
+Computing mouse correlation
+Mouse correlation = 0.63
+sp_coef correlation = 0.831
+Number of transcripts = 369
+counter = 100, time = 5s
+counter = 200, time = 6s
+counter = 300, time = 5s
+Detection aupr = 0.211
+row - 2
+iteration: 0/7
+Starting to evaluate model!
+SEED = 840
+Multiple kernel CNN model
+val corr = 0.7683057199442304
+Finished Level - execution time = 28s ---
+
+
+iteration: 1/7
+Starting to evaluate model!
+SEED = 388
+Multiple kernel CNN model
+val corr = 0.768133943895361
+Finished Level - execution time = 28s ---
+
+
+iteration: 2/7
+Starting to evaluate model!
+SEED = 545
+Multiple kernel CNN model
+val corr = 0.7631073736287651
+Finished Level - execution time = 28s ---
+
+
+iteration: 3/7
+Starting to evaluate model!
+SEED = 83
+Multiple kernel CNN model
+val corr = 0.7527465857311011
+Finished Level - execution time = 28s ---
+
+
+iteration: 4/7
+Starting to evaluate model!
+SEED = 978
+Multiple kernel CNN model
+val corr = 0.7547880684350213
+Finished Level - execution time = 28s ---
+
+
+iteration: 5/7
+Starting to evaluate model!
+SEED = 8
+Multiple kernel CNN model
+val corr = 0.767568398547829
+Finished Level - execution time = 27s ---
+
+
+iteration: 6/7
+Starting to evaluate model!
+SEED = 533
+Multiple kernel CNN model
+val corr = 0.7574796993918148
+Finished Level - execution time = 27s ---
+
+
+Human correlation = 0.799
+Computing mouse correlation
+Mouse correlation = 0.617
+sp_coef correlation = 0.835
+Number of transcripts = 369
+counter = 100, time = 3s
+counter = 200, time = 3s
+counter = 300, time = 3s
+Detection aupr = 0.22
+row - 3
+iteration: 0/7
+Starting to evaluate model!
+SEED = 847
+Multiple kernel CNN model
+val corr = 0.7667728229893563
+Finished Level - execution time = 13s ---
+
+
+iteration: 1/7
+Starting to evaluate model!
+SEED = 742
+Multiple kernel CNN model
+val corr = 0.7690858368160473
+Finished Level - execution time = 13s ---
+
+
+iteration: 2/7
+Starting to evaluate model!
+SEED = 564
+Multiple kernel CNN model
+val corr = 0.7605547091598047
+Finished Level - execution time = 13s ---
+
+
+iteration: 3/7
+Starting to evaluate model!
+SEED = 267
+Multiple kernel CNN model
+val corr = 0.7689742769164719
+Finished Level - execution time = 13s ---
+
+
+iteration: 4/7
+Starting to evaluate model!
+SEED = 585
+Multiple kernel CNN model
+val corr = 0.7710800088619308
+Finished Level - execution time = 13s ---
+
+
+iteration: 5/7
+Starting to evaluate model!
+SEED = 495
+Multiple kernel CNN model
+val corr = 0.7676272558706864
+Finished Level - execution time = 13s ---
+
+
+iteration: 6/7
+Starting to evaluate model!
+SEED = 921
+Multiple kernel CNN model
+val corr = 0.7640504225557531
+Finished Level - execution time = 13s ---
+
+
+Human correlation = 0.796
+Computing mouse correlation
+Mouse correlation = 0.625
+sp_coef correlation = 0.941
+Number of transcripts = 369
+counter = 100, time = 4s
+counter = 200, time = 4s
+counter = 300, time = 4s
+Detection aupr = 0.206
+row - 4
+iteration: 0/7
+Starting to evaluate model!
+SEED = 886
+Multiple kernel CNN model
+val corr = 0.7607216514556838
+Finished Level - execution time = 131s ---
+
+
+iteration: 1/7
+Starting to evaluate model!
+SEED = 88
+Multiple kernel CNN model
+val corr = 0.7622074459394621
+Finished Level - execution time = 134s ---
+
+
+iteration: 2/7
+Starting to evaluate model!
+SEED = 432
+Multiple kernel CNN model
+val corr = 0.754042375726058
+Finished Level - execution time = 133s ---
+
+
+iteration: 3/7
+Starting to evaluate model!
+SEED = 968
+Multiple kernel CNN model
+val corr = 0.7611427957478457
+Finished Level - execution time = 131s ---
+
+
+iteration: 4/7
+Starting to evaluate model!
+SEED = 119
+Multiple kernel CNN model
+val corr = 0.7640811171159824
+Finished Level - execution time = 134s ---
+
+
+iteration: 5/7
+Starting to evaluate model!
+SEED = 772
+Multiple kernel CNN model
+val corr = 0.7562796849470255
+Finished Level - execution time = 134s ---
+
+
+iteration: 6/7
+Starting to evaluate model!
+SEED = 417
+Multiple kernel CNN model
+val corr = 0.7522815386495119
+Finished Level - execution time = 132s ---
+
+
+Human correlation = 0.81
+Computing mouse correlation
+Mouse correlation = 0.622
+sp_coef correlation = 0.925
+Number of transcripts = 369
+counter = 100, time = 6s
+counter = 200, time = 6s
+counter = 300, time = 5s
+Detection aupr = 0.221
+row - 5
+iteration: 0/7
+Starting to evaluate model!
+SEED = 872
+Multiple kernel CNN model
+val corr = 0.7599699259299018
+Finished Level - execution time = 24s ---
+
+
+iteration: 1/7
+Starting to evaluate model!
+SEED = 489
+Multiple kernel CNN model
+val corr = 0.7588770621985994
+Finished Level - execution time = 25s ---
+
+
+iteration: 2/7
+Starting to evaluate model!
+SEED = 835
+Multiple kernel CNN model
+val corr = 0.7571841446922816
+Finished Level - execution time = 24s ---
+
+
+iteration: 3/7
+Starting to evaluate model!
+SEED = 227
+Multiple kernel CNN model
+val corr = 0.7449129252164159
+Finished Level - execution time = 24s ---
+
+
+iteration: 4/7
+Starting to evaluate model!
+SEED = 404
+Multiple kernel CNN model
+val corr = 0.7573530085821821
+Finished Level - execution time = 23s ---
+
+
+iteration: 5/7
+Starting to evaluate model!
+SEED = 919
+Multiple kernel CNN model
+val corr = 0.7629484050732559
+Finished Level - execution time = 24s ---
+
+
+iteration: 6/7
+Starting to evaluate model!
+SEED = 24
+Multiple kernel CNN model
+val corr = 0.7559761884200328
+Finished Level - execution time = 24s ---
+
+
+Human correlation = 0.8
+Computing mouse correlation
+Mouse correlation = 0.621
+sp_coef correlation = 0.783
+Number of transcripts = 369
+counter = 100, time = 6s
+counter = 200, time = 7s
+counter = 300, time = 7s
+Detection aupr = 0.208
+row - 6
+iteration: 0/7
+Starting to evaluate model!
+SEED = 455
+Multiple kernel CNN model
+val corr = 0.7464030769045842
+Finished Level - execution time = 76s ---
+
+
+iteration: 1/7
+Starting to evaluate model!
+SEED = 470
+Multiple kernel CNN model
+Epoch 00008: early stopping
+val corr = 0.7584804835284625
+Finished Level - execution time = 70s ---
+
+
+iteration: 2/7
+Starting to evaluate model!
+SEED = 649
+Multiple kernel CNN model
+Epoch 00009: early stopping
+val corr = 0.7572335368600318
+Finished Level - execution time = 77s ---
+
+
+iteration: 3/7
+Starting to evaluate model!
+SEED = 582
+Multiple kernel CNN model
+val corr = 0.7684081495787985
+Finished Level - execution time = 76s ---
+
+
+iteration: 4/7
+Starting to evaluate model!
+SEED = 729
+Multiple kernel CNN model
+val corr = 0.7400820463092178
+Finished Level - execution time = 77s ---
+
+
+iteration: 5/7
+Starting to evaluate model!
+SEED = 505
+Multiple kernel CNN model
+val corr = 0.7610500132448269
+Finished Level - execution time = 74s ---
+
+
+iteration: 6/7
+Starting to evaluate model!
+SEED = 713
+Multiple kernel CNN model
+val corr = 0.7619928420338128
+Finished Level - execution time = 75s ---
+
+
+Human correlation = 0.804
+Computing mouse correlation
+Mouse correlation = 0.632
+sp_coef correlation = 0.721
+Number of transcripts = 369
+counter = 100, time = 6s
+counter = 200, time = 6s
+counter = 300, time = 5s
+Detection aupr = 0.205
+row - 7
+iteration: 0/7
+Starting to evaluate model!
+SEED = 430
+Multiple kernel CNN model
+val corr = 0.7614529696260961
+Finished Level - execution time = 6s ---
+
+
+iteration: 1/7
+Starting to evaluate model!
+SEED = 306
+Multiple kernel CNN model
+val corr = 0.7607566743179581
+Finished Level - execution time = 6s ---
+
+
+iteration: 2/7
+Starting to evaluate model!
+SEED = 576
+Multiple kernel CNN model
+val corr = 0.755573032882455
+Finished Level - execution time = 6s ---
+
+
+iteration: 3/7
+Starting to evaluate model!
+SEED = 673
+Multiple kernel CNN model
+val corr = 0.7643366976547387
+Finished Level - execution time = 6s ---
+
+
+iteration: 4/7
+Starting to evaluate model!
+SEED = 159
+Multiple kernel CNN model
+val corr = 0.7639822569470147
+Finished Level - execution time = 6s ---
+
+
+iteration: 5/7
+Starting to evaluate model!
+SEED = 462
+Multiple kernel CNN model
+val corr = 0.7594349512371246
+Finished Level - execution time = 6s ---
+
+
+iteration: 6/7
+Starting to evaluate model!
+SEED = 171
+Multiple kernel CNN model
+val corr = 0.7690972492153436
+Finished Level - execution time = 6s ---
+
+
+Human correlation = 0.785
+Computing mouse correlation
+Mouse correlation = 0.617
+sp_coef correlation = 0.932
+Number of transcripts = 369
+counter = 100, time = 5s
+counter = 200, time = 5s
+counter = 300, time = 4s
+Detection aupr = 0.212
+row - 8
+iteration: 0/7
+Starting to evaluate model!
+SEED = 233
+Multiple kernel CNN model
+val corr = 0.758525148231531
+Finished Level - execution time = 58s ---
+
+
+iteration: 1/7
+Starting to evaluate model!
+SEED = 484
+Multiple kernel CNN model
+val corr = 0.7602821854440523
+Finished Level - execution time = 59s ---
+
+
+iteration: 2/7
+Starting to evaluate model!
+SEED = 512
+Multiple kernel CNN model
+val corr = 0.7618989794281912
+Finished Level - execution time = 59s ---
+
+
+iteration: 3/7
+Starting to evaluate model!
+SEED = 587
+Multiple kernel CNN model
+val corr = 0.7623282885928737
+Finished Level - execution time = 58s ---
+
+
+iteration: 4/7
+Starting to evaluate model!
+SEED = 479
+Multiple kernel CNN model
+val corr = 0.7596977496518705
+Finished Level - execution time = 58s ---
+
+
+iteration: 5/7
+Starting to evaluate model!
+SEED = 414
+Multiple kernel CNN model
+val corr = 0.76255302483126
+Finished Level - execution time = 59s ---
+
+
+iteration: 6/7
+Starting to evaluate model!
+SEED = 310
+Multiple kernel CNN model
+val corr = 0.758337035525193
+Finished Level - execution time = 55s ---
+
+
+Human correlation = 0.793
+Computing mouse correlation
+Mouse correlation = 0.614
+sp_coef correlation = 0.948
+Number of transcripts = 369
+counter = 100, time = 6s
+counter = 200, time = 7s
+counter = 300, time = 6s
+Detection aupr = 0.227
+row - 9
+iteration: 0/7
+Starting to evaluate model!
+SEED = 997
+Multiple kernel CNN model
+val corr = 0.7670402223856232
+Finished Level - execution time = 17s ---
+
+
+iteration: 1/7
+Starting to evaluate model!
+SEED = 768
+Multiple kernel CNN model
+val corr = 0.7575941548291187
+Finished Level - execution time = 17s ---
+
+
+iteration: 2/7
+Starting to evaluate model!
+SEED = 565
+Multiple kernel CNN model
+val corr = 0.7508436799549515
+Finished Level - execution time = 17s ---
+
+
+iteration: 3/7
+Starting to evaluate model!
+SEED = 931
+Multiple kernel CNN model
+val corr = 0.7643599093400782
+Finished Level - execution time = 16s ---
+
+
+iteration: 4/7
+Starting to evaluate model!
+SEED = 459
+Multiple kernel CNN model
+val corr = 0.7586097898673595
+Finished Level - execution time = 17s ---
+
+
+iteration: 5/7
+Starting to evaluate model!
+SEED = 613
+Multiple kernel CNN model
+val corr = 0.7558947556232822
+Finished Level - execution time = 17s ---
+
+
+iteration: 6/7
+Starting to evaluate model!
+SEED = 778
+Multiple kernel CNN model
+val corr = 0.7612545458768808
+Finished Level - execution time = 17s ---
+
+
+Human correlation = 0.788
+Computing mouse correlation
+Mouse correlation = 0.597
+sp_coef correlation = 0.913
+Number of transcripts = 369
+counter = 100, time = 3s
+counter = 200, time = 3s
+counter = 300, time = 3s
+Detection aupr = 0.211
+row - 10
+iteration: 0/7
+Starting to evaluate model!
+SEED = 24
+Multiple kernel CNN model
+val corr = 0.7632514932636587
+Finished Level - execution time = 18s ---
+
+
+iteration: 1/7
+Starting to evaluate model!
+SEED = 513
+Multiple kernel CNN model
+val corr = 0.7428969085981526
+Finished Level - execution time = 18s ---
+
+
+iteration: 2/7
+Starting to evaluate model!
+SEED = 558
+Multiple kernel CNN model
+val corr = 0.7498441669465306
+Finished Level - execution time = 17s ---
+
+
+iteration: 3/7
+Starting to evaluate model!
+SEED = 377
+Multiple kernel CNN model
+val corr = 0.738595281748144
+Finished Level - execution time = 18s ---
+
+
+iteration: 4/7
+Starting to evaluate model!
+SEED = 647
+Multiple kernel CNN model
+val corr = 0.7463295650919375
+Finished Level - execution time = 18s ---
+
+
+iteration: 5/7
+Starting to evaluate model!
+SEED = 722
+Multiple kernel CNN model
+val corr = 0.7451103424925642
+Finished Level - execution time = 18s ---
+
+
+iteration: 6/7
+Starting to evaluate model!
+SEED = 836
+Multiple kernel CNN model
+val corr = 0.7657542884449076
+Finished Level - execution time = 18s ---
+
+
+Human correlation = 0.804
+Computing mouse correlation
+Mouse correlation = 0.612
+sp_coef correlation = 0.851
+Number of transcripts = 369
+counter = 100, time = 8s
+counter = 200, time = 9s
+counter = 300, time = 8s
+Detection aupr = 0.211
+row - 11
+iteration: 0/7
+Starting to evaluate model!
+SEED = 476
+Multiple kernel CNN model
+val corr = 0.7662812975848513
+Finished Level - execution time = 9s ---
+
+
+iteration: 1/7
+Starting to evaluate model!
+SEED = 311
+Multiple kernel CNN model
+val corr = 0.7689331717761204
+Finished Level - execution time = 9s ---
+
+
+iteration: 2/7
+Starting to evaluate model!
+SEED = 189
+Multiple kernel CNN model
+val corr = 0.7594626474123586
+Finished Level - execution time = 9s ---
+
+
+iteration: 3/7
+Starting to evaluate model!
+SEED = 241
+Multiple kernel CNN model
+val corr = 0.7431538481513909
+Finished Level - execution time = 9s ---
+
+
+iteration: 4/7
+Starting to evaluate model!
+SEED = 229
+Multiple kernel CNN model
+val corr = 0.7562718907894259
+Finished Level - execution time = 9s ---
+
+
+iteration: 5/7
+Starting to evaluate model!
+SEED = 383
+Multiple kernel CNN model
+val corr = 0.7714988845041205
+Finished Level - execution time = 9s ---
+
+
+iteration: 6/7
+Starting to evaluate model!
+SEED = 618
+Multiple kernel CNN model
+val corr = 0.7671622972931068
+Finished Level - execution time = 9s ---
+
+
+Human correlation = 0.793
+Computing mouse correlation
+Mouse correlation = 0.591
+sp_coef correlation = 0.853
+Number of transcripts = 369
+counter = 100, time = 4s
+counter = 200, time = 4s
+counter = 300, time = 4s
+Detection aupr = 0.235
+row - 12
+iteration: 0/7
+Starting to evaluate model!
+SEED = 165
+Multiple kernel CNN model
+val corr = 0.7583327311155065
+Finished Level - execution time = 5s ---
+
+
+iteration: 1/7
+Starting to evaluate model!
+SEED = 544
+Multiple kernel CNN model
+val corr = 0.7507254616094015
+Finished Level - execution time = 5s ---
+
+
+iteration: 2/7
+Starting to evaluate model!
+SEED = 799
+Multiple kernel CNN model
+val corr = 0.7561068492204693
+Finished Level - execution time = 5s ---
+
+
+iteration: 3/7
+Starting to evaluate model!
+SEED = 853
+Multiple kernel CNN model
+val corr = 0.7564198976993723
+Finished Level - execution time = 5s ---
+
+
+iteration: 4/7
+Starting to evaluate model!
+SEED = 28
+Multiple kernel CNN model
+val corr = 0.7518048491646386
+Finished Level - execution time = 5s ---
+
+
+iteration: 5/7
+Starting to evaluate model!
+SEED = 555
+Multiple kernel CNN model
+val corr = 0.7568552223782461
+Finished Level - execution time = 5s ---
+
+
+iteration: 6/7
+Starting to evaluate model!
+SEED = 579
+Multiple kernel CNN model
+val corr = 0.7634954641129632
+Finished Level - execution time = 5s ---
+
+
+Human correlation = 0.79
+Computing mouse correlation
+Mouse correlation = 0.608
+sp_coef correlation = 0.939
+Number of transcripts = 369
+counter = 100, time = 7s
+counter = 200, time = 8s
+counter = 300, time = 7s
+Detection aupr = 0.222
+row - 13
+iteration: 0/7
+Starting to evaluate model!
+SEED = 819
+Multiple kernel CNN model
+val corr = 0.772532417654169
+Finished Level - execution time = 129s ---
+
+
+iteration: 1/7
+Starting to evaluate model!
+SEED = 854
+Multiple kernel CNN model
+val corr = 0.7669374591677619
+Finished Level - execution time = 130s ---
+
+
+iteration: 2/7
+Starting to evaluate model!
+SEED = 878
+Multiple kernel CNN model
+Epoch 00007: early stopping
+val corr = 0.7708495702817196
+Finished Level - execution time = 114s ---
+
+
+iteration: 3/7
+Starting to evaluate model!
+SEED = 34
+Multiple kernel CNN model
+val corr = 0.7356759448263893
+Finished Level - execution time = 131s ---
+
+
+iteration: 4/7
+Starting to evaluate model!
+SEED = 60
+Multiple kernel CNN model
+Epoch 00007: early stopping
+val corr = 0.7543584502670728
+Finished Level - execution time = 112s ---
+
+
+iteration: 5/7
+Starting to evaluate model!
+SEED = 169
+Multiple kernel CNN model
+Epoch 00008: early stopping
+val corr = 0.747291346165058
+Finished Level - execution time = 131s ---
+
+
+iteration: 6/7
+Starting to evaluate model!
+SEED = 431
+Multiple kernel CNN model
+Epoch 00006: early stopping
+val corr = 0.7634950810695277
+Finished Level - execution time = 97s ---
+
+
+Human correlation = 0.793
+Computing mouse correlation
+Mouse correlation = 0.614
+sp_coef correlation = 0.957
+Number of transcripts = 369
+counter = 100, time = 3s
+counter = 200, time = 3s
+counter = 300, time = 3s
+Detection aupr = 0.227
+row - 14
+iteration: 0/7
+Starting to evaluate model!
+SEED = 780
+Multiple kernel CNN model
+val corr = 0.7532218601140248
+Finished Level - execution time = 6s ---
+
+
+iteration: 1/7
+Starting to evaluate model!
+SEED = 315
+Multiple kernel CNN model
+val corr = 0.7633045488796515
+Finished Level - execution time = 6s ---
+
+
+iteration: 2/7
+Starting to evaluate model!
+SEED = 169
+Multiple kernel CNN model
+val corr = 0.7540410751483593
+Finished Level - execution time = 6s ---
+
+
+iteration: 3/7
+Starting to evaluate model!
+SEED = 787
+Multiple kernel CNN model
+val corr = 0.7653603069825781
+Finished Level - execution time = 6s ---
+
+
+iteration: 4/7
+Starting to evaluate model!
+SEED = 201
+Multiple kernel CNN model
+val corr = 0.7640291431524696
+Finished Level - execution time = 6s ---
+
+
+iteration: 5/7
+Starting to evaluate model!
+SEED = 30
+Multiple kernel CNN model
+val corr = 0.7683625283965269
+Finished Level - execution time = 6s ---
+
+
+iteration: 6/7
+Starting to evaluate model!
+SEED = 173
+Multiple kernel CNN model
+val corr = 0.767271288194352
+Finished Level - execution time = 6s ---
+
+
+Human correlation = 0.792
+Computing mouse correlation
+Mouse correlation = 0.611
+sp_coef correlation = 0.843
+Number of transcripts = 369
+counter = 100, time = 6s
+counter = 200, time = 6s
+counter = 300, time = 6s
+Detection aupr = 0.215
+row - 15
+iteration: 0/7
+Starting to evaluate model!
+SEED = 479
+Multiple kernel CNN model
+val corr = 0.7674299607982331
+Finished Level - execution time = 21s ---
+
+
+iteration: 1/7
+Starting to evaluate model!
+SEED = 322
+Multiple kernel CNN model
+val corr = 0.7611202464895389
+Finished Level - execution time = 21s ---
+
+
+iteration: 2/7
+Starting to evaluate model!
+SEED = 44
+Multiple kernel CNN model
+val corr = 0.7610465832842762
+Finished Level - execution time = 20s ---
+
+
+iteration: 3/7
+Starting to evaluate model!
+SEED = 517
+Multiple kernel CNN model
+val corr = 0.7641826623177407
+Finished Level - execution time = 21s ---
+
+
+iteration: 4/7
+Starting to evaluate model!
+SEED = 252
+Multiple kernel CNN model
+val corr = 0.7515302410963882
+Finished Level - execution time = 20s ---
+
+
+iteration: 5/7
+Starting to evaluate model!
+SEED = 37
+Multiple kernel CNN model
+val corr = 0.7824418052054237
+Finished Level - execution time = 20s ---
+
+
+iteration: 6/7
+Starting to evaluate model!
+SEED = 18
+Multiple kernel CNN model
+val corr = 0.7708592851044501
+Finished Level - execution time = 21s ---
+
+
+Human correlation = 0.802
+Computing mouse correlation
+Mouse correlation = 0.62
+sp_coef correlation = 0.8
+Number of transcripts = 369
+counter = 100, time = 7s
+counter = 200, time = 7s
+counter = 300, time = 7s
+Detection aupr = 0.214
+row - 16
+iteration: 0/7
+Starting to evaluate model!
+SEED = 146
+Multiple kernel CNN model
+val corr = 0.7590593246130027
+Finished Level - execution time = 118s ---
+
+
+iteration: 1/7
+Starting to evaluate model!
+SEED = 696
+Multiple kernel CNN model
+val corr = 0.7548019884041135
+Finished Level - execution time = 119s ---
+
+
+iteration: 2/7
+Starting to evaluate model!
+SEED = 502
+Multiple kernel CNN model
+val corr = 0.7689112308242959
+Finished Level - execution time = 119s ---
+
+
+iteration: 3/7
+Starting to evaluate model!
+SEED = 465
+Multiple kernel CNN model
+val corr = 0.7561144424754479
+Finished Level - execution time = 120s ---
+
+
+iteration: 4/7
+Starting to evaluate model!
+SEED = 790
+Multiple kernel CNN model
+val corr = 0.7619580812408138
+Finished Level - execution time = 118s ---
+
+
+iteration: 5/7
+Starting to evaluate model!
+SEED = 361
+Multiple kernel CNN model
+Epoch 00008: early stopping
+val corr = 0.7564625497755639
+Finished Level - execution time = 105s ---
+
+
+iteration: 6/7
+Starting to evaluate model!
+SEED = 23
+Multiple kernel CNN model
+val corr = 0.7574398531206861
+Finished Level - execution time = 118s ---
+
+
+Human correlation = 0.794
+Computing mouse correlation
+Mouse correlation = 0.616
+sp_coef correlation = 0.888
+Number of transcripts = 369
+counter = 100, time = 6s
+counter = 200, time = 6s
+counter = 300, time = 5s
+Detection aupr = 0.216
+row - 17
+iteration: 0/7
+Starting to evaluate model!
+SEED = 431
+Multiple kernel CNN model
+val corr = 0.7568128344090975
+Finished Level - execution time = 21s ---
+
+
+iteration: 1/7
+Starting to evaluate model!
+SEED = 647
+Multiple kernel CNN model
+val corr = 0.7713817524784528
+Finished Level - execution time = 21s ---
+
+
+iteration: 2/7
+Starting to evaluate model!
+SEED = 697
+Multiple kernel CNN model
+val corr = 0.7636895652298175
+Finished Level - execution time = 22s ---
+
+
+iteration: 3/7
+Starting to evaluate model!
+SEED = 365
+Multiple kernel CNN model
+val corr = 0.7642983832360263
+Finished Level - execution time = 22s ---
+
+
+iteration: 4/7
+Starting to evaluate model!
+SEED = 266
+Multiple kernel CNN model
+val corr = 0.7598391638881501
+Finished Level - execution time = 22s ---
+
+
+iteration: 5/7
+Starting to evaluate model!
+SEED = 18
+Multiple kernel CNN model
+val corr = 0.7652589931454956
+Finished Level - execution time = 22s ---
+
+
+iteration: 6/7
+Starting to evaluate model!
+SEED = 159
+Multiple kernel CNN model
+val corr = 0.7630769677249247
+Finished Level - execution time = 22s ---
+
+
+Human correlation = 0.807
+Computing mouse correlation
+Mouse correlation = 0.644
+sp_coef correlation = 0.691
+Number of transcripts = 369
+counter = 100, time = 6s
+counter = 200, time = 6s
+counter = 300, time = 5s
+Detection aupr = 0.181
+row - 18
+iteration: 0/7
+Starting to evaluate model!
+SEED = 262
+Multiple kernel CNN model
+val corr = 0.7515670092239389
+Finished Level - execution time = 7s ---
+
+
+iteration: 1/7
+Starting to evaluate model!
+SEED = 43
+Multiple kernel CNN model
+val corr = 0.7476393932049066
+Finished Level - execution time = 7s ---
+
+
+iteration: 2/7
+Starting to evaluate model!
+SEED = 145
+Multiple kernel CNN model
+val corr = 0.750332279741072
+Finished Level - execution time = 7s ---
+
+
+iteration: 3/7
+Starting to evaluate model!
+SEED = 670
+Multiple kernel CNN model
+val corr = 0.7646943964679643
+Finished Level - execution time = 7s ---
+
+
+iteration: 4/7
+Starting to evaluate model!
+SEED = 703
+Multiple kernel CNN model
+val corr = 0.7592204365622262
+Finished Level - execution time = 7s ---
+
+
+iteration: 5/7
+Starting to evaluate model!
+SEED = 681
+Multiple kernel CNN model
+val corr = 0.7574514420795233
+Finished Level - execution time = 7s ---
+
+
+iteration: 6/7
+Starting to evaluate model!
+SEED = 918
+Multiple kernel CNN model
+val corr = 0.7557384678102657
+Finished Level - execution time = 7s ---
+
+
+Human correlation = 0.79
+Computing mouse correlation
+Mouse correlation = 0.613
+sp_coef correlation = 0.92
+Number of transcripts = 369
+counter = 100, time = 4s
+counter = 200, time = 5s
+counter = 300, time = 5s
+Detection aupr = 0.219
+row - 19
+iteration: 0/7
+Starting to evaluate model!
+SEED = 245
+Multiple kernel CNN model
+val corr = 0.7475771332050699
+Finished Level - execution time = 29s ---
+
+
+iteration: 1/7
+Starting to evaluate model!
+SEED = 118
+Multiple kernel CNN model
+val corr = 0.7450128391604446
+Finished Level - execution time = 29s ---
+
+
+iteration: 2/7
+Starting to evaluate model!
+SEED = 528
+Multiple kernel CNN model
+val corr = 0.7514898822972248
+Finished Level - execution time = 28s ---
+
+
+iteration: 3/7
+Starting to evaluate model!
+SEED = 731
+Multiple kernel CNN model
+val corr = 0.7508623998642767
+Finished Level - execution time = 28s ---
+
+
+iteration: 4/7
+Starting to evaluate model!
+SEED = 993
+Multiple kernel CNN model
+val corr = 0.7466335619069819
+Finished Level - execution time = 28s ---
+
+
+iteration: 5/7
+Starting to evaluate model!
+SEED = 953
+Multiple kernel CNN model
+val corr = 0.758585612777158
+Finished Level - execution time = 28s ---
+
+
+iteration: 6/7
+Starting to evaluate model!
+SEED = 485
+Multiple kernel CNN model
+val corr = 0.7570716067658374
+Finished Level - execution time = 29s ---
+
+
+Human correlation = 0.788
+Computing mouse correlation
+Mouse correlation = 0.595
+sp_coef correlation = 0.931
+Number of transcripts = 369
+counter = 100, time = 8s
+counter = 200, time = 9s
+counter = 300, time = 8s
+Detection aupr = 0.234
+row - 20
+iteration: 0/7
+Starting to evaluate model!
+SEED = 796
+Multiple kernel CNN model
+val corr = 0.7531091657497064
+Finished Level - execution time = 11s ---
+
+
+iteration: 1/7
+Starting to evaluate model!
+SEED = 785
+Multiple kernel CNN model
+val corr = 0.7669948958800097
+Finished Level - execution time = 11s ---
+
+
+iteration: 2/7
+Starting to evaluate model!
+SEED = 304
+Multiple kernel CNN model
+val corr = 0.7588766952907666
+Finished Level - execution time = 11s ---
+
+
+iteration: 3/7
+Starting to evaluate model!
+SEED = 359
+Multiple kernel CNN model
+val corr = 0.7590173153643285
+Finished Level - execution time = 10s ---
+
+
+iteration: 4/7
+Starting to evaluate model!
+SEED = 328
+Multiple kernel CNN model
+val corr = 0.7608044527474898
+Finished Level - execution time = 11s ---
+
+
+iteration: 5/7
+Starting to evaluate model!
+SEED = 566
+Multiple kernel CNN model
+val corr = 0.7672719019792638
+Finished Level - execution time = 11s ---
+
+
+iteration: 6/7
+Starting to evaluate model!
+SEED = 437
+Multiple kernel CNN model
+val corr = 0.7628736356585006
+Finished Level - execution time = 11s ---
+
+
+Human correlation = 0.788
+Computing mouse correlation
+Mouse correlation = 0.619
+/usr/local/lib64/python3.6/site-packages/pandas/plotting/_matplotlib/core.py:320: RuntimeWarning: More than 20 figures have been opened. Figures created through the pyplot interface (`matplotlib.pyplot.figure`) are retained until explicitly closed and may consume too much memory. (To control this warning, see the rcParam `figure.max_open_warning`).
+  fig = self.plt.figure(figsize=self.figsize)
+sp_coef correlation = 0.946
+Number of transcripts = 369
+counter = 100, time = 6s
+counter = 200, time = 7s
+counter = 300, time = 6s
+Detection aupr = 0.223
