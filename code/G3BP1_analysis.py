@@ -224,7 +224,7 @@ def process_G3BP1_data(dir_path, model_path):
 
     if UNIQUE:
         cntrl_src = dir_path + "/control/G3BP1_2021_control_unique.fa"
-        cntrl_dst = dir_path + "/predictions/control_predictions_unique.csv"
+        cntrl_dst = dir_path + "/control/control_predictions_unique.csv"
         stress_src = dir_path + "/stress/G3BP1_2021_stress_unique.fa"
         stress_dst = dir_path + "/stress/stress_predictions_unique.csv"
         potential_rg4_path = dir_path + "/potential_G3BP1_rG4_binding_areas_unique/"
