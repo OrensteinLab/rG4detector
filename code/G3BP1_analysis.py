@@ -216,14 +216,14 @@ def screener_norm(unique):
 
 
 def process_G3BP1_data(dir_path, model_path):
-    make_preds = False
+    make_preds = True
     GET_SUB_SEQ = False
     GET_STATICS = False
     FIND_PEAKS = False
     UNIQUE = False
     pred_unique = False
-    SCREENER = True
-    NORM = True
+    SCREENER = False
+    NORM = False
 
     if UNIQUE:
         cntrl_src = dir_path + "/control/G3BP1_2021_control_unique.fa"

@@ -309,18 +309,18 @@ def test_models():
 
 
 def test():
-    ens_size = 4
+    ens_size = 3
     models = []
     for j in range(ens_size):
         models.append(load_model(f"../model/model_{j}.h5"))
     data_size = get_input_size(models)
-    # human_corr = human_correlation(models)
-    # print(f'Human correlation = {round(human_corr, 3)}')
-    # mouse_corr = check_mouse_correlation(models, data_size)
-    # print(f'Mouse correlation = {round(mouse_corr, 3)}')
-    # sp_coef = loop_length_test2(model=models, data_size=data_size , plot=False)
-    # print(f'sp_coef correlation = {round(sp_coef, 3)}')
-    aupr = detect_rg4(models,data_size)
+    human_corr = human_correlation(models)
+    print(f'Human correlation = {round(human_corr, 3)}')
+    mouse_corr = check_mouse_correlation(models, data_size)
+    print(f'Mouse correlation = {round(mouse_corr, 3)}')
+    sp_coef = loop_length_test2(model=models, data_size=data_size , plot=False)
+    print(f'sp_coef correlation = {round(sp_coef, 3)}')
+    aupr = detect_rg4(models, data_size)
     print(f'Detection aupr = {round(aupr, 3)}')
 
 
