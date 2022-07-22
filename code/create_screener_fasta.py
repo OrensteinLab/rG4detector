@@ -20,8 +20,11 @@ if not args.mouse:
     x_arr_str = np.char.mod('%d', nuc_idx)
     x_str_list = ["".join(x) for x in x_arr_str]
     sequences = [x.translate(x.maketrans('0123', 'ACGT')) for x in x_str_list]
-    chop_size = (len(sequences[0])-args.data_size)//2
-    sequences_center = [s[chop_size:chop_size+args.data_size] for s in sequences]
+    # chop_size = (len(sequences[0])-args.data_size)//2
+    # sequences_center = [s[chop_size:chop_size+args.data_size] for s in sequences]
+    end = len(sequences[0])//2 + 15
+    start = end - args.data_size
+    sequences_center = [s[start:end] for s in sequences]
 
     # Write sequences centers to fasta file
     with open(args.output_file, 'w') as f:
@@ -34,8 +37,11 @@ else:
     print("Creating mouse fasta file for screener")
     # Read test sequences and labels
     data_df = pd.read_csv(args.data_dir_path + f"mouse_data.csv", names=["sequence", "labels"], header=None)
-    chop_size = (len(data_df.loc[0, "sequence"])-args.data_size)//2
-    data_df["sequence"] = data_df["sequence"].map(lambda x: x[chop_size:chop_size+args.data_size])
+    # chop_size = (len(data_df.loc[0, "sequence"])-args.data_size)//2
+    # data_df["sequence"] = data_df["sequence"].map(lambda x: x[chop_size:chop_size+args.data_size])
+    end = len(data_df.loc[0, "sequence"])//2 + 15
+    start = end - args.data_size
+    data_df["sequence"] = data_df["sequence"].map(lambda x: x[start:end])
     with open(args.output_file, 'w') as f:
         for idx, row in data_df.iterrows():
             f.write(f'>{idx}\n{row["sequence"]}\n')

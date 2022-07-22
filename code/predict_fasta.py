@@ -1,9 +1,7 @@
-import sys
 import pandas as pd
 from tensorflow.keras.models import load_model
 from utils import get_input_size, one_hot_enc, pred_all_sub_seq, get_score_per_position
 from Bio import SeqIO
-import numpy as np
 import csv
 import argparse
 import matplotlib.pyplot as plt
@@ -18,7 +16,6 @@ def bar_plot(data, desc, dst):
     plt.title(desc)
     plt.savefig(dst + f"/{desc}_detection")
     plt.show()
-
 
 
 def predict_fasta(model, src, dst):
@@ -36,8 +33,6 @@ def predict_fasta(model, src, dst):
     seqs_description = [s.description for s in SeqIO.parse(open(src), 'fasta')]
     preds_df = pd.DataFrame(data=list(zip(seqs_description, preds)), columns=["description", "rG4detector prediction"])
     preds_df.to_csv(dst + "/rG4detector_prediction.csv", index=False)
-
-
 
 
 def detect_fasta(model, src, dst, plot):
