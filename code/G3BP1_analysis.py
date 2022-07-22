@@ -8,10 +8,7 @@ import numpy as np
 import sys
 from PARAMETERS import *
 
-
-pad5 = input_size//2 + 15
-pad3 = input_size//2 - 15
-
+DEBUG = True
 
 def make_prediction(model, seq, max_pred=True):
     one_hot_mat = one_hot_enc(seq)
@@ -23,11 +20,9 @@ def make_prediction(model, seq, max_pred=True):
 
 
 def predict_fasta(model, src, dst):
-    input_size = get_input_size(model)
     with open(src) as f:
         f_lines = f.read().splitlines()
     seqs = f_lines[1::2]
-
     print(f"Number of sequences = {len(seqs)}")
     scores_df = pd.DataFrame(index=range(1, len(seqs)+1), dtype=float)
     for idx, seq in enumerate(seqs):
@@ -140,6 +135,8 @@ def find_seq_statistics(stress, ctrl, dst, input_size, dir_path):
 
 # TODO
 def find_seq_peaks(model, src, dst, t_hold=1.4):
+    print("ERROR: need to update function")
+    exit(1)
     with open(src) as f:
         f_lines = f.read().splitlines()
     seqs = f_lines[1::2]
@@ -230,15 +227,15 @@ def process_G3BP1_data(dir_path, model_path):
         cntrl_dst = dir_path + "/predictions/control_predictions_unique.csv"
         stress_src = dir_path + "/stress/G3BP1_2021_stress_unique.fa"
         stress_dst = dir_path + "/stress/stress_predictions_unique.csv"
-        potential_rg4_path = dir_path + "potential_G3BP1_rG4_binding_areas_unique/"
-        statics_dst = dir_path + f"statics/unique/"
+        potential_rg4_path = dir_path + "/potential_G3BP1_rG4_binding_areas_unique/"
+        statics_dst = dir_path + f"/statics/unique/"
     else:
-        cntrl_src = dir_path + "control/G3BP1_2021_cntrl.fa"
-        cntrl_dst = dir_path + "control/cntrl_predictions.csv"
-        stress_src = dir_path + "stress/G3BP1_2021_stress.fa"
-        stress_dst = dir_path + "stress/stress_predictions.csv"
-        potential_rg4_path = dir_path + "potential_G3BP1_rG4_binding_areas/"
-        statics_dst = dir_path + f"statics/"
+        cntrl_src = dir_path + "/control/G3BP1_2021_cntrl.fa"
+        cntrl_dst = dir_path + "/control/cntrl_predictions.csv"
+        stress_src = dir_path + "/stress/G3BP1_2021_stress.fa"
+        stress_dst = dir_path + "/stress/stress_predictions.csv"
+        potential_rg4_path = dir_path + "/potential_G3BP1_rG4_binding_areas/"
+        statics_dst = dir_path + f"/statics/"
 
     MODEL = []
     for i in range(ENSEMBLE_SIZE):
@@ -267,11 +264,11 @@ def process_G3BP1_data(dir_path, model_path):
         print("get statics start")
         find_seq_statistics(stress=stress_src, ctrl=cntrl_src, dst=statics_dst)
 
-    if FIND_PEAKS:
-        threshold = 1.64
-        print("FIND_PEAKS start")
-        find_seq_peaks(MODEL, stress_src, peak_dest + "stress_peaks.csv", t_hold=threshold)
-        find_seq_peaks(MODEL, cntrl_src, peak_dest + "control_peaks.csv", t_hold=threshold)
+    # if FIND_PEAKS:
+    #     threshold = 1.64
+    #     print("FIND_PEAKS start")
+    #     find_seq_peaks(MODEL, stress_src, peak_dest + "stress_peaks.csv", t_hold=threshold)
+    #     find_seq_peaks(MODEL, cntrl_src, peak_dest + "control_peaks.csv", t_hold=threshold)
 
     if pred_unique:
         print("Starting stress unique")
