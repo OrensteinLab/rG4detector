@@ -39,7 +39,7 @@ def get_rG4detector_mouse_corr(model, mouse_df):
 
 def get_screener_scores(screener_preds, y):
     screener_scores = {}
-    preds = pd.read_csv(screener_preds, usecols=METHODS_LIST, sep="\t")
+    preds = pd.read_csv(screener_preds, usecols=['description'] + METHODS_LIST, sep="\t")
     preds = preds.groupby(['description']).max()
 
     labels = y.reshape(len(y))
@@ -49,8 +49,7 @@ def get_screener_scores(screener_preds, y):
 
         if min(p) <= 0:
             const = -min(p) + 10 ** -3
-        p = p + const
-        p = np.log(p)
+        p = np.log(p + const)
         pr, _ = pearsonr(p, labels)
         screener_scores[col] = round(pr, 3)
     return screener_scores
