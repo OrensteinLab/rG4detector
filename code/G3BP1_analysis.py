@@ -21,7 +21,7 @@ def make_all_seqs_prediction(model, seqs, max_pred=True):
     sub_mat_list = [np.array([m[x:x+input_size]for x in range(len(m)-input_size+1)]) for m in one_hot_mat_list]
     sub_mat_arr = np.vstack(sub_mat_list)
     sub_seq_preds = make_prediction(model, one_hot_mat=sub_mat_arr)
-    sub_seq_preds = sub_seq_preds.reshape(sub_seq_preds)
+    sub_seq_preds = sub_seq_preds.reshape(len(sub_seq_preds))
     seq_preds = [sub_seq_preds[preds_per_seq[i]:preds_per_seq[i+1]] for i in range(len(preds_per_seq)-1)]
     assert len(seq_preds) == len(seqs), f"ERROR: make_all_seqs_prediction - len(preds) != len(seq)"
     return [max(p) for p in seq_preds] if max_pred else seq_preds
