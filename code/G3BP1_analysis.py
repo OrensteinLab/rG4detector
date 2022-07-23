@@ -1,7 +1,7 @@
 import time
 import pandas as pd
 from tensorflow.keras.models import load_model
-from utils import get_input_size, one_hot_enc, pred_all_sub_seq
+from utils import get_input_size, one_hot_enc, pred_all_sub_seq, make_prediction
 from scipy.stats import mannwhitneyu
 from scipy.signal import find_peaks
 import numpy as np
@@ -11,13 +11,18 @@ from PARAMETERS import *
 # TODO remove
 DEBUG = False
 
-def make_prediction(model, seq, max_pred=True):
-    one_hot_mat = one_hot_enc(seq)
-    preds = pred_all_sub_seq(one_hot_mat, model)
-    if max_pred:
-        return max(preds)
-    else:
-        return preds
+def make_all_seqs_prediction(model, seqs, max_pred=True):
+    input_size = get_input_size(model)
+    one_hot_mat_list = [one_hot_enc(s) for s in seqs]
+    preds_per_seq = np.zeros(len(seqs) + 1)
+    for i, s in enumerate(seqs):
+        preds_per_seq[i+1] = len(s) - input_size + 1
+    sub_mat_list = [np.array([m[x:x+input_size]for x in range(len(m)-input_size+1)]) for m in one_hot_mat_list]
+    sub_mat_arr = np.vstack(sub_mat_list)
+    sub_seq_preds = make_prediction(model, one_hot_mat=sub_mat_arr)
+    seq_preds = [sub_seq_preds[preds_per_seq[i]:preds_per_seq[i+1]] for i in range(len(preds_per_seq)-1)]
+    assert len(seq_preds) == len(seqs), f"ERROR: make_all_seqs_prediction - len(preds) != len(seq)"
+    return [max(p) for p in seq_preds] if max_pred else seq_preds
 
 
 def predict_fasta(model, src, dst):
@@ -25,21 +30,10 @@ def predict_fasta(model, src, dst):
         f_lines = f.read().splitlines()
     seqs = f_lines[1::2]
     print(f"Number of sequences = {len(seqs)}")
-    # scores_df = pd.DataFrame(index=range(1, len(seqs)+1), dtype=float)
-    scores = []
-    for idx, seq in enumerate(seqs):
-        if (idx+1) % 500 == 0:
-            print(f"{idx+1} sequences are done")
-            if DEBUG:
-                break
-        pred = make_prediction(model, seq)
-        # scores_df.loc[idx+1, "sequence"] = seq
-        # scores_df.loc[idx+1, "rG4detector"] = pred
-        scores.append((seq, pred))
+    scores = make_all_seqs_prediction(model, seqs)
     with open(dst, "w") as f:
         for s, p in scores:
             f.write(f"{s},{p}\n")
-    # scores_df.to_csv(dst)
 
 
 def arrange_fasta(src):
@@ -152,11 +146,8 @@ def find_seq_peaks(model, src, dst, t_hold=1.4):
     print(f"Number of sequences = {len(seqs)}")
     peaks_df = pd.DataFrame(index=range(1, len(seqs) + 1))
     t = time.time()
-    for idx, seq in enumerate(seqs):
-        if (idx+1) % 1000 == 0:
-            print(f"{idx + 1}/{len(seqs)} - {round(time.time()-t)}s")
-            t = time.time()
-        pred = make_prediction(model, seq, max_pred=False)
+    preds = make_all_seqs_prediction(model, seqs, max_pred=False)
+    for idx, pred, seq in enumerate(zip(preds,seqs)):
         p, _ = find_peaks(pred, height=t_hold)
         seq_len = len(seq) - (79 + 50)  # (pad5 + pad 3)
         peaks_df.loc[idx+1, "sequence"] = seq
@@ -223,10 +214,10 @@ def process_G3BP1_data(dir_path, model_path):
     GET_SUB_SEQ = False
     GET_STATICS = False
     FIND_PEAKS = False
-    UNIQUE = False
+    UNIQUE = True
     pred_unique = False
-    SCREENER = True
-    NORM = True
+    SCREENER = False
+    NORM = False
 
     if UNIQUE:
         cntrl_src = dir_path + "/control/G3BP1_2021_control_unique.fa"

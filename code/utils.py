@@ -85,9 +85,9 @@ def get_input_size(model):
 def make_prediction(model, seq=None, one_hot_mat=None):
     if one_hot_mat is None:
         if isinstance(seq, list):
-            one_hot_mat = np.array(list(map(one_hot_enc, seq, [False]*len(seq))))
+            one_hot_mat = np.array(list(map(one_hot_enc, seq)))
         else:
-            one_hot_mat = one_hot_enc(seq, False)
+            one_hot_mat = one_hot_enc(seq)
             one_hot_mat = one_hot_mat.reshape((1, one_hot_mat.shape[0], one_hot_mat.shape[1]))
     if isinstance(model, list):
         pred = np.zeros((len(one_hot_mat), 1))
@@ -140,8 +140,8 @@ def plot_auc_curve(scores_dict, title=None, dest=None, plot=False, PR=False, y=N
 #     return scores
 
 
-def one_hot_enc(s, remove_last=True):
-    if remove_last:
+def one_hot_enc(s):
+    if s[-1] == "\n":
         s = s[:-1]
     s = s + "ACGT"
     if 'N' not in s and 'Z' not in s and 'H' not in s:
@@ -167,14 +167,14 @@ def pred_all_sub_seq(data, model, pad=False):
     input_length = get_input_size(model)
     if pad:
         data = np.concatenate([np.zeros((input_length-1, 4)), data, np.zeros((input_length-1, 4))])
-    sub_seq_list = np.array([data[x:x+input_length, :] for x in range(len(data)-input_length+1)])
+    sub_seq_arr = np.array([data[x:x+input_length, :] for x in range(len(data)-input_length+1)])
 
     if isinstance(model, list):
-        preds = np.zeros((len(sub_seq_list), 1))
+        preds = np.zeros((len(sub_seq_arr), 1))
         for i in range(len(model)):
-            preds += model[i](sub_seq_list).numpy()/len(model)
+            preds += model[i](sub_seq_arr).numpy()/len(model)
     else:
-        preds = model(sub_seq_list).numpy()
+        preds = model(sub_seq_arr).numpy()
     preds = preds.reshape(len(preds))
     return preds
 
