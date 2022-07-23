@@ -92,7 +92,7 @@ def make_prediction(model, seq=None, one_hot_mat=None):
     if isinstance(model, list):
         pred = np.zeros((len(one_hot_mat), 1))
         for m in range(len(model)):
-            pred += model[m](one_hot_mat).numpy() / len(model)
+            pred += model[m].predict(one_hot_mat, batch_size=15000, verbose=0) / len(model)
     else:
         pred = model.predict(one_hot_mat)
     return pred

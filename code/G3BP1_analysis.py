@@ -12,6 +12,7 @@ from PARAMETERS import *
 DEBUG = False
 
 def make_all_seqs_prediction(model, seqs, max_pred=True):
+    # seqs = seqs[:30]
     input_size = get_input_size(model)
     one_hot_mat_list = [one_hot_enc(s) for s in seqs]
     preds_per_seq = np.zeros(len(seqs) + 1, dtype=int)
@@ -19,6 +20,7 @@ def make_all_seqs_prediction(model, seqs, max_pred=True):
         preds_per_seq[i+1] = len(s) - input_size + 1 + preds_per_seq[i]
     sub_mat_list = [np.array([m[x:x+input_size]for x in range(len(m)-input_size+1)]) for m in one_hot_mat_list]
     sub_mat_arr = np.vstack(sub_mat_list)
+
     sub_seq_preds = make_prediction(model, one_hot_mat=sub_mat_arr)
     seq_preds = [sub_seq_preds[preds_per_seq[i]:preds_per_seq[i+1]] for i in range(len(preds_per_seq)-1)]
     assert len(seq_preds) == len(seqs), f"ERROR: make_all_seqs_prediction - len(preds) != len(seq)"
