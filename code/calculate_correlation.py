@@ -58,7 +58,7 @@ def calculate_human_correlation(model, data_path):
     print("Evaluating human correlation:")
     # get screener scores
     _,  [_, y_test, _], _ = get_data(data_path, min_read=2000)
-    scores = get_screener_scores(screener_preds=SCREENER_PATH + "/output_data/human_test_predictions.csv", y=y_test)
+    scores = get_screener_scores(screener_preds=SCREENER_PATH + "/output_data/human_test_predictions_2.csv", y=y_test)
     scores["rG4detector"] = get_rG4detector_human_corr(model, data_path)
     for m in scores.keys():
         print(f"{m} Pearson correlation = {round(scores[m],3)}")
@@ -67,7 +67,7 @@ def calculate_mouse_correlation(model, data_path):
     print("Evaluating mouse correlation:")
     # get screener scores
     mouse_df = pd.read_csv(data_path + "mouse_data.csv", names=["sequence", "label"], header=None, delimiter="\t")
-    scores = get_screener_scores(screener_preds=SCREENER_PATH + "/output_data/mouse_test_predictions.csv",
+    scores = get_screener_scores(screener_preds=SCREENER_PATH + "/output_data/mouse_test_predictions_2.csv",
                                  y=mouse_df["label"].to_numpy())
     scores["rG4detector"] = get_rG4detector_mouse_corr(model, mouse_df)
     for m in scores.keys():
@@ -87,7 +87,7 @@ if __name__ == "__main__":
     for i in range(args.ensemble_size):
         rG4detector.append(load_model(f"{args.model_path}/model_{i}.h5"))
 
-    # calculate_human_correlation(rG4detector, args.data_dir_path + "/human/")
+    calculate_human_correlation(rG4detector, args.data_dir_path + "/human/")
     calculate_mouse_correlation(rG4detector, args.data_dir_path + "/mouse/")
 
 
