@@ -3,6 +3,7 @@ import re
 from Bio import pairwise2
 import os
 from PARAMETERS import *
+import sys
 
 GAPS = (DATA_SIZE - 30)//2
 MATCH_THRESHOLD = 0.85
@@ -104,15 +105,15 @@ def find_g4rna_seq(raw_csv_path, seq_dest, csv_dest):
     g4rna_df.to_csv(csv_dest, index=False)
 
 
-def main():
-    source = "G4RNA/data.csv"
-    raw_csv_dest = "G4RNA/g4rna_filtered_data_raw.csv"
-    csv_dest = "G4RNA/g4rna_filtered_data.csv"
-    raw_bed_dest = "G4RNA/bed_raw_data.bed"
-    bed_dest = "G4RNA/bed_raw_data.bed"
-    seq_dest = "G4RNA/seq"
-    raw_seq_dest = "G4RNA/raw_seq"
-    bedtools_script_path = "G4RNA/bed2seq.sh"
+def main(g4rna_dir):
+    source = g4rna_dir + "/data.csv"
+    raw_csv_dest = g4rna_dir + "/g4rna_filtered_data_raw.csv"
+    csv_dest = g4rna_dir + "/g4rna_filtered_data.csv"
+    raw_bed_dest = g4rna_dir + "/bed_raw_data.bed"
+    bed_dest = g4rna_dir + "/bed_raw_data.bed"
+    seq_dest = g4rna_dir + "/seq"
+    raw_seq_dest = g4rna_dir + "/raw_seq"
+    bedtools_script_path = g4rna_dir + "/bed2seq.sh"
 
     # filter overlapping sequences
     filter_data(source, raw_csv_dest)
@@ -128,5 +129,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) != 2:
+        print("Usage: set_g4rna_data.py <g4rna_dir_path>")
+        exit(0)
+    g4rna_dir_path = sys.argv[1]
+    main(g4rna_dir_path)
 

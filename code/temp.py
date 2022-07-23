@@ -86,7 +86,7 @@ def detect_rg4(model, input_length):
     with open(DETECTION_RG4_SEEKER_HITS, 'rb') as fp:
         exp_rg4 = pickle.load(fp)
     # get transcripts for rg4detector
-    all_transcripts_dict = get_transcript_dict(HUMAN_TRANSCRIPTOME_PATH)
+    all_transcripts_dict = get_transcript_dict(HUMAN_V29_TRANSCRIPTOME_PATH)
     # keep only relevant transcripts
     transcript_dict = {}
     for transcript in exp_rg4:

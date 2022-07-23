@@ -12,9 +12,6 @@ from PARAMETERS import *
 import numpy as np
 
 DEBUG = False
-PLOT = False
-debug_size = 1
-
 
 def plot_scores(scores_dict, y):
     dest = f"detection/"
@@ -61,7 +58,7 @@ def detect_rg4(model):
         if counter % 100 == 0 or DEBUG:
             print(f"counter = {counter}, time = {round(time.time() - t2)}s")
             t2 = time.time()
-
+        # make rG4detector prediction
         seq = transcript_dict[transcript].seq
         one_hot_mat = one_hot_enc(str(seq), remove_last=False)
         # zero padding
@@ -71,6 +68,7 @@ def detect_rg4(model):
         rg4detector_all_preds = positions_score if rg4detector_all_preds is None else \
             np.hstack((rg4detector_all_preds, positions_score))
 
+        # get screener predictions
         screener_positions_score = set_screener_positions_scores(screener_scores[transcript])
         if screener_all_preds is None:
             screener_all_preds = screener_positions_score
@@ -78,7 +76,7 @@ def detect_rg4(model):
             for method in screener_positions_score:
                 screener_all_preds[method] = np.vstack((screener_all_preds[method], screener_positions_score[method]))
 
-        if DEBUG and counter == debug_size:
+        if DEBUG and counter == 2:
             del transcript_dict
             break
 
@@ -89,7 +87,7 @@ def detect_rg4(model):
         rg4_all_exp_seq = exp_rg4[transcript] if rg4_all_exp_seq is None else np.hstack((rg4_all_exp_seq,
                                                                                          exp_rg4[transcript]))
         counter += 1
-        if DEBUG and counter == debug_size:
+        if DEBUG and counter == 2:
             break
     del exp_rg4
 
@@ -118,17 +116,9 @@ def detect_rg4(model):
 
 if __name__ == "__main__":
     print(f"Starting detection")
-    opts, args = getopt.getopt(sys.argv[1:], 'dp')
-    for op, val in opts:
-        if op == "-d":
-            DEBUG = True
-        if op == "-p":
-            PLOT = True
-
     MODEL = []
     for i in range(ENSEMBLE_SIZE):
         MODEL.append(load_model(MODEL_PATH + f"/model_{i}.h5"))
-
     detect_rg4(MODEL)
 
 
