@@ -26,7 +26,8 @@ def plot_scores(scores_dict, y):
     plt.title(f"Human AUPR")
     plt.xlabel("Recall")
     plt.ylabel("Precision")
-    plt.savefig(dest + f"Human_AUCPR")
+    plt.show()
+    # plt.savefig(dest + f"Human_AUCPR")
 
 
 def detect_rg4(model):
@@ -110,8 +111,17 @@ def detect_rg4(model):
         print(f"{method} scores:")
         print(scores[method].auc)
 
-    print(f"exe time = {round((time.time()-t1)/60, 2)} minutes")
+    print(f"Execution time = {round((time.time()-t1)/60, 2)} minutes")
+    # TODO - remove
     plot_scores(scores, rg4_all_exp_seq)
+
+    # save data
+    for m in scores:
+        with open(f"../detection/results/{m}_detection_aupr.csv", "w") as f:
+            f.write(f"precision,recall\n")
+            for precision, recall in zip(scores[m].precision, scores[m].recall):
+                f.write(f"{precision},{recall}\n")
+
 
 
 if __name__ == "__main__":
