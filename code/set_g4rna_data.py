@@ -105,7 +105,7 @@ def find_g4rna_seq(raw_csv_path, seq_dest, csv_dest):
     g4rna_df.to_csv(csv_dest, index=False)
 
 
-def main(g4rna_dir):
+def main(g4rna_dir, reference_genome):
     source = g4rna_dir + "/data.csv"
     raw_csv_dest = g4rna_dir + "/g4rna_filtered_data_raw.csv"
     csv_dest = g4rna_dir + "/g4rna_filtered_data.csv"
@@ -119,19 +119,20 @@ def main(g4rna_dir):
     filter_data(source, raw_csv_dest)
     csv2bed(raw_csv_dest, raw_bed_dest)
     # crete raw sequences files
-    os.system(f"bash {bedtools_script_path} {REFERANCE_GENOME}  {raw_bed_dest} {raw_seq_dest}")
+    os.system(f"bash {bedtools_script_path} {reference_genome}  {raw_bed_dest} {raw_seq_dest}")
     # take only sequences that match the genome coordinate
     find_g4rna_seq(raw_csv_dest, raw_seq_dest, csv_dest)
     # crate update bed file
     csv2bed(csv_dest, bed_dest)
     # crete sequences files
-    os.system(f"bash {bedtools_script_path} {REFERANCE_GENOME} {bed_dest} {seq_dest}")
+    os.system(f"bash {bedtools_script_path} {reference_genome} {bed_dest} {seq_dest}")
 
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: set_g4rna_data.py <g4rna_dir_path>")
+        print("Usage: set_g4rna_data.py <g4rna_dir_path> <hg38.fa>")
         exit(0)
     g4rna_dir_path = sys.argv[1]
-    main(g4rna_dir_path)
+    reference_genome = sys.argv[1]
+    main(g4rna_dir_path, reference_genome)
 
