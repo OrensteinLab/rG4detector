@@ -60,7 +60,7 @@ def detect_rg4(model):
             t2 = time.time()
         # make rG4detector prediction
         seq = transcript_dict[transcript].seq
-        one_hot_mat = one_hot_enc(str(seq), remove_last=False)
+        one_hot_mat = one_hot_enc(str(seq))
         # zero padding
         one_hot_mat = np.vstack((np.zeros((input_length-1, 4)), one_hot_mat, np.zeros((input_length-1, 4))))
         preds = pred_all_sub_seq(one_hot_mat, model)

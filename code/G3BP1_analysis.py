@@ -217,10 +217,10 @@ def process_G3BP1_data(dir_path, model_path):
     GET_SUB_SEQ = False
     GET_STATICS = False
     FIND_PEAKS = False
-    UNIQUE = True
+    UNIQUE = False
     pred_unique = False
-    SCREENER = False
-    NORM = False
+    SCREENER = True
+    NORM = True
 
     if UNIQUE:
         cntrl_src = dir_path + "/control/G3BP1_2021_control_unique.fa"
