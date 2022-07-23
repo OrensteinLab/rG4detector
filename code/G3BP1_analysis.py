@@ -34,7 +34,7 @@ def predict_fasta(model, src, dst):
     print(f"Number of sequences = {len(seqs)}")
     scores = make_all_seqs_prediction(model, seqs)
     with open(dst, "w") as f:
-        f.write(",sequence,rG4detector")
+        f.write(",sequence,rG4detector\n")
         for s, p in zip(seqs, scores):
             f.write(f"{s},{p}\n")
 
