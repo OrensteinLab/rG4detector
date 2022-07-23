@@ -178,7 +178,7 @@ def screener_norm(dir_path, unique):
 
     # get rg4detector norm
     rg4detector_stress_path = dir_path + f"/stress/stress_predictions{addToPath}.csv"
-    rg4detector_control_path = dir_path + f"/control/cntrl_predictions{addToPath}.csv"
+    rg4detector_control_path = dir_path + f"/control/control_predictions{addToPath}.csv"
     rg4detector_stress_preds = pd.read_csv(rg4detector_stress_path)["rG4detector"].to_numpy()
     rg4detector_control_preds = pd.read_csv(rg4detector_control_path)["rG4detector"].to_numpy()
     stress_len = len(rg4detector_stress_preds)
@@ -213,13 +213,13 @@ def screener_norm(dir_path, unique):
 
 
 def process_G3BP1_data(dir_path, model_path):
-    make_preds = True
+    make_preds = False
     GET_SUB_SEQ = False
     GET_STATICS = False
     FIND_PEAKS = False
     UNIQUE = True
     pred_unique = False
-    SCREENER = True
+    SCREENER = False
     NORM = True
 
     if UNIQUE:
