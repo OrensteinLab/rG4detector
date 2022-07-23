@@ -27,7 +27,7 @@ def plot_scores(scores_dict, y):
     plt.xlabel("Recall")
     plt.ylabel("Precision")
     plt.show()
-    # plt.savefig(dest + f"Human_AUCPR")
+    plt.savefig(f"../detection/resultsHuman_AUCPR")
 
 
 def detect_rg4(model):
@@ -120,6 +120,8 @@ def detect_rg4(model):
         with open(f"../detection/results/{m}_detection_aupr.csv", "w") as f:
             f.write(f"precision,recall\n")
             for precision, recall in zip(scores[m].precision, scores[m].recall):
+                if len(precision) > 1000000:
+                    precision, recall = precision[::10], recall[::10]
                 f.write(f"{precision},{recall}\n")
 
 

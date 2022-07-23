@@ -217,7 +217,7 @@ def process_G3BP1_data(dir_path, model_path):
     GET_SUB_SEQ = False
     GET_STATICS = False
     FIND_PEAKS = False
-    UNIQUE = False
+    UNIQUE = True
     pred_unique = False
     SCREENER = True
     NORM = True
