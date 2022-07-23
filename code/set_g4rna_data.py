@@ -5,9 +5,7 @@ import os
 from PARAMETERS import *
 import sys
 
-# GAPS = (DATA_SIZE - 30)//2
-GAP5 = DATA_SIZE
-GAP3 = DATA_SIZE
+GAPS = DATA_SIZE
 
 MATCH_THRESHOLD = 0.85
 
@@ -75,8 +73,8 @@ def csv2bed(csv_path, bed_dest, ):
         length = row['length']
         start = row['start']
         strand = row['strand']
-        end = start + length + GAP3
-        start = start - GAP5
+        end = start + length + GAPS
+        start = start - GAPS
         bed_file.write(f'{chrom}\t{int(start)}\t{int(end)}\tname\t0\t{strand}\n')
     bed_file.close()
 

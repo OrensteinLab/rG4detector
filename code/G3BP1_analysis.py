@@ -8,7 +8,7 @@ import numpy as np
 import sys
 from PARAMETERS import *
 
-DEBUG = True
+DEBUG = False
 
 def make_prediction(model, seq, max_pred=True):
     one_hot_mat = one_hot_enc(seq)
@@ -28,6 +28,8 @@ def predict_fasta(model, src, dst):
     for idx, seq in enumerate(seqs):
         if (idx+1) % 500 == 0:
             print(f"{idx+1} sequences are done")
+            if DEBUG:
+                break
         pred = make_prediction(model, seq)
         scores_df.loc[idx+1, "sequence"] = seq
         scores_df.loc[idx+1, "rG4detector"] = pred
@@ -171,25 +173,23 @@ def predict_screener(src, dst):
     max_preds_df.to_csv(dst, index=False)
 
 
-def screener_norm(unique):
+def screener_norm(dir_path, unique):
     addToPath = "_unique" if unique else ""
 
     # get rg4detector norm
-    rg4detector_path = "yehuda_data/predictions/"
-    rg4detector_stress_path = rg4detector_path + f"stress_predictions{addToPath}.csv"
-    rg4detector_control_path = rg4detector_path + f"cntrl_predictions{addToPath}.csv"
+    rg4detector_stress_path = dir_path + f"/stress/stress_predictions{addToPath}.csv"
+    rg4detector_control_path = dir_path + f"/control/cntrl_predictions{addToPath}.csv"
     rg4detector_stress_preds = pd.read_csv(rg4detector_stress_path)["rG4detector"].to_numpy()
     rg4detector_control_preds = pd.read_csv(rg4detector_control_path)["rG4detector"].to_numpy()
     stress_len = len(rg4detector_stress_preds)
     rg4detector_preds = np.concatenate([rg4detector_stress_preds, rg4detector_control_preds])
     rg4detector_preds_norm = (rg4detector_preds - np.mean(rg4detector_preds))/np.std(rg4detector_preds)
 
-
     # get screener norm
     screener_preds_norm = {}
-    screener_path = f"yehuda_data/screener/{addToPath[1:]}/"
-    screener_stress_path = screener_path + f"stress_screener{addToPath}_max.csv"
-    screener_control_path = screener_path + f"control_screener{addToPath}_max.csv"
+    screener_path = dir_path + f"/screener/{addToPath[1:]}/"
+    screener_stress_path = screener_path + f"stress_screener{addToPath}_pred.csv"
+    screener_control_path = screener_path + f"control_screener{addToPath}_pred.csv"
     screener_stress_preds = pd.read_csv(screener_stress_path)
     screener_control_preds = pd.read_csv(screener_control_path)
     for m in ["G4H", "G4NN", "cGcC"]:
@@ -247,23 +247,25 @@ def process_G3BP1_data(dir_path, model_path):
         print("Starting make_preds control")
         predict_fasta(MODEL, cntrl_src, cntrl_dst)
 
-    if GET_SUB_SEQ:
-        threshold = 1.64
-        print("GET_SUB_SEQ stress")
-        stress_sub_seqs = get_best_sub_seq(MODEL, t_hold=threshold, s_src=stress_src)
-        print("GET_SUB_SEQ control")
-        ctrl_sub_seqs = get_best_sub_seq(MODEL, t_hold=threshold, c_src=cntrl_src)
-        for data_set, sub_seqs in (["control", ctrl_sub_seqs], ["stress", stress_sub_seqs]):
-            fp = open(potential_rg4_path + f"{data_set}/potential_G3BP1_rG4_binding_area_{data_set}_{threshold}.txt",
-                      "w")
-            for counter, line in enumerate(sub_seqs):
-                fp.write(f">{counter}\n" + line + "\n")
-            fp.close()
+    # TODO - remove
+    # if GET_SUB_SEQ:
+    #     threshold = 1.64
+    #     print("GET_SUB_SEQ stress")
+    #     stress_sub_seqs = get_best_sub_seq(MODEL, t_hold=threshold, s_src=stress_src)
+    #     print("GET_SUB_SEQ control")
+    #     ctrl_sub_seqs = get_best_sub_seq(MODEL, t_hold=threshold, c_src=cntrl_src)
+    #     for data_set, sub_seqs in (["control", ctrl_sub_seqs], ["stress", stress_sub_seqs]):
+    #         fp = open(potential_rg4_path + f"{data_set}/potential_G3BP1_rG4_binding_area_{data_set}_{threshold}.txt",
+    #                   "w")
+    #         for counter, line in enumerate(sub_seqs):
+    #             fp.write(f">{counter}\n" + line + "\n")
+    #         fp.close()
 
-    if GET_STATICS:
-        print("get statics start")
-        find_seq_statistics(stress=stress_src, ctrl=cntrl_src, dst=statics_dst)
+    # if GET_STATICS:
+    #     print("get statics start")
+    #     find_seq_statistics(stress=stress_src, ctrl=cntrl_src, dst=statics_dst)
 
+    # TODO - remove
     # if FIND_PEAKS:
     #     threshold = 1.64
     #     print("FIND_PEAKS start")
@@ -280,47 +282,22 @@ def process_G3BP1_data(dir_path, model_path):
 
     if SCREENER:
         print("Predict_screener")
-        unique_screener = True
-        add2path = "_unique" if unique_screener else ""
+        add2path = "_unique" if UNIQUE else ""
         predict_screener(dir_path + f"screener/{add2path[1:]}/stress_screener{add2path}.csv",
-                         dir_path + f"screener/{add2path[1:]}/stress_screener{add2path}_max.csv")
+                         dir_path + f"screener/{add2path[1:]}/stress_screener{add2path}_pred.csv")
         predict_screener(dir_path + f"screener/{add2path[1:]}/control_screener{add2path}.csv",
-                         dir_path + f"screener/{add2path[1:]}/control_screener{add2path}_max.csv")
+                         dir_path + f"screener/{add2path[1:]}/control_screener{add2path}_pred.csv")
 
     if NORM:
         print("Norm screener")
-        unique_screener = True
-        screener_norm(unique_screener)
+        screener_norm(dir_path, UNIQUE)
 
 
 if __name__ == "__main__":
 
     directory_path = sys.argv[1]
     model_dir_path = sys.argv[2]
-
     process_G3BP1_data(directory_path, model_dir_path)
-
-
-
-
-    # common = pd.read_csv(dir_path + "common_preds.csv")
-    # stress_unique = pd.read_csv(dir_path + "stress_unique_preds.csv")
-    # control_unique = pd.read_csv(dir_path + "control_unique_preds.csv")
-    # plt.hist(common["rG4detector"], bins=70, label="common", alpha=0.6, density=True)
-    # plt.hist(stress_unique["rG4detector"], bins=70, label="stress_unique", alpha=0.6, density=True)
-    # plt.hist(control_unique["rG4detector"], bins=70, label="control_unique", alpha=0.6, density=True)
-    # plt.legend()
-    # plt.show()
-
-    # for data_set in ["stress", "control"]:
-    #     for threshold in [1.4]:
-    #         with open(potential_rg4_path + f"{data_set}/potential_G3BP1_rG4_binding_area_{data_set}_{threshold}.txt") as file:
-    #             lines = file.read().splitlines()
-    #         fp = open(potential_rg4_path + f"{data_set}/potential_G3BP1_rG4_binding_area_{data_set}_{threshold}.fa", "w")
-    #         for idx, line in enumerate(lines):
-    #             if len(line) > 7:
-    #                 fp.write(f">{idx}\n{line}\n")
-    #         fp.close()
 
 
 

@@ -47,9 +47,21 @@ def main(model, g4rna_dir):
         print(f"{method} roc_auc = {roc_auc}")
         scores[method] = AUC_Score(method=method, y=tpr, x=fpr, auc=round(roc_auc, 3))
 
+    # TODO - remove
     if PLOT:
-        plot_auc_curve(scores, title="G4RNA prediction", dest=g4rna_dir + "g4rna_roc_plot", plot=True)
-    print(f"exe time = {round((time.time()-t1))} seconds")
+        plot_auc_curve(scores, title="G4RNA prediction", dest=g4rna_dir + "/g4rna_roc_plot", plot=True)
+    print(f"Execution time = {round((time.time()-t1))} seconds")
+
+    # save data
+    for m in scores:
+        with open(g4rna_dir + f"/results/{m}_g4rna_roc.csv", "w") as f:
+            f.write(f"True positive rate,False positive rate\n")
+            for tpr, fpr in zip(scores[m].y, scores[m].x):
+                f.write(f"{tpr},{fpr}\n")
+    with open(g4rna_dir + f"/results/G4RNA_AUC.csv", "w") as f:
+        f.write(f",G4RNA AUC score\n")
+        for m in scores:
+            f.write(f"{m},{scores[m].auc}\n")
 
 
 if __name__ == "__main__":
