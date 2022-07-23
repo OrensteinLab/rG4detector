@@ -8,6 +8,7 @@ import numpy as np
 import sys
 from PARAMETERS import *
 
+# TODO remove
 DEBUG = False
 
 def make_prediction(model, seq, max_pred=True):
@@ -24,16 +25,21 @@ def predict_fasta(model, src, dst):
         f_lines = f.read().splitlines()
     seqs = f_lines[1::2]
     print(f"Number of sequences = {len(seqs)}")
-    scores_df = pd.DataFrame(index=range(1, len(seqs)+1), dtype=float)
+    # scores_df = pd.DataFrame(index=range(1, len(seqs)+1), dtype=float)
+    scores = []
     for idx, seq in enumerate(seqs):
         if (idx+1) % 500 == 0:
             print(f"{idx+1} sequences are done")
             if DEBUG:
                 break
         pred = make_prediction(model, seq)
-        scores_df.loc[idx+1, "sequence"] = seq
-        scores_df.loc[idx+1, "rG4detector"] = pred
-    scores_df.to_csv(dst)
+        # scores_df.loc[idx+1, "sequence"] = seq
+        # scores_df.loc[idx+1, "rG4detector"] = pred
+        scores.append((seq, pred))
+    with open(dst, "w") as f:
+        for s, p in scores:
+            f.write(f"{s},{p}\n")
+    # scores_df.to_csv(dst)
 
 
 def arrange_fasta(src):
@@ -217,10 +223,10 @@ def process_G3BP1_data(dir_path, model_path):
     GET_SUB_SEQ = False
     GET_STATICS = False
     FIND_PEAKS = False
-    UNIQUE = True
+    UNIQUE = False
     pred_unique = False
-    SCREENER = False
-    NORM = False
+    SCREENER = True
+    NORM = True
 
     if UNIQUE:
         cntrl_src = dir_path + "/control/G3BP1_2021_control_unique.fa"
@@ -283,10 +289,10 @@ def process_G3BP1_data(dir_path, model_path):
     if SCREENER:
         print("Predict_screener")
         add2path = "_unique" if UNIQUE else ""
-        predict_screener(dir_path + f"screener/{add2path[1:]}/stress_screener{add2path}.csv",
-                         dir_path + f"screener/{add2path[1:]}/stress_screener{add2path}_pred.csv")
-        predict_screener(dir_path + f"screener/{add2path[1:]}/control_screener{add2path}.csv",
-                         dir_path + f"screener/{add2path[1:]}/control_screener{add2path}_pred.csv")
+        predict_screener(dir_path + f"/screener/{add2path[1:]}/stress_screener{add2path}.csv",
+                         dir_path + f"/screener/{add2path[1:]}/stress_screener{add2path}_pred.csv")
+        predict_screener(dir_path + f"/screener/{add2path[1:]}/control_screener{add2path}.csv",
+                         dir_path + f"/screener/{add2path[1:]}/control_screener{add2path}_pred.csv")
 
     if NORM:
         print("Norm screener")
