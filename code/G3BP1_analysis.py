@@ -12,9 +12,10 @@ from PARAMETERS import *
 DEBUG = False
 
 def make_all_seqs_prediction(model, seqs, max_pred=True):
+    seqs = seqs[:30]
     input_size = get_input_size(model)
     one_hot_mat_list = [one_hot_enc(s) for s in seqs]
-    preds_per_seq = np.zeros(len(seqs) + 1)
+    preds_per_seq = np.zeros(len(seqs) + 1, dtype=int)
     for i, s in enumerate(seqs):
         preds_per_seq[i+1] = len(s) - input_size + 1
     sub_mat_list = [np.array([m[x:x+input_size]for x in range(len(m)-input_size+1)]) for m in one_hot_mat_list]
