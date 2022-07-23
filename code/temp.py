@@ -121,16 +121,6 @@ def detect_rg4(model, input_length):
         one_hot_mat = np.vstack((np.zeros((input_length-1, 4)), one_hot_mat, np.zeros((input_length-1, 4))))
         preds = pred_all_sub_seq(one_hot_mat, model)
         positions_score = get_score_per_position(preds, input_length, DETECTION_SIGMA)
-
-        f = 100
-        for start, end in rng:
-            bar_plot([exp_rg4[transcript][start-f:end+f], positions_score[start-f:end+f]])
-
-        if counter == 10:
-            exit()
-        continue
-
-
         rg4detector_all_preds = positions_score if rg4detector_all_preds is None else \
             np.hstack((rg4detector_all_preds, positions_score))
 

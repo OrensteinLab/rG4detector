@@ -2,11 +2,7 @@ import sys
 import time
 from tensorflow.keras.models import load_model
 import pickle
-from Bio import SeqIO
-import os.path
 import getopt
-from datetime import datetime
-import tensorflow as tf
 from sklearn.metrics import precision_recall_curve
 from sklearn.metrics import auc
 from utils import *
@@ -14,7 +10,6 @@ import matplotlib.pyplot as plt
 from seeker2transcript import get_transcript_dict
 from PARAMETERS import *
 import numpy as np
-
 
 DEBUG = False
 PLOT = False
@@ -45,7 +40,7 @@ def detect_rg4(model):
     with open(DETECTION_RG4_SEEKER_HITS, 'rb') as fp:
         exp_rg4 = pickle.load(fp)
     # get transcripts for rg4detector
-    all_transcripts_dict = get_transcript_dict(HUMAN_TRANSCRIPTOME_PATH)
+    all_transcripts_dict = get_transcript_dict(HUMAN_V29_TRANSCRIPTOME_PATH)
     # keep only relevant transcripts
     transcript_dict = {}
     for transcript in exp_rg4:
@@ -53,11 +48,14 @@ def detect_rg4(model):
     del all_transcripts_dict
     print(f"Number of transcripts = {len(exp_rg4)}")
     counter = 0
+    # get screener predictions
+    with open(SCREENER_DETECTION_PREDICTION_PATH, 'rb') as fp:
+        screener_scores = pickle.load(fp)
 
+    # predict all transcripts
     rg4detector_all_preds = None
     screener_all_preds = None
     t2 = time.time()
-    # predict all transcripts
     for transcript in exp_rg4:
         counter += 1
         if counter % 100 == 0 or DEBUG:
@@ -73,9 +71,7 @@ def detect_rg4(model):
         rg4detector_all_preds = positions_score if rg4detector_all_preds is None else \
             np.hstack((rg4detector_all_preds, positions_score))
 
-        with open(SCREENER_DETECTION_PREDICTION_PATH + transcript, 'rb') as fp:
-            screener_scores = pickle.load(fp)
-        screener_positions_score = set_screener_positions_scores(screener_scores)
+        screener_positions_score = set_screener_positions_scores(screener_scores[transcript])
         if screener_all_preds is None:
             screener_all_preds = screener_positions_score
         else:
@@ -105,7 +101,6 @@ def detect_rg4(model):
     scores["rG4detector"] = PRScore("rg4detector", precision, recall, t, aupr)
     print(f"rG4detector score:")
     print(scores["rG4detector"].auc)
-
 
     # get screener score
     for method in METHODS_LIST:
