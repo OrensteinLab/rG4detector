@@ -119,9 +119,10 @@ def detect_rg4(model):
     for m in scores:
         with open(f"../detection/results/{m}_detection_aupr.csv", "w") as f:
             f.write(f"precision,recall\n")
+            if len(scores[m].precision) > 1000000:
+                scores[m].precision, scores[m].recall = scores[m].precision[::10], scores[m].recall[::10]
             for precision, recall in zip(scores[m].precision, scores[m].recall):
-                if len(precision) > 1000000:
-                    precision, recall = precision[::10], recall[::10]
+
                 f.write(f"{precision},{recall}\n")
 
 
