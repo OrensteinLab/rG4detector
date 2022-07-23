@@ -39,17 +39,19 @@ def get_rG4detector_mouse_corr(model, mouse_df):
 
 def get_screener_scores(screener_preds, y):
     screener_scores = {}
-    pred = pd.read_csv(screener_preds, usecols=METHODS_LIST, sep="\t")
-    labels = y.reshape(len(y))
-    for col in pred.columns:
-        const = 0
-        preds = pred[col].to_numpy()
+    preds = pd.read_csv(screener_preds, usecols=METHODS_LIST, sep="\t")
+    preds = preds.groupby(['description']).max()
 
-        if min(preds) <= 0:
-            const = -min(preds) + 10 ** -3
-        preds = preds + const
-        preds = np.log(preds)
-        pr, p = pearsonr(preds, labels)
+    labels = y.reshape(len(y))
+    for col in preds.columns:
+        const = 0
+        p = preds[col].to_numpy()
+
+        if min(p) <= 0:
+            const = -min(p) + 10 ** -3
+        p = p + const
+        p = np.log(p)
+        pr, _ = pearsonr(p, labels)
         screener_scores[col] = round(pr, 3)
     return screener_scores
 
@@ -58,7 +60,7 @@ def calculate_human_correlation(model, data_path):
     print("Evaluating human correlation:")
     # get screener scores
     _,  [_, y_test, _], _ = get_data(data_path, min_read=2000)
-    scores = get_screener_scores(screener_preds=SCREENER_PATH + "/output_data/human_test_predictions_2.csv", y=y_test)
+    scores = get_screener_scores(screener_preds=SCREENER_PATH + "/output_data/human_test_predictions.csv", y=y_test)
     scores["rG4detector"] = get_rG4detector_human_corr(model, data_path)
     for m in scores.keys():
         print(f"{m} Pearson correlation = {round(scores[m],3)}")
@@ -67,7 +69,7 @@ def calculate_mouse_correlation(model, data_path):
     print("Evaluating mouse correlation:")
     # get screener scores
     mouse_df = pd.read_csv(data_path + "mouse_data.csv", names=["sequence", "label"], header=None, delimiter="\t")
-    scores = get_screener_scores(screener_preds=SCREENER_PATH + "/output_data/mouse_test_predictions_2.csv",
+    scores = get_screener_scores(screener_preds=SCREENER_PATH + "/output_data/mouse_test_predictions.csv",
                                  y=mouse_df["label"].to_numpy())
     scores["rG4detector"] = get_rG4detector_mouse_corr(model, mouse_df)
     for m in scores.keys():
