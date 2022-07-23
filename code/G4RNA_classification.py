@@ -8,24 +8,24 @@ import numpy as np
 from sklearn.metrics import roc_curve, auc
 from PARAMETERS import *
 
-def get_g4rna_data():
+def get_g4rna_data(g4rna_dir):
     # get x
-    data_file = open("G4RNA/seq.txt")
+    data_file = open(g4rna_dir + "/seq.txt")
     data = [d.upper() for d in data_file.read().splitlines()]
     x = np.array(list(map(one_hot_enc, data)), dtype=object)
     # get y
-    y = pd.read_csv("G4RNA/g4rna_filtered_data.csv", usecols=["label"])
+    y = pd.read_csv(g4rna_dir + "/g4rna_filtered_data.csv", usecols=["label"])
     return x, y
 
 
 
-def main(model):
+def main(model, g4rna_dir):
     t1 = time.time()
     prediction = {"rG4detector": [], "G4NN": [], "cGcC": [], "G4H": []}
     scores = {}
 
     # get data
-    x, y = get_g4rna_data()
+    x, y = get_g4rna_data(g4rna_dir)
     pad_size = DATA_SIZE//2 - 15
 
     # pred rg4detector
@@ -34,7 +34,7 @@ def main(model):
         prediction["rG4detector"].append(max(pred_all_sub_seq(one_hot_mat, model)))
 
     # pred screener
-    screener_df = pd.read_csv(G4RNA_SCREENER, delimiter="\t")
+    screener_df = pd.read_csv(g4rna_dir + "/screener_preds.csv", delimiter="\t")
     seqs_ids = screener_df["description"].unique()
     for seq_id in seqs_ids:
         seq_preds = screener_df[screener_df["description"] == seq_id]
@@ -48,25 +48,23 @@ def main(model):
         scores[method] = AUC_Score(method=method, y=tpr, x=fpr, auc=round(roc_auc, 3))
 
     if PLOT:
-        plot_auc_curve(scores, title="G4RNA prediction", dest="G4RNA/" + "g4rna_roc_plot", plot=True)
+        plot_auc_curve(scores, title="G4RNA prediction", dest=g4rna_dir + "g4rna_roc_plot", plot=True)
     print(f"exe time = {round((time.time()-t1))} seconds")
 
 
 if __name__ == "__main__":
     DEBUG = False
-    PLOT = False
+    PLOT = True
+    if len(sys.argv) != 2:
+        print("Usage: G4RNA_classification.py <g4rna_dir_path>")
+        exit(0)
+    g4rna_dir_path = sys.argv[1]
 
-    opts, args = getopt.getopt(sys.argv[1:], 'dp')
-    for op, val in opts:
-        if op == "-d":
-            DEBUG = True
-        if op == "-p":
-            PLOT = True
 
     models = []
     for i in range(ENSEMBLE_SIZE):
         models.append(load_model(MODEL_PATH + f"model_{i}.h5"))
-    main(models)
+    main(models, g4rna_dir_path)
 
 
 
