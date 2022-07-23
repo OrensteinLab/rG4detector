@@ -133,6 +133,6 @@ if __name__ == "__main__":
         print("Usage: set_g4rna_data.py <g4rna_dir_path> <hg38.fa>")
         exit(0)
     g4rna_dir_path = sys.argv[1]
-    reference_genome = sys.argv[1]
+    reference_genome = sys.argv[2]
     main(g4rna_dir_path, reference_genome)
 
