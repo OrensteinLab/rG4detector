@@ -15,8 +15,8 @@ from PARAMETERS import *
 
 
 tf.random.set_seed(10)
-random.seed(10)
-np.random.seed(1)
+random.seed(1)
+np.random.seed(10)
 
 
 def evaluate_model(x_train, y_train, x_val, y_val, hyper_params=HyperParams()):
