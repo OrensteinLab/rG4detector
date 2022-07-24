@@ -72,7 +72,7 @@ def screener_norm(dir_path, unique):
 
     # get rg4detector norm
     rg4detector_stress_path = dir_path + f"/stress/stress_predictions{addToPath}.csv"
-    rg4detector_control_path = dir_path + f"/control/control_predictions{addToPath}.csv"
+    rg4detector_control_path = dir_path + f"/control/cntrl_predictions{addToPath}.csv"
     rg4detector_stress_preds = pd.read_csv(rg4detector_stress_path)["rG4detector"].to_numpy()
     rg4detector_control_preds = pd.read_csv(rg4detector_control_path)["rG4detector"].to_numpy()
     stress_len = len(rg4detector_stress_preds)
