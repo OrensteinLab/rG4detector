@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 from PARAMETERS import *
 
 
-tf.random.set_seed(1)
+tf.random.set_seed(10)
 random.seed(10)
 np.random.seed(1)
 
