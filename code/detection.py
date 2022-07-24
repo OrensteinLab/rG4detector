@@ -13,6 +13,18 @@ import numpy as np
 
 DEBUG = False
 
+def bar_plot(data_list):
+    for data in data_list:
+        x = [n for n in range(len(data))]
+        plt.figure(figsize=(6, 4))
+        plt.bar(x, data, width=1)
+        plt.ylim([0, 1.2])
+        plt.xlabel("Position")
+        plt.ylabel("Prediction")
+        # plt.title("Positive rG4 location")
+        plt.title("Transcript RSR Ratio Prediction")
+        plt.show()
+
 def plot_scores(scores_dict, y):
     dest = f"detection/"
     legend_list = []
@@ -66,8 +78,30 @@ def detect_rg4(model):
         one_hot_mat = np.vstack((np.zeros((input_length-1, 4)), one_hot_mat, np.zeros((input_length-1, 4))))
         preds = pred_all_sub_seq(one_hot_mat, model)
         positions_score = get_score_per_position(preds, input_length, DETECTION_SIGMA)
+
+        # s = 0
+        # e = 0
+        # pos = []
+        # while s < len(exp_rg4[transcript]):
+        #     while s < len(exp_rg4[transcript]) and not exp_rg4[transcript][s] :
+        #         s += 1
+        #     if s == len(exp_rg4[transcript]):
+        #         break
+        #     e = s
+        #     while e < len(exp_rg4[transcript]) and exp_rg4[transcript][e]:
+        #         e += 1
+        #
+        #     pos.append((s, e))
+        #     s = e
+
+        # for s, e in pos:
+        #     bar_plot([exp_rg4[transcript][s-100:e+100], positions_score[s-100:e+100]])
         rg4detector_all_preds = positions_score if rg4detector_all_preds is None else \
             np.hstack((rg4detector_all_preds, positions_score))
+
+        # if counter == 5:
+        #     exit(0)
+        # continue
 
         # get screener predictions
         screener_positions_score = set_screener_positions_scores(screener_scores[transcript])

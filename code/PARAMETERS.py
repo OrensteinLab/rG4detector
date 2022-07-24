@@ -15,7 +15,7 @@ MOUSE_DATA_PATH = MOUSE_PATH + "Table_S1_mouse.csv"
 
 MOUSE_SCREENER_LENGTH = 60
 DATA_SIZE = 80
-DETECTION_SIGMA = 8
+DETECTION_SIGMA = 16
 METHODS_LIST = ['cGcC', 'G4H', 'G4NN']
 DETECTION_RG4_SEEKER_HITS = "../detection/rg4-seeker-transcript-match-test.pkl"
 RG4_SEEKER_PATH = "../data/rG4-seeker-hits.csv"
