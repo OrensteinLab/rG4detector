@@ -39,6 +39,7 @@ def predict_fasta(model, src, dst):
         f.write(",sequence,rG4detector\n")
         for s, p in zip(seqs, scores):
             f.write(f"{s},{p}\n")
+    print(f"prediction avg = {sum(scores)/len(scores)}")
 
 # TODO
 def check_signification(src_1, src_2):
