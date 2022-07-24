@@ -145,7 +145,7 @@ def mutation_map_test(model, data_size, output):
           "GGGTGCTCCGGGTGGGGGACGGGAATGGTGGGACTGGGGATGCCACGGGACAAGGCTGCTGGCCTGGAAGGTAGTCACGTGGAGAACCGCAGGAGATGAGATTGGAAAG" \
           "TAGTAATAAGCCATGTGGATAAGAACAGAGGAG"
     seq = seq[len(seq)//2-data_size//2:len(seq)//2+data_size//2]
-    hot_mat = np.array(one_hot_enc(seq, False)).reshape((1, len(seq), 4))
+    hot_mat = np.array(one_hot_enc(seq)).reshape((1, len(seq), 4))
     hot_mat = set_data_size(data_size, [hot_mat])[0]
     pred = make_prediction(model, one_hot_mat=hot_mat)
     hot_mat = hot_mat.reshape(data_size, 4)
@@ -220,12 +220,12 @@ def loc_check(model, data_size):
 
 def main(model, output):
     data_size = get_input_size(model)
-    print(data_size)
-    loc_check(model, data_size)
-    loop_length_test(model, data_size, output)
+    # print(data_size)
+    # loc_check(model, data_size)
+    # loop_length_test(model, data_size, output)
     loop_length_test2(model, data_size, output)
-    mutation_effect(model, data_size, output)
-    mutation_map_test(model, data_size, output)
+    # mutation_effect(model, data_size, output)
+    # mutation_map_test(model, data_size, output)
 
 
 if __name__ == "__main__":
