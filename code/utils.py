@@ -49,21 +49,7 @@ def get_data(path, min_read=2000, get_seq=False):
     y_val = np.log(y_val)
     y_test = np.log(y_test)
     return [X_train, y_train, w_train], [X_test, y_test, w_test], [X_val, y_val, w_val]
-#
-#
-# def print_results(corr_list, start_time):
-#     corr = sum(corr_list) / len(corr_list)
-#     corr_std = np.std(corr_list)
-#     print(f'corr = {corr} +- {corr_std}')
-#     # logging.info(f'w_corr = {w_corr}')
-#     print("Finished Level - execution time = %ss ---\n\n" % (round(time.time() - start_time)))
-#
-#
-# def plot_data(Y, level):
-#     plt.boxplot(Y)
-#     plt.title(f'fsr score distribution - min read = {level}')
-#     plt.savefig(f'/home/maor/rG4/rg4detector/fsr_data/k/data_distribution/{level}.png')
-#     plt.show()
+
 
 
 def get_input_size(model):
