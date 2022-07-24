@@ -142,7 +142,7 @@ if __name__ == "__main__":
     parser.add_argument("-m", "--model", dest="model_path", help="rG4detector model directory", required=True)
     parser.add_argument("-u", "--unique", action="store_true",
                         help="Operate in unique mode predict only on unique stress and control sequences)")
-    parser.add_argument("-e", "--ensemble", dest="ensemble_size",
+    parser.add_argument("-e", "--ensemble", dest="ensemble_size", type=int,
                         help=f"rG4detector ensemble size (default={ENSEMBLE_SIZE})", default=ENSEMBLE_SIZE)
 
     args = parser.parse_args()
