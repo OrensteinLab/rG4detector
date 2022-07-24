@@ -13,12 +13,6 @@ from tensorflow.keras.models import load_model
 import matplotlib.pyplot as plt
 from PARAMETERS import *
 
-
-tf.random.set_seed(10)
-random.seed(1)
-np.random.seed(10)
-
-
 def evaluate_model(x_train, y_train, x_val, y_val, hyper_params=HyperParams()):
     print("Starting to evaluate model!")
     print(f"SEED = {hyper_params.seed}")
@@ -102,7 +96,7 @@ def main(hyper_params, model_num, iterations, dst, debug=False):
 
 if __name__ == "__main__":
     tf.random.set_seed(1)
-    random.seed(10)
+    random.seed(1)
     np.random.seed(1)
 
     verb = 0
