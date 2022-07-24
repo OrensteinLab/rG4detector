@@ -25,7 +25,7 @@ def get_rG4detector_mouse_corr(model, mouse_df):
     print("Computing mouse correlation")
     input_length = get_input_size(model)
     chop_size = (len(mouse_df.loc[0, "sequence"]) - input_length) // 2
-    sequences = [s[chop_size:chop_size + input_length + 1] for s in mouse_df["sequence"]]
+    sequences = [s[chop_size:chop_size + input_length] for s in mouse_df["sequence"]]
     X = np.array(list(map(one_hot_enc, sequences)))
 
     pred = np.zeros((len(X), 1))

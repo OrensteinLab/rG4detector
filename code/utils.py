@@ -141,6 +141,7 @@ def plot_auc_curve(scores_dict, title=None, dest=None, plot=False, PR=False, y=N
 
 
 def one_hot_enc(s):
+    a = s[-1]
     if s[-1] == "\n":
         s = s[:-1]
     s = s + "ACGT"
