@@ -115,7 +115,7 @@ def process_G3BP1_data(dir_path, model_path, unique, ensemble_size):
         stress_dst = dir_path + "/stress/stress_predictions_unique.csv"
     else:
         cntrl_src = dir_path + "/control/G3BP1_2021_cntrl.fa"
-        cntrl_dst = dir_path + "/control/cntrl_predictions.csv"
+        cntrl_dst = dir_path + "/control/control_predictions.csv"
         stress_src = dir_path + "/stress/G3BP1_2021_stress.fa"
         stress_dst = dir_path + "/stress/stress_predictions.csv"
 
