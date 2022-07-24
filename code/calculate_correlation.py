@@ -6,6 +6,7 @@ from utils import set_data_size, one_hot_enc
 import pandas as pd
 from PARAMETERS import *
 import argparse
+import matplotlib.pyplot as plt
 
 
 def get_rG4detector_human_corr(model, data_path):
@@ -18,6 +19,12 @@ def get_rG4detector_human_corr(model, data_path):
     preds = preds.reshape(len(preds))
     yTest = yTest.reshape(len(yTest))
     corr = pearsonr(preds, yTest)[0]
+    # TODO
+    plt.scatter(yTest, preds)
+    plt.xlabel("Measured RSR ratio")
+    plt.ylabel("Predicted RSR ratio")
+    plt.show()
+    plt.savefig("Human predictions scatter plot")
     return corr
 
 
@@ -89,7 +96,7 @@ if __name__ == "__main__":
         rG4detector.append(load_model(f"{args.model_path}/model_{i}.h5"))
 
     calculate_human_correlation(rG4detector, args.data_dir_path + "/human/")
-    calculate_mouse_correlation(rG4detector, args.data_dir_path + "/mouse/")
+    # calculate_mouse_correlation(rG4detector, args.data_dir_path + "/mouse/")
 
 
 
