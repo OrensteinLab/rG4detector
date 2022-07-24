@@ -1,10 +1,7 @@
 import pandas as pd
-# import time
 import matplotlib.pyplot as plt
-from scipy.stats import pearsonr
 import numpy as np
 from tensorflow.keras.utils import to_categorical
-from PARAMETERS import *
 
 
 def set_data_size(data_size, data_sets):
@@ -53,9 +50,9 @@ def get_data(path, min_read=2000, get_seq=False):
 
 
 def get_input_size(model):
-    bagging = True if isinstance(model, list) else False
+    ensemble = True if isinstance(model, list) else False
 
-    if bagging:
+    if ensemble:
         if len(model[0].layers[0].input_shape) == 1:
             input_size = model[0].layers[0].input_shape[0][1]
         else:
@@ -106,24 +103,6 @@ def plot_auc_curve(scores_dict, title=None, dest=None, plot=False, PR=False, y=N
         plt.savefig(dest)
     if plot:
         plt.show()
-#
-#
-# def get_screener_scores(file_path, y):
-#     scores = {}
-#     pred = pd.read_csv(file_path, usecols=['cGcC', 'G4H', 'G4NN'], sep="\t")
-#     labels = y.reshape(len(y))
-#     for col in pred.columns:
-#         const = 0
-#         preds = pred[col].to_numpy()
-#         if min(preds) < 0:
-#             const = -min(preds) + 10 ** -3
-#         preds = preds + const
-#         preds = np.log(preds)
-#         pr, p = pearsonr(preds, labels)
-#         print(f'\n{col}:')
-#         print(f"corr = {round(pr, 3)}, p_value = {round(p, 3)}")
-#         scores[col] = round(pr, 3)
-#     return scores
 
 
 def one_hot_enc(s):

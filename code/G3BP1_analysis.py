@@ -30,6 +30,7 @@ def make_all_seqs_prediction(model, seqs, max_pred=True):
         preds_l.append(make_prediction(model, one_hot_mat=sub_mat_arr[i:min(i+batch_size, len(sub_mat_arr))]))
         i += batch_size
     sub_seq_preds = np.vstack(preds_l)
+    sub_seq_preds = sub_seq_preds.reshape(len(sub_seq_preds))
     seq_preds = [sub_seq_preds[preds_per_seq[i]:preds_per_seq[i+1]] for i in range(len(preds_per_seq)-1)]
     assert len(seq_preds) == len(seqs), f"ERROR: make_all_seqs_prediction - len(preds) != len(seq)"
     return [max(p) for p in seq_preds] if max_pred else seq_preds
@@ -42,7 +43,7 @@ def predict_fasta(model, src, dst):
     print(f"Number of sequences = {len(seqs)}")
     scores = make_all_seqs_prediction(model, seqs)
     with open(dst, "w") as f:
-        f.write(",sequence,rG4detector\n")
+        f.write("sequence,rG4detector\n")
         for s, p in zip(seqs, scores):
             f.write(f"{s},{p}\n")
     print(f"prediction avg = {sum(scores)/len(scores)}")
