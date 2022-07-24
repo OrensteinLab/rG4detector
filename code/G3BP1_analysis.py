@@ -147,7 +147,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    process_G3BP1_data(args.directory_path, args.model_dir_path, args.unique, args.ensemble_size)
+    process_G3BP1_data(args.directory_path, args.model_path, args.unique, args.ensemble_size)
 
 
 
