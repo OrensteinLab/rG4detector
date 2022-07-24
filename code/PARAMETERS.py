@@ -1,5 +1,5 @@
 DATA_PATH = "../data/human"
-MODEL_PATH = "../model/old_ver"
+MODEL_PATH = "../model/"
 SCREENER_PATH = "../g4rna_screener/"
 GENOMES_FILE = "../../rg4detector/big_files/"
 PARAMS_SCAN_PATH = "../docs/scan_performance.csv"
