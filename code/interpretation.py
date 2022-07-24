@@ -52,8 +52,11 @@ def loop_length_test(model, data_size, output):
     ax.spines['right'].set_visible(False)
     plt.legend()
     plt.savefig(output + f"/Loop length influence")
+    # TODO
     if PLOT:
         plt.show()
+    data = pd.DataFrame.from_dict(data)
+    data.to_csv(output + f"Loop test 1.csv", index=False)
 
 
 def loop_length_test2(model, data_size, output=None, plot=True):
@@ -99,6 +102,7 @@ def loop_length_test2(model, data_size, output=None, plot=True):
         plt.savefig(output + f"/Loop test 2")
     if plot:
         plt.show()
+    data.to_csv(output + f"Loop test 2.csv")
     return sp_coef
 
 
@@ -130,7 +134,7 @@ def mutation_effect(model, data_size, output):
     # preds_df = preds_df - base_pred
     plt.pcolormesh(preds_df, cmap="RdBu")
     plt.colorbar()
-    # plt.xticks([x + 0.5 for x in range(len(preds_df.columns))], preds_df.columns)
+    plt.xticks([x + 0.5 for x in range(len(preds_df.columns))], preds_df.columns)
     # plt.xticks()
     plt.yticks([x + 0.5 for x in range(len(preds_df.index))], preds_df.index)
     plt.title("Mutation Influence")
@@ -141,10 +145,9 @@ def mutation_effect(model, data_size, output):
 
 
 def mutation_map_test(model, data_size, output):
-    seq = "TCCGGAACTTGCAACAGCTGTGTGTGGCTTGAAGGGAGATGAAGTGGTGAAGGCCTGGTTTCCACCGAAGCTCTCACAGCCCAGCCTTTCACTGTGTGGCCGGGGGAA" \
-          "GGGTGCTCCGGGTGGGGGACGGGAATGGTGGGACTGGGGATGCCACGGGACAAGGCTGCTGGCCTGGAAGGTAGTCACGTGGAGAACCGCAGGAGATGAGATTGGAAAG" \
-          "TAGTAATAAGCCATGTGGATAAGAACAGAGGAG"
-    seq = seq[len(seq)//2-data_size//2:len(seq)//2+data_size//2]
+
+    seq = "CTGCTGCCGCTACTGCGGAGTAGCTGCTTCCCTTCCTCCTCTCCCGGCGGCGGCGGCGGCAGCGGCGGAGGAGGAGGAGGAGGGGACCCGGGCGCAGAGAGCCG" \
+          "GCCGGCGGCGCAGTTGCAGCGCGGAG"
     hot_mat = np.array(one_hot_enc(seq)).reshape((1, len(seq), 4))
     hot_mat = set_data_size(data_size, [hot_mat])[0]
     pred = make_prediction(model, one_hot_mat=hot_mat)
@@ -197,7 +200,7 @@ def mutation_map_test(model, data_size, output):
     crp_logo.ax.set_xticks([])
     plt.subplots_adjust(hspace=.001)
     logo_position = ax1.get_position()
-    ax1.set_position([logo_position.x0, logo_position.y0, logo_position.x1*0.848, logo_position.y0])
+    ax1.set_position([logo_position.x0, logo_position.y0, logo_position.x1*0.8485, logo_position.y1*0.55])
     plt.savefig(output + f"sequence mutation map")
     if PLOT:
         plt.show()
@@ -223,9 +226,9 @@ def main(model, output):
     # print(data_size)
     # loc_check(model, data_size)
     # loop_length_test(model, data_size, output)
-    loop_length_test2(model, data_size, output)
+    # loop_length_test2(model, data_size, output)
     # mutation_effect(model, data_size, output)
-    # mutation_map_test(model, data_size, output)
+    mutation_map_test(model, data_size, output)
 
 
 if __name__ == "__main__":

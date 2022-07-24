@@ -39,7 +39,7 @@ def plot_scores(scores_dict, y):
     plt.xlabel("Recall")
     plt.ylabel("Precision")
     plt.show()
-    plt.savefig(f"../detection/resultsHuman_AUCPR")
+    plt.savefig(f"../detection/results/Human_AUCPR")
 
 
 def detect_rg4(model):

@@ -76,7 +76,7 @@ def calculate_mouse_correlation(model, data_path):
 
 
 if __name__ == "__main__":
-    # parse command line args
+    # parse command line args0.808
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", "--data", dest="data_dir_path", help="Data directory path", required=True)
     parser.add_argument("-m", "--model", dest="model_path", help="rG4detector model directory", required=True)

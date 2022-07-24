@@ -5,10 +5,7 @@ import os
 from PARAMETERS import *
 import sys
 
-# GAP3 = DATA_SIZE//2 - 15
-# GAP5 = DATA_SIZE//2 + 15
 GAPS = DATA_SIZE
-
 MATCH_THRESHOLD = 0.85
 
 

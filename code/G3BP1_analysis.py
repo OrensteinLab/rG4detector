@@ -130,17 +130,17 @@ def process_G3BP1_data(dir_path, model_path, unique, ensemble_size):
     predict_fasta(MODEL, cntrl_src, cntrl_dst)
 
 
-    # # get screener predictions
-    # print("Predict_screener")
-    # add2path = "_unique" if unique else ""
-    # predict_screener(dir_path + f"/screener/{add2path[1:]}/stress_screener{add2path}.csv",
-    #                  dir_path + f"/screener/{add2path[1:]}/stress_screener{add2path}_pred.csv")
-    # predict_screener(dir_path + f"/screener/{add2path[1:]}/control_screener{add2path}.csv",
-    #                  dir_path + f"/screener/{add2path[1:]}/control_screener{add2path}_pred.csv")
+    # get screener predictions
+    print("Predict_screener")
+    add2path = "_unique" if unique else ""
+    predict_screener(dir_path + f"/screener/{add2path[1:]}/stress_screener{add2path}.csv",
+                     dir_path + f"/screener/{add2path[1:]}/stress_screener{add2path}_pred.csv")
+    predict_screener(dir_path + f"/screener/{add2path[1:]}/control_screener{add2path}.csv",
+                     dir_path + f"/screener/{add2path[1:]}/control_screener{add2path}_pred.csv")
 
     # normalize predictions
-    # print("Norm screener")
-    # screener_norm(dir_path, unique)
+    print("Norm screener")
+    screener_norm(dir_path, unique)
 
 
 if __name__ == "__main__":
