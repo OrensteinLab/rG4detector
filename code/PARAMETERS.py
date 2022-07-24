@@ -8,14 +8,14 @@ HUMAN_V29_TRANSCRIPTOME_PATH = GENOMES_FILE + "gencode.v29.transcripts.fa"
 
 SCREENER_DETECTION_PATH = SCREENER_PATH + "detection/"
 SCREENER_DETECTION_PREDICTION_PATH = SCREENER_DETECTION_PATH + "screener_predictions.pkl"
-ENSEMBLE_SIZE = 9
+ENSEMBLE_SIZE = 7
 NUM_OF_ENSEMBLE_ITERATIONS = 50
 MOUSE_PATH = "independent_datasets/mouse/"
 MOUSE_DATA_PATH = MOUSE_PATH + "Table_S1_mouse.csv"
 
 MOUSE_SCREENER_LENGTH = 60
 DATA_SIZE = 80
-DETECTION_SIGMA = 9
+DETECTION_SIGMA = 8
 METHODS_LIST = ['cGcC', 'G4H', 'G4NN']
 DETECTION_RG4_SEEKER_HITS = "../detection/rg4-seeker-transcript-match-test.pkl"
 RG4_SEEKER_PATH = "../data/rG4-seeker-hits.csv"
