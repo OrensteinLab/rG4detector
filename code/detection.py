@@ -1,140 +1,119 @@
-import sys
 import time
 from tensorflow.keras.models import load_model
 import pickle
-from Bio import SeqIO
-import os.path
-import getopt
-from datetime import datetime
-import tensorflow as tf
 from sklearn.metrics import precision_recall_curve
 from sklearn.metrics import auc
 from utils import *
-import matplotlib.pyplot as plt
 from seeker2transcript import get_transcript_dict
 from PARAMETERS import *
 import numpy as np
-
+import argparse
 
 DEBUG = False
-PLOT = False
-debug_size = 1
 
 
-def plot_scores(scores_dict, y):
-    dest = f"detection/"
-    legend_list = []
-    for method in scores_dict:
-        plt.plot(scores_dict[method].recall[1:], scores_dict[method].precision[1:])
-        legend_list.append(f"{method} - {round(scores_dict[method].auc, 3)}")
-    baseline = sum(y) / len(y)
-    plt.plot([0, 1], [baseline, baseline], linestyle='--', label='Baseline')
-    legend_list.append(f"Baseline = {round(baseline, 3)}")
-    plt.legend(legend_list)
-    plt.title(f"Human AUPR")
-    plt.xlabel("Recall")
-    plt.ylabel("Precision")
-    plt.savefig(dest + f"Human_AUCPR")
-
-
-def detect_rg4(model):
+def detect_rg4(model, rg4_seeker_hits, gencode_path, screener_path, plot_dest):
     t1 = time.time()
     # get input dim
     input_length = get_input_size(model)
     # get ground truth
-    with open(DETECTION_RG4_SEEKER_HITS, 'rb') as fp:
+    with open(rg4_seeker_hits, 'rb') as fp:
         exp_rg4 = pickle.load(fp)
+
     # get transcripts for rg4detector
-    all_transcripts_dict = get_transcript_dict(HUMAN_TRANSCRIPTOME_PATH)
+    all_transcripts_dict = get_transcript_dict(gencode_path)
     # keep only relevant transcripts
     transcript_dict = {}
-    for transcript in exp_rg4:
-        transcript_dict[transcript] = all_transcripts_dict[transcript]
+    for s in exp_rg4:
+        transcript_dict[s] = all_transcripts_dict[s]
     del all_transcripts_dict
     print(f"Number of transcripts = {len(exp_rg4)}")
     counter = 0
 
-    rg4detector_all_preds = None
-    screener_all_preds = None
-    t2 = time.time()
-    # predict all transcripts
-    for transcript in exp_rg4:
-        counter += 1
-        if counter % 100 == 0 or DEBUG:
-            print(f"counter = {counter}, time = {round(time.time() - t2)}s")
-            t2 = time.time()
+    # get screener predictions
+    with open(screener_path, 'rb') as fp:
+        screener_scores = pickle.load(fp)
 
-        seq = transcript_dict[transcript].seq
-        one_hot_mat = one_hot_enc(str(seq), remove_last=False)
-        # zero padding
-        one_hot_mat = np.vstack((np.zeros((input_length-1, 4)), one_hot_mat, np.zeros((input_length-1, 4))))
-        preds = pred_all_sub_seq(one_hot_mat, model)
-        positions_score = get_score_per_position(preds, input_length, DETECTION_SIGMA)
-        rg4detector_all_preds = positions_score if rg4detector_all_preds is None else \
-            np.hstack((rg4detector_all_preds, positions_score))
+    preds = {}
+    # make rG4detector prediction
+    print("Detecting with rG4detector")
+    seqs = ["Z"*(input_length-1) + str(transcript_dict[s].seq) + "Z"*(input_length-1) for s in exp_rg4]
+    predictions = make_all_seqs_prediction(model=model, seqs=seqs, max_pred=False)
+    preds["rG4detector"] = [get_score_per_position(p, input_length, DETECTION_SIGMA) for p in predictions]
 
-        with open(SCREENER_DETECTION_PREDICTION_PATH + transcript, 'rb') as fp:
-            screener_scores = pickle.load(fp)
-        screener_positions_score = set_screener_positions_scores(screener_scores)
-        if screener_all_preds is None:
-            screener_all_preds = screener_positions_score
-        else:
-            for method in screener_positions_score:
-                screener_all_preds[method] = np.vstack((screener_all_preds[method], screener_positions_score[method]))
+    # get screener predictions
+    print("Detecting with G4RNA screener")
+    screener_positions_scores = [set_screener_positions_scores(screener_scores[s]) for s in exp_rg4]
+    for m in METHODS_LIST:
+        preds[m] = [score[m] for score in screener_positions_scores]
 
-        if DEBUG and counter == debug_size:
-            del transcript_dict
-            break
-
-    # stack all ground truth data
-    counter = 0
-    rg4_all_exp_seq = None
-    for transcript in exp_rg4:
-        rg4_all_exp_seq = exp_rg4[transcript] if rg4_all_exp_seq is None else np.hstack((rg4_all_exp_seq,
-                                                                                         exp_rg4[transcript]))
-        counter += 1
-        if DEBUG and counter == debug_size:
-            break
-    del exp_rg4
+    # get all ground truth data
+    rg4_all_exp_seq = np.hstack([exp_rg4[s] for s in exp_rg4])
 
     scores = {}
-    # calc rg4detector score
-    precision, recall, t = precision_recall_curve(rg4_all_exp_seq,
-                                                  rg4detector_all_preds.reshape(len(rg4detector_all_preds), ))
-    aupr = auc(recall, precision)
-    scores["rG4detector"] = PRScore("rg4detector", precision, recall, t, aupr)
-    print(f"rG4detector score:")
-    print(scores["rG4detector"].auc)
-
-
-    # get screener score
-    for method in METHODS_LIST:
-        precision, recall, t = precision_recall_curve(rg4_all_exp_seq, screener_all_preds[method])
+    # calc aupr score
+    print("Starting to calculate AUPR")
+    for m in preds:
+        print(f"Calculating {m} AUPR")
+        if m != "G4H":
+            precision, recall, t = precision_recall_curve(rg4_all_exp_seq, np.hstack(preds[m]))
+        else:
+            t = np.unique(np.hstack(preds[m]))[:-1] + 0.001
+            precision, recall = get_G4Hunter_roc(sequences=transcript_dict,
+                                                 predictions_l=preds[m],
+                                                 thresholds=t,
+                                                 ground_truth=exp_rg4)
         aupr = auc(recall, precision)
-        scores[method] = PRScore(method, precision, recall, t, aupr)
+        scores[m] = PRScore(m, precision, recall, t, aupr)
+        print(f"{m} score: {scores[m].auc}")
 
-    for method in METHODS_LIST:
-        print(f"{method} scores:")
-        print(scores[method].auc)
+    
+    print(f"Execution time = {round((time.time()-t1)/60, 2)} minutes")
+    # TODO - remove
+    # print("Plotting results")
+    # for m in scores:
+    #     if len(scores[m].precision) > 1000000:
+    #         scores[m].precision, scores[m].recall = scores[m].precision[::10], scores[m].recall[::10]
+    #
+    # plot_scores(scores, rg4_all_exp_seq, plot_dest)
+    # # save data
+    # print("Saving results")
+    # for m in scores:
+    #     with open(plot_dest + f"/results/{m}_detection_aupr.csv", "w") as f:
+    #         f.write(f"precision,recall\n")
+    #
+    #         for precision, recall in zip(scores[m].precision, scores[m].recall):
+    #             f.write(f"{precision},{recall}\n")
 
-    print(f"exe time = {round((time.time()-t1)/60, 2)} minutes")
-    plot_scores(scores, rg4_all_exp_seq)
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-m", "--model", dest="model_path", help="rG4detector model directory", required=True)
+    parser.add_argument("-s", "--seeker", dest="rg4_seeker_hits",
+                        help="rG4-seeker hits processed file path "
+                             "(located under detection/rg4-seeker-transcript-match-test.pkl)", required=True)
+    parser.add_argument("-i", "--input", dest="screener_input",
+                        help="Screener predictions (located under g4rna_screener/detection/seeker-test.fasta)",
+                        required=True)
+    parser.add_argument("-g", "--gencode", dest="gencode_path", help="Human gencode v40 file path", required=True)
+    parser.add_argument("-e", "--ensemble", dest="ensemble_size",
+                        help=f"rG4detector ensemble size (default={ENSEMBLE_SIZE})", default=ENSEMBLE_SIZE)
+    parser.add_argument("-p", "--plot", dest="plot_dest", help=f"Path for results plot", default=None)
+
+
+    args = parser.parse_args()
+
     print(f"Starting detection")
-    opts, args = getopt.getopt(sys.argv[1:], 'dp')
-    for op, val in opts:
-        if op == "-d":
-            DEBUG = True
-        if op == "-p":
-            PLOT = True
-
     MODEL = []
-    for i in range(ENSEMBLE_SIZE):
-        MODEL.append(load_model(MODEL_PATH + f"/model_{i}.h5"))
-
-    detect_rg4(MODEL)
+    for i in range(args.ensemble_size):
+        MODEL.append(load_model(args.model_path + f"/model_{i}.h5"))
+    detect_rg4(
+        model=MODEL,
+        rg4_seeker_hits=args.rg4_seeker_hits,
+        gencode_path=args.gencode_path,
+        screener_path=args.screener_input,
+        plot_dest=args.plot_dest)
 
 
 

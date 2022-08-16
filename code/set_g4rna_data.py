@@ -3,9 +3,10 @@ import re
 from Bio import pairwise2
 import os
 from PARAMETERS import *
+import sys
 
-GAPS = (DATA_SIZE - 30)//2
-MATCH_THRESHOLD = 0.9
+GAPS = DATA_SIZE
+MATCH_THRESHOLD = 0.85
 
 
 def get_chrom_data(chrom_data):
@@ -24,7 +25,6 @@ def get_chrom_data(chrom_data):
         i += 1
         while i < len(chrom_data) and chrom_data.iloc[i]['Start'] <= start + length:
             if label != chrom_data.iloc[i]["G4"]:
-                print(f"{chrom} - {start} - Not -valid")
                 valid = False
             # choose contained seq
             if chrom_data.iloc[i]['Start'] + chrom_data.iloc[i]['Length'] <= start + length:
@@ -64,7 +64,7 @@ def filter_data(input_file, csv_dest):
     all_data.to_csv(csv_dest)
 
 
-def csv2bed(csv_path, bed_dest, ):
+def csv2bed(csv_path, bed_dest):
     bed_file = open(bed_dest, 'w')
     interval = pd.read_csv(csv_path)
     for _, row in interval.iterrows():
@@ -91,16 +91,13 @@ def find_g4rna_seq(raw_csv_path, seq_dest, csv_dest):
         if seq_match is None:
             alignments = pairwise2.align.localms(g4rna_seq, seq, 1, -.8, -.8, -.8)
             if len(alignments) > 0 and alignments[0].score / len(g4rna_seq) > MATCH_THRESHOLD:
-                print(f"{idx}: HIT-alli")
                 hit_counter += 1
             else:
                 # print(g4rna_df.iloc[idx]["sequence"])
                 no_hit_counter += 1
                 ignore_list.append(idx)
                 # print(g4rna_seq)
-                print(f"{idx}: NO-HIT")
         else:
-            print(f"{idx}: HIT")
             hit_counter += 1
     print(f"HIT = {hit_counter}")
     print(f"NO-HIT = {no_hit_counter}")
@@ -108,16 +105,15 @@ def find_g4rna_seq(raw_csv_path, seq_dest, csv_dest):
     g4rna_df.to_csv(csv_dest, index=False)
 
 
-def main():
-    source = "G4RNA/data.csv"
-    raw_csv_dest = "G4RNA/g4rna_filtered_data_raw.csv"
-    csv_dest = "G4RNA/g4rna_filtered_data.csv"
-    raw_bed_dest = "G4RNA/bed_raw_data.bed"
-    bed_dest = "G4RNA/bed_raw_data.bed"
-    seq_dest = "G4RNA/seq"
-    raw_seq_dest = "G4RNA/raw_seq"
-    bedtools_script_path = "G4RNA/bed2seq.sh"
-    reference_genome = "hg38.fa"
+def main(g4rna_dir, reference_genome):
+    source = g4rna_dir + "/data.csv"
+    raw_csv_dest = g4rna_dir + "/g4rna_filtered_data_raw.csv"
+    csv_dest = g4rna_dir + "/g4rna_filtered_data.csv"
+    raw_bed_dest = g4rna_dir + "/bed_raw_data.bed"
+    bed_dest = g4rna_dir + "/bed_raw_data.bed"
+    seq_dest = g4rna_dir + "/seq"
+    raw_seq_dest = g4rna_dir + "/raw_seq"
+    bedtools_script_path = g4rna_dir + "/bed2seq.sh"
 
     # filter overlapping sequences
     filter_data(source, raw_csv_dest)
@@ -133,5 +129,10 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) != 3:
+        print("Usage: set_g4rna_data.py <g4rna_dir_path> <hg38.fa>")
+        exit(0)
+    g4rna_dir_path = sys.argv[1]
+    reference_genome = sys.argv[2]
+    main(g4rna_dir_path, reference_genome)
 

@@ -13,24 +13,16 @@ from tensorflow.keras.models import load_model
 import matplotlib.pyplot as plt
 from PARAMETERS import *
 
-
-tf.random.set_seed(1)
-random.seed(10)
-np.random.seed(1)
-
-
 def evaluate_model(x_train, y_train, x_val, y_val, hyper_params=HyperParams()):
     print("Starting to evaluate model!")
     print(f"SEED = {hyper_params.seed}")
-
-    # set early stopping
-    es_callback = EarlyStopping(monitor='val_loss', patience=8, verbose=1)
     # get model
     model = get_model(hyper_params)
-    # fit model
 
-    model.fit(x_train, y_train, verbose=verb, epochs=hyper_params.epochs, validation_data=(x_val, y_val),
-              callbacks=[es_callback], batch_size=hyper_params.batch_size)
+    # fit model
+    es_callback = EarlyStopping(monitor='val_loss', patience=5, verbose=1)
+    model.fit(x_train, y_train, verbose=0, validation_data=(x_val, y_val), epochs=hyper_params.epochs,
+              batch_size=hyper_params.batch_size, callbacks=[es_callback])
     # make a prediction on the val set
     y_hat = model(x_val).numpy()
     y_hat = y_hat.reshape(len(y_hat))
@@ -53,7 +45,7 @@ def find_ensemble_size(x, y, dest, models_num, debug):
         for j in range(models_num, i, -1):
             ensemble_preds[:, j-1] += pred
 
-    # cal pearson correlation
+    # calc pearson correlation
     pr_list = []
     for i in range(models_num):
         pr_list.append(pearsonr(ensemble_preds[:, i], y)[0])
@@ -68,19 +60,19 @@ def find_ensemble_size(x, y, dest, models_num, debug):
         plt.show()
 
 
-def main(hyper_params, model_num):
+def main(hyper_params, model_num, iterations, dst, debug=False):
     start_time = time.time()
-    [x_train, y_train], _, [x_val, y_val] = get_data(DATA_PATH, min_read=2000)
-    if DEBUG:
+    [x_train, y_train, _], _, [x_val, y_val, _] = get_data(DATA_PATH, min_read=2000)
+    if debug:
         x_train = x_train[:1000]
         y_train = y_train[:1000]
     [x_train, x_val] = set_data_size(hyper_params.input_size, [x_train, x_val])
 
     corr_list = []
     seed_list = []
-    for i in range(num_of_iterations):
+    for i in range(iterations):
         it_time = time.time()
-        print(f"iteration: {i}/{num_of_iterations}")
+        print(f"iteration: {i}/{iterations}")
         hyper_params.seed = random.randint(1, 1000)
         pr_corr, model = evaluate_model(x_train, y_train, x_val, y_val, hyper_params)
         corr_list.append(pr_corr)
@@ -89,22 +81,22 @@ def main(hyper_params, model_num):
 
     # reproduce best models:
     max_args = np.argsort(np.array(corr_list))[-model_num:][::-1]
-    print(f"Reproducing {model_num} crating best models")
+    print(f"Reproducing {model_num} creating best models")
     for idx, loc in enumerate(max_args):
         it_time = time.time()
         print(f"SEED {idx} = {seed_list[loc]}")
         hyper_params.seed = seed_list[loc]
         _, model = evaluate_model(x_train, y_train, x_val, y_val, hyper_params)
-        model.save(f"{output}/model_{idx}.h5")
+        model.save(f"{dst}/model_{idx}.h5")
         print("Finished training - execution time = %ss ---\n\n" % (round(time.time() - it_time)))
 
-    find_ensemble_size(x_val, y_val, output, num_of_models, DEBUG)
+    find_ensemble_size(x_val, y_val, dst, model_num, debug)
     print("Code execution time = %sm ---" % (round(time.time() - start_time) // 60))
 
 
 if __name__ == "__main__":
     tf.random.set_seed(1)
-    random.seed(10)
+    random.seed(1)
     np.random.seed(1)
 
     verb = 0
@@ -119,8 +111,8 @@ if __name__ == "__main__":
             verb = 1
             epochs = 1
             DEBUG = True
-            num_of_models = 3
-            num_of_iterations = num_of_models*2
+            num_of_models = 1
+            num_of_iterations = 1
         if op == "-o":
             output = val
 
@@ -129,7 +121,7 @@ if __name__ == "__main__":
     print(f"num_of_iterations = {num_of_iterations}")
     print(f"output is {output}")
 
-    hyperParams = get_hyper_params(best=True)
-    main(hyperParams, num_of_models)
+    hyperParams = get_hyper_params(df_path=PARAMS_SCAN_PATH)
+    main(hyperParams, num_of_models, num_of_iterations, output, debug=DEBUG)
 
 

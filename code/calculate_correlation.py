@@ -5,14 +5,12 @@ import numpy as np
 from utils import set_data_size, one_hot_enc
 import pandas as pd
 from PARAMETERS import *
-from Bio import SeqIO
-import getopt
-import sys
-import pickle
+import argparse
+import matplotlib.pyplot as plt
 
 
-def get_rG4detector_human_corr(model, path):
-    _, [xTest, yTest], [_, _] = get_data(path, min_read=2000)
+def get_rG4detector_human_corr(model, data_path):
+    _, [xTest, yTest, _], _ = get_data(data_path, min_read=2000)
     data_size = get_input_size(model)
     [xTest] = set_data_size(data_size, [xTest])
     preds = np.zeros((len(xTest), 1))
@@ -21,49 +19,94 @@ def get_rG4detector_human_corr(model, path):
     preds = preds.reshape(len(preds))
     yTest = yTest.reshape(len(yTest))
     corr = pearsonr(preds, yTest)[0]
+    # # TODO
+    # plt.scatter(yTest, preds, 9)
+    # plt.xlabel("Measured RSR ratio")
+    # plt.ylabel("Predicted RSR ratio")
+    # plt.savefig("Human_predictions_scatter_plot")
+    # plt.show()
     return corr
 
 
+def get_rG4detector_mouse_corr(model, mouse_df):
+    print("Computing mouse correlation")
+    input_length = get_input_size(model)
+    chop_size = (len(mouse_df.loc[0, "sequence"]) - input_length) // 2
+    sequences = [s[chop_size:chop_size + input_length] for s in mouse_df["sequence"]]
+    X = np.array(list(map(one_hot_enc, sequences)))
+
+    pred = np.zeros((len(X), 1))
+    for m in model:
+        pred += m(X).numpy() / len(model)
+    pred = pred.reshape(len(pred))
+    log_rsr = np.log(mouse_df["label"])
+    corr = pearsonr(pred, log_rsr)
+    return round(corr[0], 3)
 
 
-def get_screener_scores(file_path, y):
+def get_screener_scores(screener_preds, y):
     screener_scores = {}
-    pred = pd.read_csv(file_path, usecols=METHODS_LIST, sep="\t")
+    preds = pd.read_csv(screener_preds, usecols=['description'] + METHODS_LIST, sep="\t")
+    preds = preds.groupby(['description']).max()
 
-    labels = y.reshape(len(y))
-    for col in pred.columns:
+    y = y.reshape(len(y))
+    for col in preds.columns:
         const = 0
-        preds = pred[col].to_numpy()
+        p = preds[col].to_numpy()
 
-        if min(preds) <= 0:
-            const = -min(preds) + 10 ** -3
-        preds = preds + const
-        preds = np.log(preds)
-        pr, p = pearsonr(preds, labels)
+        if min(p) <= 0:
+            const = -min(p) + 10 ** -3
+        p = np.log(p + const)
+        pr, _ = pearsonr(p, y)
         screener_scores[col] = round(pr, 3)
     return screener_scores
 
 
-def calculate_human_correlation(model):
+def calculate_human_correlation(model, data_path, screener_preds):
     print("Evaluating human correlation:")
     # get screener scores
-    _,  [_, y_test], _ = get_data(DATA_PATH, min_read=2000)
-    scores = get_screener_scores(file_path=SCREENER_PATH + "screener_human_preds.csv", y=y_test)
-    scores["rG4detector"] = get_rG4detector_human_corr(model, DATA_PATH)
+    _,  [_, y_test, _], _ = get_data(data_path, min_read=2000)
+    print(f"Predicting {len(y_test)} sequences")
+    if screener_preds is None:
+        screener_preds = SCREENER_PATH + "/output_data/human_test_predictions.csv"
+    scores = get_screener_scores(screener_preds=screener_preds, y=y_test)
+    scores["rG4detector"] = get_rG4detector_human_corr(model, data_path)
     for m in scores.keys():
         print(f"{m} Pearson correlation = {round(scores[m],3)}")
+    return scores
+
+def calculate_mouse_correlation(model, data_path, screener_preds):
+    print("Evaluating mouse correlation:")
+    # get screener scores
+    if screener_preds is None:
+        screener_preds = SCREENER_PATH + "/output_data/mouse_test_predictions.csv"
+    mouse_df = pd.read_csv(data_path + "mouse_data.csv", names=["sequence", "label"], header=None, delimiter="\t")
+
+    scores = get_screener_scores(screener_preds=screener_preds, y=np.log(mouse_df["label"]))
+    scores["rG4detector"] = get_rG4detector_mouse_corr(model, mouse_df)
+    for m in scores.keys():
+        print(f"{m} Pearson correlation = {round(scores[m],3)}")
+    return scores
 
 
 if __name__ == "__main__":
-    model_path = MODEL_PATH
-    rG4detector = []
-    for i in range(ENSEMBLE_SIZE):
-        rG4detector.append(load_model(f"{model_path}/model_{i}.h5"))
+    # parse command line args
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-d", "--data", dest="data_dir_path", help="Data directory path", required=True)
+    parser.add_argument("-m", "--model", dest="model_path", help="rG4detector model directory", required=True)
+    parser.add_argument("-e", "--ensemble", dest="ensemble_size",
+                        help=f"rG4detector ensemble size (default={ENSEMBLE_SIZE})", default=ENSEMBLE_SIZE)
+    parser.add_argument("-s", "--screener", dest="screener_preds",
+                        help=f"G4RNA screener prediction (default under{ENSEMBLE_SIZE}/output_data/)", default=None)
 
-    # opts, args = getopt.getopt(sys.argv[1:], 'hma')
-    # for op, val in opts:
-    #     if op == "-h":
-    calculate_human_correlation(rG4detector)
+    args = parser.parse_args()
+
+    rG4detector = []
+    for i in range(args.ensemble_size):
+        rG4detector.append(load_model(f"{args.model_path}/model_{i}.h5"))
+
+    calculate_human_correlation(rG4detector, args.data_dir_path + "/human/", args.screener_preds)
+    # calculate_mouse_correlation(rG4detector, args.data_dir_path + "/mouse/", args.screener_preds)
 
 
 
