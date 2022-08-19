@@ -7,6 +7,7 @@ import numpy as np
 from sklearn.metrics import roc_curve, auc
 from PARAMETERS import *
 
+
 def get_g4rna_data(g4rna_dir):
     g4rna_data = pd.read_csv(g4rna_dir + "/data_2_fil.csv")
     print(f"Data size = {len(g4rna_data)}")
@@ -34,7 +35,7 @@ def main(model, g4rna_dir):
         prediction["rG4detector"].append(max(pred_all_sub_seq(one_hot_mat, model)))
 
     # pred screener
-    screener_df = pd.read_csv(g4rna_dir + "/screener_preds.60", delimiter="\t")
+    screener_df = pd.read_csv(g4rna_dir + "/screener_preds.80", delimiter="\t")
     seqs_ids = screener_df["description"].unique()
     for seq_id in seqs_ids:
         seq_preds = screener_df[screener_df["description"] == seq_id]
@@ -43,6 +44,7 @@ def main(model, g4rna_dir):
 
     for method in prediction.keys():
         fpr, tpr, _ = roc_curve(y, prediction[method])
+
         roc_auc = auc(fpr, tpr)
         print(f"{method} roc_auc = {roc_auc}")
         scores[method] = AUC_Score(method=method, y=tpr, x=fpr, auc=round(roc_auc, 2))
