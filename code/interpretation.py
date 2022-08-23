@@ -276,12 +276,12 @@ def stretches_length_test(model, data_size, output):
 
 def main(model, output):
     data_size = get_input_size(model)
-    # loop_length_test(model, data_size, output)
-    # loop_length_test2(model, data_size, output)
-    # mutation_effect(model, data_size, output)
-    # seq = "CTGCTGCCGCTACTGCGGAGTAGCTGCTTCCCTTCCTCCTCTCCCGGCGGCGGCGGCGGCAGCGGCGGAGGAGGAGGAGGAGGGGACCCGGGCGCAGAGAGCCG" \
-    #       "GCCGGCGGCGCAGTTGCAGCGCGGAG"
-    # mutation_map_test(model, data_size, output, seq)
+    loop_length_test(model, data_size, output)
+    loop_length_test2(model, data_size, output)
+    mutation_effect(model, data_size, output)
+    seq = "CTGCTGCCGCTACTGCGGAGTAGCTGCTTCCCTTCCTCCTCTCCCGGCGGCGGCGGCGGCAGCGGCGGAGGAGGAGGAGGAGGGGACCCGGGCGCAGAGAGCCG" \
+          "GCCGGCGGCGCAGTTGCAGCGCGGAG"
+    mutation_map_test(model, data_size, output, seq)
     stretches_length_test(model, data_size, output)
 
 

@@ -22,11 +22,11 @@ def get_rG4detector_human_corr(model, data_path):
     sp_corr = spearmanr(preds, yTest)[0]
     print(f"rG4detector Spearman correlation = {sp_corr}")
     # # TODO
-    # plt.scatter(yTest, preds, 9)
-    # plt.xlabel("Measured RSR ratio")
-    # plt.ylabel("Predicted RSR ratio")
-    # plt.savefig("Human_predictions_scatter_plot")
-    # plt.show()
+    plt.scatter(yTest, preds, 9)
+    plt.xlabel("Measured RSR ratio")
+    plt.ylabel("Predicted RSR ratio")
+    plt.savefig("Human_predictions_scatter_plot")
+    plt.show()
     return corr
 
 
@@ -43,6 +43,8 @@ def get_rG4detector_mouse_corr(model, mouse_df):
     pred = pred.reshape(len(pred))
     log_rsr = np.log(mouse_df["label"])
     corr = pearsonr(pred, log_rsr)
+    sp_corr = spearmanr(pred, log_rsr)[0]
+    print(f"rG4detector Spearman correlation = {sp_corr}")
     return round(corr[0], 3)
 
 
@@ -86,7 +88,7 @@ def calculate_mouse_correlation(model, data_path, screener_preds):
         screener_preds = SCREENER_PATH + "/output_data/mouse_test_predictions.csv"
     mouse_df = pd.read_csv(data_path + "mouse_data.csv", names=["sequence", "label"], header=None, delimiter="\t")
 
-    scores = get_screener_scores(screener_preds=screener_preds, y=np.log(mouse_df["label"]))
+    scores = get_screener_scores(screener_preds=screener_preds, y=np.log(mouse_df["label"].to_numpy()))
     scores["rG4detector"] = get_rG4detector_mouse_corr(model, mouse_df)
     for m in scores.keys():
         print(f"{m} Pearson correlation = {round(scores[m],3)}")
@@ -110,7 +112,7 @@ if __name__ == "__main__":
         rG4detector.append(load_model(f"{args.model_path}/model_{i}.h5"))
 
     calculate_human_correlation(rG4detector, args.data_dir_path + "/human/", args.screener_preds)
-    # calculate_mouse_correlation(rG4detector, args.data_dir_path + "/mouse/", args.screener_preds)
+    calculate_mouse_correlation(rG4detector, args.data_dir_path + "/mouse/", args.screener_preds)
 
 
 

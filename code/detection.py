@@ -71,20 +71,20 @@ def detect_rg4(model, rg4_seeker_hits, gencode_path, screener_path, plot_dest, s
     
     print(f"Execution time = {round((time.time()-t1)/60, 2)} minutes")
     # TODO - remove
-    # print("Plotting results")
-    # for m in scores:
-    #     if len(scores[m].precision) > 1000000:
-    #         scores[m].precision, scores[m].recall = scores[m].precision[::10], scores[m].recall[::10]
-    #
-    # plot_scores(scores, rg4_all_exp_seq, plot_dest)
-    # # save data
-    # print("Saving results")
-    # for m in scores:
-    #     with open(plot_dest + f"/results/{m}_detection_aupr.csv", "w") as f:
-    #         f.write(f"precision,recall\n")
-    #
-    #         for precision, recall in zip(scores[m].precision, scores[m].recall):
-    #             f.write(f"{precision},{recall}\n")
+    print("Plotting results")
+    for m in scores:
+        if len(scores[m].precision) > 1000000:
+            scores[m].precision, scores[m].recall = scores[m].precision[::10], scores[m].recall[::10]
+
+    plot_scores(scores, rg4_all_exp_seq, plot_dest)
+    # save data
+    print("Saving results")
+    for m in scores:
+        with open(plot_dest + f"/results/{m}_detection_aupr.csv", "w") as f:
+            f.write(f"precision,recall\n")
+
+            for precision, recall in zip(scores[m].precision, scores[m].recall):
+                f.write(f"{precision},{recall}\n")
 
 
 
