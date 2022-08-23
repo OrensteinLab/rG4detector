@@ -159,7 +159,7 @@ def pred_all_sub_seq(data, model, pad=False):
 
 def get_score_per_position(preds, input_length, sigma):
     positions_scores = np.zeros((len(preds)-input_length+1))
-    gaussian_filter = get_gaussian_filter(input_length, sigma=sigma, mu=12)
+    gaussian_filter = get_gaussian_filter(input_length, sigma=sigma, mu=11)
     positions_scores[:] = np.convolve(preds, gaussian_filter, "valid")
     return positions_scores
 
