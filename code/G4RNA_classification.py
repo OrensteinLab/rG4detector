@@ -54,7 +54,7 @@ def main(model, g4rna_dir):
             f.write(f"True positive rate,False positive rate\n")
             for tpr, fpr in zip(scores[m].y, scores[m].x):
                 f.write(f"{tpr},{fpr}\n")
-    with open(g4rna_dir + f"/results/G4RNA_AUC.csv", "w") as f:
+    with open(g4rna_dir + f"/results/{w}/G4RNA_AUC.csv", "w") as f:
         f.write(f",G4RNA AUC score\n")
         for m in scores:
             f.write(f"{m},{scores[m].auc}\n")

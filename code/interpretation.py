@@ -93,17 +93,17 @@ def loop_length_test2(model, data_size, output=None, plot=True):
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     # plt.text(location["Delta Gvh"], location["rG4detector"], loop[1:], c="b")
-    # for loop, location in data.iterrows():
-    #     if loop[1:] == "333":
-    #         plt.annotate(loop[1:], (location["Delta Gvh"], location["rG4detector"]-0.05))
-    #     elif loop[1:] == "223":
-    #         plt.annotate(loop[1:], (location["Delta Gvh"], location["rG4detector"]-0.05))
-    #     elif loop[1:] == "232":
-    #         plt.annotate(loop[1:], (location["Delta Gvh"]-1.5, location["rG4detector"]))
-    #     elif loop[1:] == "131":
-    #         plt.annotate(loop[1:], (location["Delta Gvh"]-1.5, location["rG4detector"]))
-    #     else:
-    #         plt.annotate(loop[1:], location)
+    for loop, location in data.iterrows():
+        if loop[1:] == "333":
+            plt.annotate(loop[1:], (location["Delta Gvh"], location["rG4detector"]-0.05))
+        elif loop[1:] == "223":
+            plt.annotate(loop[1:], (location["Delta Gvh"], location["rG4detector"]-0.05))
+        elif loop[1:] == "232":
+            plt.annotate(loop[1:], (location["Delta Gvh"]-1.5, location["rG4detector"]))
+        elif loop[1:] == "131":
+            plt.annotate(loop[1:], (location["Delta Gvh"]-1.5, location["rG4detector"]))
+        else:
+            plt.annotate(loop[1:], location)
     if output:
         plt.savefig(output + f"/Loop length combination test", dpi=400)
     if plot:
@@ -252,7 +252,7 @@ def stretches_length_test(model, data_size, output):
             seq = ("G"*stretch_size + "N"*loops_size)*3 + "G"*stretch_size
             # print(set_seq(seq, data_size, extra=0))
             seq_list.append(set_seq(seq, data_size))
-        stretch_predictions[loops_size] = make_prediction(model, seq_list)
+        stretch_predictions[loops_size] = make_prediction(model, seq_list).reshape(max_stretch)
         ax.plot(range(min_stretch, max_stretch + 1), stretch_predictions[loops_size], 'o--', label=f"loops size = {loops_size}")
     ax.set_xticks(range(min_stretch, max_stretch+1))
     plt.xlabel("Stretches length")
@@ -266,23 +266,22 @@ def stretches_length_test(model, data_size, output):
     # TODO
     if PLOT:
         plt.show()
-    # with open(output + f"Stretches influence.csv", "w") as f:
-    #     f.write("stretch size, rG4detector prediction")
-    #     for j, p in zip(range(min_stretch, max_stretch + 1), stretch_predictions):
-    #         f.write(f"{j+1},{p}")
+    stretch_predictions["Stretches length"] = range(min_stretch, max_stretch + 1)
+    data_df = pd.DataFrame.from_dict(stretch_predictions).set_index("Stretches length")
+    data_df.rename(columns={x: f"loop length {x}" for x in range(1, 5)}).to_csv(output + f"/Stretches influence.csv")
 
 
 
 
 def main(model, output):
     data_size = get_input_size(model)
-    loop_length_test(model, data_size, output)
+    # loop_length_test(model, data_size, output)
     loop_length_test2(model, data_size, output)
-    mutation_effect(model, data_size, output)
+    # mutation_effect(model, data_size, output)
     seq = "CTGCTGCCGCTACTGCGGAGTAGCTGCTTCCCTTCCTCCTCTCCCGGCGGCGGCGGCGGCAGCGGCGGAGGAGGAGGAGGAGGGGACCCGGGCGCAGAGAGCCG" \
           "GCCGGCGGCGCAGTTGCAGCGCGGAG"
-    mutation_map_test(model, data_size, output, seq)
-    stretches_length_test(model, data_size, output)
+    # mutation_map_test(model, data_size, output, seq)
+    # stretches_length_test(model, data_size, output)
 
 
 if __name__ == "__main__":

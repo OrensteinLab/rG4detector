@@ -21,12 +21,12 @@ def get_rG4detector_human_corr(model, data_path):
     corr = pearsonr(preds, yTest)[0]
     sp_corr = spearmanr(preds, yTest)[0]
     print(f"rG4detector Spearman correlation = {sp_corr}")
-    # # TODO
-    plt.scatter(yTest, preds, 9)
-    plt.xlabel("Measured RSR ratio")
-    plt.ylabel("Predicted RSR ratio")
-    plt.savefig("Human_predictions_scatter_plot")
-    plt.show()
+    # TODO
+    # plt.scatter(yTest, preds, 9)
+    # plt.xlabel("Measured RSR ratio")
+    # plt.ylabel("Predicted RSR ratio")
+    # plt.savefig("Human_predictions_scatter_plot")
+    # plt.show()
     return corr
 
 
