@@ -262,12 +262,19 @@ def label_sequence(seq, preds, t, screener_window):
             e += 1
         e -= 1
         start = s
+        end = e + screener_window - 1
+
+
+        # label 0 sequences with no G
+        if "G" not in seq[start:end]:
+            final_pred[start:end + 1] = 0
+            s = e + 1
+            continue
 
         # remove non-Gs nt at the sequence ends
         while seq[start] != "G":
             start += 1
 
-        end = e + screener_window - 1
         while seq[end] != "G":
             end -= 1
 
