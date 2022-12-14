@@ -299,9 +299,11 @@ def get_G4Hunter_roc(sequences, predictions_l, thresholds, ground_truth, screene
     return precision, recall
 
 
-def make_all_seqs_prediction(model, seqs, max_pred=True):
+def make_all_seqs_prediction(model, seqs, max_pred=True, pad=False, verbose=0):
     # seqs = seqs[:30]
     input_size = get_input_size(model)
+    if pad:
+        seqs = [pad * (input_size - 1) + s + pad * (input_size - 1) for s in seqs]
     one_hot_mat_list = [one_hot_enc(s) for s in seqs]
     preds_per_seq = np.zeros(len(seqs) + 1, dtype=int)
     for i, s in enumerate(seqs):  # preds locations in the output array
@@ -309,11 +311,13 @@ def make_all_seqs_prediction(model, seqs, max_pred=True):
     sub_mat_list = [np.array([m[x:x+input_size]for x in range(len(m)-input_size+1)]) for m in one_hot_mat_list]
     sub_mat_arr = np.vstack(sub_mat_list)
     # for large amount of data
-    batch_size = 15000
+    batch_size = 5000
     preds_l = []
     i = 0
     while i < len(sub_mat_arr):
         preds_l.append(make_prediction(model, one_hot_mat=sub_mat_arr[i:min(i+batch_size, len(sub_mat_arr))]))
+        if verbose:
+            print(f"Predicted {round(i/len(sub_mat_arr), 2)}%")
         i += batch_size
     sub_seq_preds = np.vstack(preds_l)
     sub_seq_preds = sub_seq_preds.reshape(len(sub_seq_preds))
