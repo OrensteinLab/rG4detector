@@ -41,7 +41,7 @@ def detect_rg4(model, rg4_seeker_hits, gencode_path, screener_path, plot_dest, s
     preds["rG4detector"] = [get_score_per_position(p, input_length, DETECTION_SIGMA) for p in predictions]
 
     # get screener predictions
-    print("Detecting with G4RNA screener")
+    print("Getting G4RNA screener predictions")
     screener_positions_scores = [set_screener_positions_scores(screener_scores[s], gaussian=True, average=True,
                                                                window_size=screener_window) for s in exp_rg4]
     for m in METHODS_LIST:
