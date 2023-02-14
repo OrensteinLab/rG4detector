@@ -100,7 +100,7 @@ if __name__ == "__main__":
     parser.add_argument("-g", "--gencode", dest="gencode_path", help="Human gencode v40 file path", required=True)
     parser.add_argument("-e", "--ensemble", dest="ensemble_size",
                         help=f"rG4detector ensemble size (default={ENSEMBLE_SIZE})", default=ENSEMBLE_SIZE)
-    parser.add_argument("-p", "--plot", dest="plot_dest", help=f"Path for results plot", default=None)
+    parser.add_argument("-p", "--plot", dest="plot_dest", help=f"Path for results plot", default=".")
     parser.add_argument("-w", "--window", dest="screener_window", help=f"G$RNA screener window size", type=int,
                         default=80)
     args = parser.parse_args()
