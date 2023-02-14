@@ -71,13 +71,15 @@ def detect_rg4(model, rg4_seeker_hits, gencode_path, screener_path, dest, screen
     
     print(f"Execution time = {round((time.time()-t1)/60, 2)} minutes")
 
-    print("Plotting results")
-    for m in scores:
-        if len(scores[m].precision) > 1000000:
-            scores[m].precision, scores[m].recall = scores[m].precision[::10], scores[m].recall[::10]
+
 
     # save data
     if dest:
+        print("Plotting results")
+        for m in scores:
+            if len(scores[m].precision) > 1000000:
+                scores[m].precision, scores[m].recall = scores[m].precision[::10], scores[m].recall[::10]
+                
         plot_scores(scores, rg4_all_exp_seq, dest)
         print("Saving results")
         for m in scores:
