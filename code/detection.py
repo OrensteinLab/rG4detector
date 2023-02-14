@@ -81,7 +81,7 @@ def detect_rg4(model, rg4_seeker_hits, gencode_path, screener_path, dest, screen
         plot_scores(scores, rg4_all_exp_seq, dest)
         print("Saving results")
         for m in scores:
-            with open(dest + f"/results/{m}_detection_aupr.csv", "w") as f:
+            with open(dest + f"/{m}_detection_aupr.csv", "w") as f:
                 f.write(f"precision,recall\n")
 
                 for precision, recall in zip(scores[m].precision, scores[m].recall):
