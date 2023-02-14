@@ -12,7 +12,7 @@ import argparse
 DEBUG = False
 
 
-def detect_rg4(model, rg4_seeker_hits, gencode_path, screener_path, plot_dest, screener_window):
+def detect_rg4(model, rg4_seeker_hits, gencode_path, screener_path, dest, screener_window):
     t1 = time.time()
     # get input dim
     input_length = get_input_size(model)
@@ -76,15 +76,16 @@ def detect_rg4(model, rg4_seeker_hits, gencode_path, screener_path, plot_dest, s
         if len(scores[m].precision) > 1000000:
             scores[m].precision, scores[m].recall = scores[m].precision[::10], scores[m].recall[::10]
 
-    plot_scores(scores, rg4_all_exp_seq, plot_dest)
     # save data
-    print("Saving results")
-    for m in scores:
-        with open(plot_dest + f"/results/{m}_detection_aupr.csv", "w") as f:
-            f.write(f"precision,recall\n")
+    if dest:
+        plot_scores(scores, rg4_all_exp_seq, dest)
+        print("Saving results")
+        for m in scores:
+            with open(dest + f"/results/{m}_detection_aupr.csv", "w") as f:
+                f.write(f"precision,recall\n")
 
-            for precision, recall in zip(scores[m].precision, scores[m].recall):
-                f.write(f"{precision},{recall}\n")
+                for precision, recall in zip(scores[m].precision, scores[m].recall):
+                    f.write(f"{precision},{recall}\n")
 
 
 
@@ -100,7 +101,7 @@ if __name__ == "__main__":
     parser.add_argument("-g", "--gencode", dest="gencode_path", help="Human gencode v40 file path", required=True)
     parser.add_argument("-e", "--ensemble", dest="ensemble_size",
                         help=f"rG4detector ensemble size (default={ENSEMBLE_SIZE})", default=ENSEMBLE_SIZE)
-    parser.add_argument("-p", "--plot", dest="plot_dest", help=f"Path for results plot", default=".")
+    parser.add_argument("-d", "--dest", dest="dest", help=f"Path for results", default=None)
     parser.add_argument("-w", "--window", dest="screener_window", help=f"G$RNA screener window size", type=int,
                         default=80)
     args = parser.parse_args()
@@ -114,7 +115,7 @@ if __name__ == "__main__":
         rg4_seeker_hits=args.rg4_seeker_hits,
         gencode_path=args.gencode_path,
         screener_path=args.screener_input,
-        plot_dest=args.plot_dest,
+        dest=args.dest,
         screener_window=args.screener_window)
 
 
