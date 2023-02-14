@@ -70,7 +70,7 @@ def detect_rg4(model, rg4_seeker_hits, gencode_path, screener_path, plot_dest, s
 
     
     print(f"Execution time = {round((time.time()-t1)/60, 2)} minutes")
-    # TODO - remove
+
     print("Plotting results")
     for m in scores:
         if len(scores[m].precision) > 1000000:
@@ -102,7 +102,7 @@ if __name__ == "__main__":
                         help=f"rG4detector ensemble size (default={ENSEMBLE_SIZE})", default=ENSEMBLE_SIZE)
     parser.add_argument("-p", "--plot", dest="plot_dest", help=f"Path for results plot", default=None)
     parser.add_argument("-w", "--window", dest="screener_window", help=f"G$RNA screener window size", type=int,
-                        default=SCREENER_WINDOW_LENGTH)
+                        default=80)
     args = parser.parse_args()
 
     print(f"Starting detection")

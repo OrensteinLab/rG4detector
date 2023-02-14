@@ -2,7 +2,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 from tensorflow.keras.utils import to_categorical
-from PARAMETERS import SCREENER_WINDOW_LENGTH
 
 
 def set_data_size(data_size, data_sets):
@@ -192,7 +191,7 @@ class AUC_Score:
         self.auc = auc
 
 
-def set_screener_positions_scores(screener_scores, gaussian=True, average=False, window_size=SCREENER_WINDOW_LENGTH):
+def set_screener_positions_scores(screener_scores, gaussian=True, average=False, window_size=80):
     screener_positions_score = {}
     for method in screener_scores:
         if method == "G4H":
