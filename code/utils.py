@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 from tensorflow.keras.utils import to_categorical
+from tqdm import tqdm
 
 
 def set_data_size(data_size, data_sets):
@@ -312,8 +313,9 @@ def make_all_seqs_prediction(model, seqs, max_pred=True, pad=False, verbose=0):
     # for large amount of data
     batch_size = 5000
     preds_l = []
-    i = 0
-    while i < len(sub_mat_arr):
+    # i = 0
+    # while i < len(sub_mat_arr):
+    for i in tqdm(range(0, len(sub_mat_arr), batch_size)):
         preds_l.append(make_prediction(model, one_hot_mat=sub_mat_arr[i:min(i+batch_size, len(sub_mat_arr))]))
         if verbose:
             print(f"Predicted {round(i/len(sub_mat_arr), 2)}%")
