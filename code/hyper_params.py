@@ -67,6 +67,7 @@ def get_hyper_params(df_path=None):
                         setattr(hyper_params, m, int(best_row[m]))
 
                 print(f"{m} = {best_row[m]}")
+        print("\n")
     return hyper_params
 
 

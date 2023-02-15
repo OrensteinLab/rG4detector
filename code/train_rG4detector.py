@@ -12,8 +12,7 @@ import matplotlib.pyplot as plt
 from PARAMETERS import *
 import argparse
 from tqdm import tqdm
-
-
+from os import environ
 
 def evaluate_model(x_train, y_train, x_val, y_val, hyper_params=HyperParams(), verbose=0):
     """
@@ -112,6 +111,9 @@ if __name__ == "__main__":
     verb = 0
     num_of_iterations = NUM_OF_ENSEMBLE_ITERATIONS
     num_of_models = 15
+
+    # TODO - REMOVE
+    environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-o", "--output", help="Output directory", default=MODEL_PATH)
