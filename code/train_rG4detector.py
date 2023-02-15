@@ -85,7 +85,8 @@ def main(hyper_params, model_num, iterations, dst, debug=False, verbose=0):
 
     corr_list = []
     seed_list = []
-    for i in tqdm(range(iterations)):
+    print(f"Starting to train {iterations} models")
+    for _ in tqdm(range(iterations)):
         hyper_params.seed = random.randint(1, 1000)
         pr_corr, model = evaluate_model(x_train, y_train, x_val, y_val, hyper_params, verbose=verbose)
         corr_list.append(pr_corr)
@@ -93,14 +94,11 @@ def main(hyper_params, model_num, iterations, dst, debug=False, verbose=0):
 
     # reproduce best models:
     max_args = np.argsort(np.array(corr_list))[-model_num:][::-1]
-    print(f"Reproducing {model_num} creating best models")
+    print(f"Reproducing {model_num} best models")
     for idx, loc in enumerate(max_args):
-        it_time = time.time()
-        print(f"SEED {idx} = {seed_list[loc]}")
         hyper_params.seed = seed_list[loc]
         _, model = evaluate_model(x_train, y_train, x_val, y_val, hyper_params)
         model.save(f"{dst}/model_{idx}.h5")
-        print("Finished training - execution time = %ss ---\n\n" % (round(time.time() - it_time)))
 
     find_ensemble_size(x_val, y_val, dst, model_num, debug)
     print("Code execution time = %sm ---" % (round(time.time() - start_time) // 60))
@@ -131,7 +129,7 @@ if __name__ == "__main__":
     print(f"DEBUG is {args.DEBUG}")
     print(f"num_of_models is {num_of_models}")
     print(f"num_of_iterations = {num_of_iterations}")
-    print(f"output is {args.output}")
+    print(f"output is {args.output}\n")
 
     hyperParams = get_hyper_params(df_path=PARAMS_SCAN_PATH)
     main(hyperParams, num_of_models, num_of_iterations, args.output, debug=args.DEBUG, verbose=args.verbose)
