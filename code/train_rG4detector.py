@@ -12,24 +12,28 @@ from get_cnn_model import get_model
 from tensorflow.keras.models import load_model
 import matplotlib.pyplot as plt
 from PARAMETERS import *
+import argparse
 
-def evaluate_model(x_train, y_train, x_val, y_val, hyper_params=HyperParams()):
+
+def evaluate_model(x_train, y_train, x_val, y_val, hyper_params=HyperParams(), verbose=0):
     """
 
-    :param x_train:
-    :param y_train:
-    :param x_val:
-    :param y_val:
-    :param hyper_params:
-    :return:
+    :param x_train: Train data - array-like of shape (n_samples, n_features)
+    :param y_train: Data labels - 1D array-like
+    :param x_val: Validation data - array-like of shape (n_samples, n_features)
+    :param y_val: Validation labels - 1D array-like
+    :param hyper_params: Model hyper parameters - HyperParams object
+    :param verbose: Model training verbosity - int(2/1/0)
+    :return: (pr_corr, model) - (model pearson correlation on the validation set, model object)
     """
+
     print("Starting to evaluate model!")
     print(f"SEED = {hyper_params.seed}")
     # get model
     model = get_model(hyper_params)
 
     # fit model
-    es_callback = EarlyStopping(monitor='val_loss', patience=5, verbose=1)
+    es_callback = EarlyStopping(monitor='val_loss', patience=5, verbose=verbose)
     model.fit(x_train, y_train, verbose=0, validation_data=(x_val, y_val), epochs=hyper_params.epochs,
               batch_size=hyper_params.batch_size, callbacks=[es_callback])
     # make a prediction on the val set
@@ -69,7 +73,7 @@ def find_ensemble_size(x, y, dest, models_num, debug):
         plt.show()
 
 
-def main(hyper_params, model_num, iterations, dst, debug=False):
+def main(hyper_params, model_num, iterations, dst, debug=False, verbose=0):
     start_time = time.time()
     [x_train, y_train, _], _, [x_val, y_val, _] = get_data(DATA_PATH, min_read=2000)
     if debug:
@@ -83,7 +87,7 @@ def main(hyper_params, model_num, iterations, dst, debug=False):
         it_time = time.time()
         print(f"iteration: {i}/{iterations}")
         hyper_params.seed = random.randint(1, 1000)
-        pr_corr, model = evaluate_model(x_train, y_train, x_val, y_val, hyper_params)
+        pr_corr, model = evaluate_model(x_train, y_train, x_val, y_val, hyper_params, verbose=verbose)
         corr_list.append(pr_corr)
         seed_list.append(hyper_params.seed)
         print("Finished Level - execution time = %ss ---\n\n" % (round(time.time() - it_time)))
@@ -111,26 +115,26 @@ if __name__ == "__main__":
     verb = 0
     num_of_iterations = NUM_OF_ENSEMBLE_ITERATIONS
     num_of_models = 15
-    DEBUG = False
-    output = MODEL_PATH
 
-    opts, args = getopt.getopt(sys.argv[1:], 'o:d')
-    for op, val in opts:
-        if op == "-d":
-            verb = 1
-            epochs = 1
-            DEBUG = True
-            num_of_models = 1
-            num_of_iterations = 1
-        if op == "-o":
-            output = val
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-o", "--output", help="Output directory", default=MODEL_PATH)
+    parser.add_argument("-d", "--debug", dest="DEBUG", help="Define in debug mode", action="store_true", default=False)
+    parser.add_argument("-v", "--verbose", dest="verbose", help=f"Model training verbosity", type=int, default=0)
+    args = parser.parse_args()
 
-    print(f"DEBUG is {DEBUG}")
+    if args.DEBUG:
+        args.verbose = 1
+        epochs = 1
+        num_of_models = 1
+        num_of_iterations = 1
+
+
+    print(f"DEBUG is {args.DEBUG}")
     print(f"num_of_models is {num_of_models}")
     print(f"num_of_iterations = {num_of_iterations}")
-    print(f"output is {output}")
+    print(f"output is {args.output}")
 
     hyperParams = get_hyper_params(df_path=PARAMS_SCAN_PATH)
-    main(hyperParams, num_of_models, num_of_iterations, output, debug=DEBUG)
+    main(hyperParams, num_of_models, num_of_iterations, args.output, debug=args.DEBUG, verbose=args.verbose)
 
 

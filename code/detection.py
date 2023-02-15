@@ -9,8 +9,6 @@ from PARAMETERS import *
 import numpy as np
 import argparse
 
-DEBUG = False
-
 
 def detect_rg4(model, rg4_seeker_hits, gencode_path, screener_path, dest, screener_window):
     t1 = time.time()
@@ -104,7 +102,7 @@ if __name__ == "__main__":
     parser.add_argument("-e", "--ensemble", dest="ensemble_size",
                         help=f"rG4detector ensemble size (default={ENSEMBLE_SIZE})", default=ENSEMBLE_SIZE)
     parser.add_argument("-d", "--dest", dest="dest", help=f"Path for results", default=None)
-    parser.add_argument("-w", "--window", dest="screener_window", help=f"G$RNA screener window size", type=int,
+    parser.add_argument("-w", "--window", dest="screener_window", help=f"G4RNA screener window size", type=int,
                         default=80)
     args = parser.parse_args()
 
