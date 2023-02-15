@@ -27,8 +27,9 @@ def evaluate_model(x_train, y_train, x_val, y_val, hyper_params=HyperParams(), v
     :return: (pr_corr, model) - (model pearson correlation on the validation set, model object)
     """
 
-    print("Starting to evaluate model!")
-    print(f"SEED = {hyper_params.seed}")
+    if verbose:
+        print("Starting to evaluate model!")
+        print(f"SEED = {hyper_params.seed}")
     # get model
     model = get_model(hyper_params)
 
@@ -42,7 +43,8 @@ def evaluate_model(x_train, y_train, x_val, y_val, hyper_params=HyperParams(), v
     y_val = y_val.reshape(len(y_val))
     # evaluate model performance
     pr_corr = pearsonr(y_hat, y_val)[0]
-    print(f"val corr = {pr_corr}")
+    if verbose:
+        print(f"val corr = {pr_corr}")
     return pr_corr, model
 
 
@@ -84,13 +86,10 @@ def main(hyper_params, model_num, iterations, dst, debug=False, verbose=0):
     corr_list = []
     seed_list = []
     for i in tqdm(range(iterations)):
-        it_time = time.time()
-        print(f"iteration: {i}/{iterations}")
         hyper_params.seed = random.randint(1, 1000)
         pr_corr, model = evaluate_model(x_train, y_train, x_val, y_val, hyper_params, verbose=verbose)
         corr_list.append(pr_corr)
         seed_list.append(hyper_params.seed)
-        print("Finished - training time = %ss ---\n\n" % (round(time.time() - it_time)))
 
     # reproduce best models:
     max_args = np.argsort(np.array(corr_list))[-model_num:][::-1]
