@@ -1,8 +1,6 @@
 from hyper_params import get_hyper_params, HyperParams
 from tensorflow.keras.callbacks import EarlyStopping
 import time
-import getopt
-import sys
 from utils import get_data, set_data_size
 import numpy as np
 import random
@@ -13,6 +11,8 @@ from tensorflow.keras.models import load_model
 import matplotlib.pyplot as plt
 from PARAMETERS import *
 import argparse
+from tqdm import tqdm
+
 
 
 def evaluate_model(x_train, y_train, x_val, y_val, hyper_params=HyperParams(), verbose=0):
@@ -83,14 +83,14 @@ def main(hyper_params, model_num, iterations, dst, debug=False, verbose=0):
 
     corr_list = []
     seed_list = []
-    for i in range(iterations):
+    for i in tqdm(range(iterations)):
         it_time = time.time()
         print(f"iteration: {i}/{iterations}")
         hyper_params.seed = random.randint(1, 1000)
         pr_corr, model = evaluate_model(x_train, y_train, x_val, y_val, hyper_params, verbose=verbose)
         corr_list.append(pr_corr)
         seed_list.append(hyper_params.seed)
-        print("Finished Level - execution time = %ss ---\n\n" % (round(time.time() - it_time)))
+        print("Finished - training time = %ss ---\n\n" % (round(time.time() - it_time)))
 
     # reproduce best models:
     max_args = np.argsort(np.array(corr_list))[-model_num:][::-1]
