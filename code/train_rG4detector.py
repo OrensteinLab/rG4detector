@@ -14,6 +14,15 @@ import matplotlib.pyplot as plt
 from PARAMETERS import *
 
 def evaluate_model(x_train, y_train, x_val, y_val, hyper_params=HyperParams()):
+    """
+
+    :param x_train:
+    :param y_train:
+    :param x_val:
+    :param y_val:
+    :param hyper_params:
+    :return:
+    """
     print("Starting to evaluate model!")
     print(f"SEED = {hyper_params.seed}")
     # get model
