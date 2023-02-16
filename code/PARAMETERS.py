@@ -1,3 +1,8 @@
+"""
+This file contains parameters used in the different modules
+"""
+
+
 DATA_PATH = "../data/human"
 MODEL_PATH = "../model/"
 SCREENER_PATH = "../g4rna_screener/"

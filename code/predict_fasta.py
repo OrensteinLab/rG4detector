@@ -7,6 +7,14 @@ import argparse
 import matplotlib.pyplot as plt
 from PARAMETERS import *
 from time import time
+"""
+This module is used to utilize the rG4detector model to perform predictions on a given fasta file.
+rG4detector predictions can be utilized in two different modes:
+1. prediction - for a given fasta file, rG4detector will predict the propensity of each sequence to form an rG4 
+structure
+2. detection - for a given fasta file, rG4detector will assign a score to each sequence nucleotide, which indicates the 
+probability of this nucleotide to belong to an rG4 folding sequence.
+"""
 
 def bar_plot(data, desc, dst):
     """
