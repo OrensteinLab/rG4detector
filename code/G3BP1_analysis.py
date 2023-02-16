@@ -9,6 +9,12 @@ from utils import make_all_seqs_prediction
 
 
 def predict_fasta(model, src, dst):
+    """
+    Makes predictions for a given fasta file
+    :param model: model object or list of models
+    :param src: str - path to source fasta file
+    :param dst: str - path to destination file to save results
+    """
     with open(src) as f:
         f_lines = f.read().splitlines()
     seqs = f_lines[1::2]
@@ -28,6 +34,12 @@ def check_signification(src_1, src_2):
 
 
 def predict_screener(src, dst):
+    """
+    Gets G4RNA screeer predictions
+    :param src: str -G4RNA screener prediction file
+    :param dst: str - path to destination file to save results
+    :return:
+    """
     max_preds_df = pd.DataFrame()
     screener_preds = pd.read_csv(src, usecols=["description", 'cGcC', 'G4H', 'G4NN'], sep="\t")
     seq_nums = screener_preds["description"].unique()

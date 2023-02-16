@@ -12,6 +12,14 @@ from PARAMETERS import *
 from IG import get_integrated_gradients
 
 def set_seq(seq, data_size, return_pad_size=False, extra=0):
+    """
+    Sets sequences to fit model input size
+    :param seq: 2D-array - one-hot-encoded matrix
+    :param data_size: int - model input size
+    :param return_pad_size: boolean - return the padding size if needed
+    :param extra: int - extra padding in trailing positions
+    :return:  2D-array - one-hot-encoded matrix
+    """
     if len(seq) > data_size:
         start = len(seq) // 2 - data_size // 2
         end = start + data_size
@@ -26,6 +34,13 @@ def set_seq(seq, data_size, return_pad_size=False, extra=0):
 
 
 def loop_length_test(model, data_size, output):
+    """
+    Test for loop length influence on the model predictions
+
+    :param model: model object or list of models
+    :param data_size: int - model input size
+    :param output: str - destination directory to save results
+    """
     max_loop_size = 12
     loop_predictions = {}
     data = {"loop_size": range(1, max_loop_size + 1)}
@@ -60,6 +75,14 @@ def loop_length_test(model, data_size, output):
 
 
 def loop_length_test2(model, data_size, output=None, plot=True):
+    """
+    Test for loop length influence on the model predictions compared to Zhang, et al.
+
+    :param model:  model object or list of models
+    :param data_size: int - model input size
+    :param output: str - destination directory to save results
+    :param plot: boolean - plot results
+    """
     data = pd.read_csv("../interpretation/amy_data.csv", index_col="loop")
     data["Delta Gvh"] = -data["Delta Gvh"]
 
@@ -113,6 +136,13 @@ def loop_length_test2(model, data_size, output=None, plot=True):
 
 
 def mutation_effect(model, data_size, output):
+    """
+    Plots the effect of mutations in the G-tracts on the model predictions, using the sequences GGGNGGGNGGGNGGG
+
+    :param model:  model object or list of models
+    :param data_size: int - model input size
+    :param output: str - destination directory to save results
+    """
     pq_seq_list = list("GGGNGGGNGGGNGGG")
     df_idx = ["A", "C", "G", "T"]
 
@@ -149,6 +179,14 @@ def mutation_effect(model, data_size, output):
 
 
 def mutation_map_test(model, data_size, output, seq):
+    """
+    for a given sequence, plots the mutation effect on the model predictions and computes its IG
+
+    :param model:  model object or list of models
+    :param data_size: int - model input size
+    :param output: str - destination directory to save results
+    :param seq: str - sequence
+    """
     hot_mat = np.array(one_hot_enc(seq)).reshape((1, len(seq), 4))
     hot_mat = set_data_size(data_size, [hot_mat])[0]
     pred = make_prediction(model, one_hot_mat=hot_mat)
@@ -227,21 +265,14 @@ def mutation_map_test(model, data_size, output, seq):
     plt.show()
 
 
-# def loc_check(model, data_size):
-#     for j in range(1, 6):
-#         print(j)
-#         seq = "GGG" + "N"*j + "GGG" + "N"*j + "GGG" + "N"*j + "GGG"
-#         seqs = []
-#         for k in range(data_size-len(seq)):
-#             s = "N"*(data_size-len(seq)-k) + seq + "N"*k
-#             seqs.append(s)
-#         p = make_prediction(model, seqs)
-#         print(np.argmax(p, axis=0))
-#         plt.plot(range(data_size-len(seq)), p)
-#         plt.show()
-
-
 def stretches_length_test(model, data_size, output):
+    """
+    Plots the effect of the G-tracts length on the model predictions
+
+    :param model:  model object or list of models
+    :param data_size: int - model input size
+    :param output: str - destination directory to save results
+    """
     min_stretch = 1
     max_stretch = 8
     fig, ax = plt.subplots()
@@ -275,13 +306,13 @@ def stretches_length_test(model, data_size, output):
 
 def main(model, output):
     data_size = get_input_size(model)
-    # loop_length_test(model, data_size, output)
+    loop_length_test(model, data_size, output)
     loop_length_test2(model, data_size, output)
-    # mutation_effect(model, data_size, output)
+    mutation_effect(model, data_size, output)
     seq = "CTGCTGCCGCTACTGCGGAGTAGCTGCTTCCCTTCCTCCTCTCCCGGCGGCGGCGGCGGCAGCGGCGGAGGAGGAGGAGGAGGGGACCCGGGCGCAGAGAGCCG" \
           "GCCGGCGGCGCAGTTGCAGCGCGGAG"
-    # mutation_map_test(model, data_size, output, seq)
-    # stretches_length_test(model, data_size, output)
+    mutation_map_test(model, data_size, output, seq)
+    stretches_length_test(model, data_size, output)
 
 
 if __name__ == "__main__":

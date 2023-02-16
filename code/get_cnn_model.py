@@ -14,7 +14,6 @@ def conv_block(layer_input, conv_idx, hyper_params=HyperParams()):
     return Flatten()(x)
 
 def get_model(hyper_params=HyperParams()):
-    print("Multiple kernel CNN model")
     tf.random.set_seed(hyper_params.seed)
     input_layer = Input(shape=(hyper_params.input_size, 4))
     # conv blocks

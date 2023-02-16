@@ -2,9 +2,16 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 from tensorflow.keras.utils import to_categorical
+from tqdm import tqdm
 
 
 def set_data_size(data_size, data_sets):
+    """
+    Sets data sequences to the desired lenth
+    :param data_size: Sequences length (int)
+    :param data_sets: List containing array-like of shape (n_samples, seq_length, 4) datasets
+    :return: list oth the choped datasets
+    """
     total_data_size = data_sets[0].shape[1]
     start = total_data_size//2 - data_size//2
     end = start + data_size
@@ -15,6 +22,14 @@ def set_data_size(data_size, data_sets):
 
 
 def get_data_from_file(get_seq, file_path, dataset):
+    """
+    Read the sequences, labels and weights for a single dataset
+
+    :param get_seq: boolean - get sequences (True) or one-hot-encoded matrix
+    :param file_path: str- file_path:path to source directory
+    :param dataset: str - dataset (train/val/test)
+    :return: X, y, w (Data, labels, weights)
+    """
     data_file = open(file_path + f"/seq/{dataset}-seq", "r")
     seqs = data_file.read().splitlines()
     X = np.array(list(map(one_hot_enc, seqs))) if not get_seq else np.array(seqs)
@@ -24,6 +39,14 @@ def get_data_from_file(get_seq, file_path, dataset):
 
 
 def get_data(path, min_read=2000, get_seq=False):
+    """
+    Read the sequences, labels and weights from the source directory
+
+    :param path: str - file_path:path to source directory
+    :param min_read: int - filter test and val with less than min_read read count
+    :param get_seq: boolean - get sequences (True) or one-hot-encoded matrix
+    :return: (train, val, tests) lists of (data, labels, weights)
+    """
     # train
     X_train, y_train, w_train = get_data_from_file(get_seq, file_path=path, dataset="train")
     # validation
@@ -50,6 +73,12 @@ def get_data(path, min_read=2000, get_seq=False):
 
 
 def get_input_size(model):
+    """
+    Gets the model input size
+
+    :param model: model object or a list of models
+    :return: input_size
+    """
     ensemble = True if isinstance(model, list) else False
 
     if ensemble:
@@ -66,7 +95,16 @@ def get_input_size(model):
 
 
 def make_prediction(model, seq=None, one_hot_mat=None):
+    """
+    Makes prediction of a given sequences/matrix
+
+    :param model: model object or a list of models
+    :param seq: list of sequences or None
+    :param one_hot_mat: array-like of shape (n_samples, seq_length, 4) or Nona
+    :return:
+    """
     if one_hot_mat is None:
+        assert seq is not None, f"Both seq and one_hot_mat are None, need to pass at least one object"
         if isinstance(seq, list):
             one_hot_mat = np.array(list(map(one_hot_enc, seq)))
         else:
@@ -82,6 +120,16 @@ def make_prediction(model, seq=None, one_hot_mat=None):
 
 
 def plot_auc_curve(scores_dict, title=None, dest=None, plot=False, PR=False, y=None):
+    """
+    Plots ROC/PR curves for a given predictions
+
+    :param scores_dict: Dictionary of AUC_Score objects
+    :param title: str -Plot title (Optional)
+    :param dest: str -Plot save destination(Optional)
+    :param plot: boolean - show (True) plot (Optional)
+    :param PR: boolean - AUPR (True) or AUROC (False-default)
+    :param y: For random guess calculation in AUPR (Optional)
+    """
     legend_list = []
     scores_dict["G4Hunter"] = scores_dict["G4H"]
     scores_dict["cGcC-scoring"] = scores_dict["cGcC"]
@@ -118,6 +166,12 @@ def plot_auc_curve(scores_dict, title=None, dest=None, plot=False, PR=False, y=N
 
 
 def one_hot_enc(s):
+    """
+    One hot encoding function
+
+    :param s: str - DNA - sequences
+    :return: np.array - one hoe encoded matrix
+    """
     if s[-1] == "\n":
         s = s[:-1]
     s = s + "ACGT"
@@ -141,6 +195,15 @@ def one_hot_enc(s):
 
 
 def pred_all_sub_seq(data, model, pad=False):
+    """
+    Predicts all sub-sequences with window size of the model input and with step size of 1 in a geiven one-hot-encoded
+    matrix
+
+    :param data: np.array - one-hot-encoded matrix
+    :param model: model object or a list of models
+    :param pad: boolean - zero padding
+    :return: all sub-sequences predictions
+    """
     input_length = get_input_size(model)
     if pad:
         data = np.concatenate([np.zeros((input_length-1, 4)), data, np.zeros((input_length-1, 4))])
@@ -157,6 +220,14 @@ def pred_all_sub_seq(data, model, pad=False):
 
 
 def get_score_per_position(preds, input_length, sigma):
+    """
+    Computes the detection score per position using gaussian weighted average
+
+    :param preds: np.array - all sub sequences predictions
+    :param input_length: int - model input size
+    :param sigma: flout - gaussian sigma
+    :return: positions_scores - np.array - final prediction per poistion
+    """
     positions_scores = np.zeros((len(preds)-input_length+1))
     gaussian_filter = get_gaussian_filter(input_length, sigma=sigma, mu=11)
     positions_scores[:] = np.convolve(preds, gaussian_filter, "valid")
@@ -164,6 +235,14 @@ def get_score_per_position(preds, input_length, sigma):
 
 
 def get_gaussian_filter(input_size, sigma=20, mu=0):
+    """
+    Returns gaussian filter
+
+    :param input_size: int - model input size
+    :param sigma: flout - gaussian filter sigma
+    :param mu: int - gaussian filter mean
+    :return: gaussian_filter
+    """
     gaussian_filter = np.zeros(input_size)
     counter = 0
     for x in range(-input_size // 2, input_size // 2 + 1):
@@ -176,6 +255,9 @@ def get_gaussian_filter(input_size, sigma=20, mu=0):
 
 
 class PRScore:
+    """
+    Class for saving PR values for detection
+    """
     def __init__(self, method, precision, recall, threshold, aucpr):
         self.method = method
         self.precision = precision
@@ -184,6 +266,9 @@ class PRScore:
         self.auc = aucpr
 
 class AUC_Score:
+    """
+    Class for saving ROC values for detection
+    """
     def __init__(self, method, x, y, auc):
         self.method = method
         self.x = x
@@ -192,6 +277,15 @@ class AUC_Score:
 
 
 def set_screener_positions_scores(screener_scores, gaussian=True, average=False, window_size=80):
+    """
+    Calculates RNA screener methods detection positions' scores
+
+    :param screener_scores: Dictionary of 1D-arrays of of the RNA screener methods predictions for a given transcript
+    :param gaussian:
+    :param average:
+    :param window_size:
+    :return:
+    """
     screener_positions_score = {}
     for method in screener_scores:
         if method == "G4H":
@@ -215,6 +309,10 @@ def set_screener_positions_scores(screener_scores, gaussian=True, average=False,
 
 
 class transcript:
+    """
+    Transcript details, from annotation file parsing
+    This class support the process of the determination of the most prominent transcript
+    """
     def __init__(self, name, length, start, end, tsl, gene, strand):
         self.name = name
         self.len = length
@@ -246,6 +344,14 @@ class transcript:
 
 
 def label_sequence(seq, preds, t, screener_window):
+    """
+    Labels each position in a given transcript according to G4Hunter prediction
+    :param seq: str - RNA sequence
+    :param preds: np.array - G4Hunter predictions
+    :param t: flout - threshold
+    :param screener_window: int - window size
+    :return: final_pred - sequence labels
+    """
     s = 0
     final_pred = np.zeros(len(seq))
 
@@ -283,6 +389,16 @@ def label_sequence(seq, preds, t, screener_window):
 
 
 def get_G4Hunter_roc(sequences, predictions_l, thresholds, ground_truth, screener_window):
+    """
+    G4Hunter algorithm for detecting rG4 transcriptom wide
+
+    :param sequences:
+    :param predictions_l:
+    :param thresholds:
+    :param ground_truth:
+    :param screener_window:
+    :return:
+    """
     precision, recall = [], []
     for j, t in enumerate(thresholds):
         # get labeled sequences by threshold
@@ -299,6 +415,15 @@ def get_G4Hunter_roc(sequences, predictions_l, thresholds, ground_truth, screene
 
 
 def make_all_seqs_prediction(model, seqs, max_pred=True, pad=False, verbose=0):
+    """
+    Makes all predictions of a given list of RNA sequences
+
+    :param model: model object or list of models
+    :param seqs: list of sequences
+    :param max_pred: boolean - return the maximum prediction per sequence
+    :param pad: pad value - Z/N - if False - no padding added
+    :return: sequences' predictions
+    """
     # seqs = seqs[:30]
     input_size = get_input_size(model)
     if pad:
@@ -312,8 +437,9 @@ def make_all_seqs_prediction(model, seqs, max_pred=True, pad=False, verbose=0):
     # for large amount of data
     batch_size = 5000
     preds_l = []
-    i = 0
-    while i < len(sub_mat_arr):
+    # i = 0
+    # while i < len(sub_mat_arr):
+    for i in tqdm(range(0, len(sub_mat_arr), batch_size)):
         preds_l.append(make_prediction(model, one_hot_mat=sub_mat_arr[i:min(i+batch_size, len(sub_mat_arr))]))
         if verbose:
             print(f"Predicted {round(i/len(sub_mat_arr), 2)}%")
@@ -326,6 +452,10 @@ def make_all_seqs_prediction(model, seqs, max_pred=True, pad=False, verbose=0):
 
 
 def bar_plot(data_list):
+    """
+    Plots positions' predictions per sequence
+    :param data_list: a list of predictions arrays
+    """
     for data in data_list:
         x = [n for n in range(len(data))]
         plt.figure(figsize=(6, 4))
@@ -338,6 +468,14 @@ def bar_plot(data_list):
 
 
 def plot_scores(scores_dict, y, dest):
+    """
+    Plots ROC/PR curves for a given predictions
+
+    :param scores_dict: Dictionary of AUC_Score objects
+    :param y: 1D array of labels For random guess calculation
+    :param dest: str -Plot save destination(Optional)
+
+    """
     legend_list = []
     scores_dict["G4Hunter"] = scores_dict["G4H"]
     scores_dict["cGcC-scoring"] = scores_dict["cGcC"]

@@ -1,8 +1,13 @@
+"""
+This file contains parameters used in the different modules
+"""
+
+
 DATA_PATH = "../data/human"
 MODEL_PATH = "../model/"
 SCREENER_PATH = "../g4rna_screener/"
 GENOMES_FILE = "../../rg4detector/big_files/"
-PARAMS_SCAN_PATH = "../docs/scan_performance.csv"
+PARAMS_SCAN_PATH = "../other/scan_performance.csv"
 HUMAN_V29_TRANSCRIPTOME_PATH = GENOMES_FILE + "gencode.v29.transcripts.fa"
 HUMAN_V40_TRANSCRIPTOME_PATH = GENOMES_FILE + "gencode.v40.transcripts.fa"
 
