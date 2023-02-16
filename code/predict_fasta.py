@@ -9,6 +9,13 @@ from PARAMETERS import *
 from time import time
 
 def bar_plot(data, desc, dst):
+    """
+    Plots positions' predictions per sequence
+
+    :param data: 1D-array - predictions
+    :param desc: str - sequence fasta description
+    :param dst: str - path to destination directory
+    """
     x = [n for n in range(len(data))]
     plt.figure(figsize=(6, 4))
     plt.bar(x, data, width=1)
@@ -20,6 +27,13 @@ def bar_plot(data, desc, dst):
 
 
 def predict_fasta(model, src, dst):
+    """
+    Makes predictions for a given fasta file
+
+    :param model: model object or list of models
+    :param src: str - path to source fasta file
+    :param dst: str - path to destination file to save results
+    """
     # get sequences
     fasta_file = SeqIO.parse(open(src), 'fasta')
     seqs = [str(seq.seq).upper() for seq in fasta_file]
@@ -35,6 +49,13 @@ def predict_fasta(model, src, dst):
 
 
 def detect_fasta(model, src, dst, plot):
+    """
+
+    :param model: model object or list of models
+    :param src: str - path to source fasta file
+    :param dst: str - path to destination file to save results
+    :param plot: boolean - plot predictions
+    """
     # get sequences
     fasta_file = SeqIO.parse(open(src), 'fasta')
     seqs = [str(seq.seq).upper() for seq in fasta_file]

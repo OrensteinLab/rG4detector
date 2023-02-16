@@ -11,6 +11,7 @@ import argparse
 
 
 def detect_rg4(model, rg4_seeker_hits, gencode_path, screener_path, dest, screener_window):
+
     t1 = time.time()
     # get input dim
     input_length = get_input_size(model)

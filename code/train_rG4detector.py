@@ -16,6 +16,7 @@ from os import environ
 
 def evaluate_model(x_train, y_train, x_val, y_val, hyper_params=HyperParams(), verbose=0):
     """
+    This function gets data and hyper-params as input and returns a trained model and its performance
 
     :param x_train: Train data - array-like of shape (n_samples, n_features)
     :param y_train: Data labels - 1D array-like
@@ -48,6 +49,15 @@ def evaluate_model(x_train, y_train, x_val, y_val, hyper_params=HyperParams(), v
 
 
 def find_ensemble_size(x, y, dest, models_num, debug):
+    """
+    This function plots the model performance as a function of the ensemble size
+
+    :param x: Test data - array-like of shape (n_samples, n_features)
+    :param y: Data labels - 1D array-like
+    :param dest: path to model directory - str
+    :param models_num: largest ensemble size to rest
+    :param debug: True for debug
+    """
     y = y.reshape(len(y))
     ensemble_preds = np.zeros((len(y), models_num))
     for i in range(models_num):
